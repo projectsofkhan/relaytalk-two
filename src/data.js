@@ -1,6 +1,6 @@
 import { supabase } from "./supabase";
 
-// -------------------- PROFILES --------------------
+// PROFILES
 
 export async function getProfile(userId) {
   const { data, error } = await supabase
@@ -13,7 +13,7 @@ export async function getProfile(userId) {
   return data;
 }
 
-// -------------------- FRIENDS --------------------
+// FRIENDS
 
 export async function getFriends(userId) {
   const { data: rows, error } = await supabase
@@ -52,7 +52,7 @@ export async function searchUsers(userId, term) {
   const query = String(term || "").trim();
   if (query.length < 2) return [];
 
-  const [usersResult, friendsResult, requestsResult] = await Promise.all([
+  const [users, friends, requests] = await Promise.all([
     supabase
       .from("profiles")
       .select("id, username, avatar_url, status")
@@ -72,19 +72,14 @@ export async function searchUsers(userId, term) {
       .eq("status", "pending"),
   ]);
 
-  if (usersResult.error) throw usersResult.error;
-  if (friendsResult.error) throw friendsResult.error;
-  if (requestsResult.error) throw requestsResult.error;
+  if (users.error) throw users.error;
+  if (friends.error) throw friends.error;
+  if (requests.error) throw requests.error;
 
-  const friendIds = new Set(
-    (friendsResult.data || []).map((item) => item.friend_id)
-  );
+  const friendIds = new Set((friends.data || []).map((x) => x.friend_id));
+  const pendingIds = new Set((requests.data || []).map((x) => x.receiver_id));
 
-  const pendingIds = new Set(
-    (requestsResult.data || []).map((item) => item.receiver_id)
-  );
-
-  return (usersResult.data || []).map((user) => ({
+  return (users.data || []).map((user) => ({
     ...user,
     isFriend: friendIds.has(user.id),
     requestSent: pendingIds.has(user.id),
@@ -95,6 +90,17 @@ export async function sendFriendRequest(senderId, receiverId) {
   if (!senderId || !receiverId || senderId === receiverId) {
     throw new Error("Invalid friend request.");
   }
+
+  const { data: existing, error: checkError } = await supabase
+    .from("friend_requests")
+    .select("id")
+    .eq("sender_id", senderId)
+    .eq("receiver_id", receiverId)
+    .eq("status", "pending")
+    .maybeSingle();
+
+  if (checkError) throw checkError;
+  if (existing) throw new Error("Friend request already sent.");
 
   const { error } = await supabase.from("friend_requests").insert({
     sender_id: senderId,
@@ -118,12 +124,12 @@ export async function getIncomingRequests(userId) {
   if (error) throw error;
   if (!requests?.length) return [];
 
-  const senderIds = requests.map((request) => request.sender_id);
+  const ids = requests.map((request) => request.sender_id);
 
   const { data: profiles, error: profileError } = await supabase
     .from("profiles")
     .select("id, username, avatar_url")
-    .in("id", senderIds);
+    .in("id", ids);
 
   if (profileError) throw profileError;
 
@@ -143,7 +149,7 @@ export async function respondToFriendRequest(
   currentUserId,
   accepted
 ) {
-  const { error: updateError } = await supabase
+  const { error } = await supabase
     .from("friend_requests")
     .update({
       status: accepted ? "accepted" : "rejected",
@@ -152,39 +158,22 @@ export async function respondToFriendRequest(
     .eq("id", requestId)
     .eq("receiver_id", currentUserId);
 
-  if (updateError) throw updateError;
+  if (error) throw error;
   if (!accepted) return true;
 
-  const createdAt = new Date().toISOString();
-
-  const { error: firstError } = await supabase.from("friends").insert({
-    user_id: currentUserId,
-    friend_id: senderId,
-    created_at: createdAt,
-  });
+  const { error: firstError } = await supabase.from("friends").upsert(
+    [
+      { user_id: senderId, friend_id: currentUserId },
+      { user_id: currentUserId, friend_id: senderId },
+    ],
+    { onConflict: "user_id,friend_id" }
+  );
 
   if (firstError) throw firstError;
-
-  const { error: secondError } = await supabase.from("friends").insert({
-    user_id: senderId,
-    friend_id: currentUserId,
-    created_at: createdAt,
-  });
-
-  if (secondError) {
-    await supabase
-      .from("friends")
-      .delete()
-      .eq("user_id", currentUserId)
-      .eq("friend_id", senderId);
-
-    throw secondError;
-  }
-
   return true;
 }
 
-// -------------------- TEXT MESSAGES --------------------
+// CONVERSATIONS
 
 export async function getConversation(userId, friendId) {
   const { data, error } = await supabase
@@ -221,8 +210,6 @@ export async function sendTextMessage(userId, friendId, content) {
   return data;
 }
 
-// -------------------- IMAGE MESSAGES --------------------
-
 export async function sendImageMessage(userId, friendId, imageUrl, thumbnailUrl) {
   const { data, error } = await supabase
     .from("direct_messages")
@@ -241,8 +228,6 @@ export async function sendImageMessage(userId, friendId, imageUrl, thumbnailUrl)
   if (error) throw error;
   return data;
 }
-
-// -------------------- AUDIO MESSAGES --------------------
 
 export async function sendAudioMessage(userId, friendId, audioUrl, durationMs) {
   const { data, error } = await supabase
@@ -265,7 +250,69 @@ export async function sendAudioMessage(userId, friendId, audioUrl, durationMs) {
   return data;
 }
 
-// -------------------- READ RECEIPTS --------------------
+// EDIT MESSAGE
+
+export async function editTextMessage(messageId, userId, newContent) {
+  const content = String(newContent || "").trim();
+
+  if (!content) throw new Error("Message cannot be empty.");
+
+  const { data, error } = await supabase
+    .from("direct_messages")
+    .update({
+      content,
+      edited_at: new Date().toISOString(),
+    })
+    .eq("id", messageId)
+    .eq("sender_id", userId)
+    .select()
+    .single();
+
+  if (error) throw error;
+  return data;
+}
+
+// DELETE MESSAGE
+
+export async function deleteMessage(messageId, userId) {
+  const deletedAt = new Date().toISOString();
+
+  const { error: reactionError } = await supabase
+    .from("message_reactions")
+    .delete()
+    .eq("message_id", messageId);
+
+  if (reactionError) throw reactionError;
+
+  const { data, error } = await supabase
+    .from("direct_messages")
+    .update({
+      content: "__DELETED__",
+      image_url: null,
+      thumbnail_url: null,
+      audio_url: null,
+      audio_duration_ms: null,
+      color: null,
+      edited_at: deletedAt,
+    })
+    .eq("id", messageId)
+    .eq("sender_id", userId)
+    .select()
+    .single();
+
+  if (error) throw error;
+
+  // Match the original application's deleted flag behaviour.
+  await supabase
+    .from("direct_messages")
+    .update({ deleted: true })
+    .eq("id", messageId)
+    .eq("sender_id", userId);
+
+  return data;
+}
+
+// READ RECEIPTS
 
 export async function markConversationRead(friendId) {
   const { error } = await supabase.rpc("mark_messages_as_read", {
@@ -275,7 +322,7 @@ export async function markConversationRead(friendId) {
   if (error) throw error;
 }
 
-// -------------------- REACTIONS --------------------
+// REACTIONS
 
 export async function getMessageReactions(messageIds) {
   if (!messageIds?.length) return {};
@@ -290,10 +337,7 @@ export async function getMessageReactions(messageIds) {
   const result = {};
 
   (data || []).forEach((reaction) => {
-    if (!result[reaction.message_id]) {
-      result[reaction.message_id] = [];
-    }
-
+    if (!result[reaction.message_id]) result[reaction.message_id] = [];
     result[reaction.message_id].push(reaction);
   });
 
@@ -324,22 +368,17 @@ export async function toggleMessageReaction(messageId, userId, emoji) {
   if (existing) {
     const { error } = await supabase
       .from("message_reactions")
-      .update({
-        emoji,
-        updated_at: new Date().toISOString(),
-      })
+      .update({ emoji })
       .eq("message_id", messageId)
       .eq("user_id", userId);
 
     if (error) throw error;
   } else {
-    const { error } = await supabase
-      .from("message_reactions")
-      .insert({
-        message_id: messageId,
-        user_id: userId,
-        emoji,
-      });
+    const { error } = await supabase.from("message_reactions").insert({
+      message_id: messageId,
+      user_id: userId,
+      emoji,
+    });
 
     if (error) throw error;
   }
@@ -347,27 +386,21 @@ export async function toggleMessageReaction(messageId, userId, emoji) {
   return { message_id: messageId, user_id: userId, emoji };
 }
 
-// -------------------- REALTIME --------------------
+// REALTIME
 
 export function subscribeToConversation(userId, friendId, callback) {
   const channel = supabase
     .channel(`messages-${userId}-${friendId}`)
     .on(
       "postgres_changes",
-      {
-        event: "*",
-        schema: "public",
-        table: "direct_messages",
-      },
+      { event: "*", schema: "public", table: "direct_messages" },
       (payload) => {
         const message = payload.new || payload.old;
         if (!message) return;
 
         const belongs =
-          (message.sender_id === userId &&
-            message.receiver_id === friendId) ||
-          (message.sender_id === friendId &&
-            message.receiver_id === userId);
+          (message.sender_id === userId && message.receiver_id === friendId) ||
+          (message.sender_id === friendId && message.receiver_id === userId);
 
         if (belongs) callback(payload);
       }
@@ -382,11 +415,7 @@ export function subscribeToReactions(callback) {
     .channel("relaytalk-message-reactions")
     .on(
       "postgres_changes",
-      {
-        event: "*",
-        schema: "public",
-        table: "message_reactions",
-      },
+      { event: "*", schema: "public", table: "message_reactions" },
       callback
     )
     .subscribe();
