@@ -1,4 +1,4 @@
-// shared/router.js — hash router. Fast cross-fades between views.
+// shared/router.js — hash router. Fast cross-fades.
 
 export class Router {
   constructor(routes, options = {}) {
@@ -9,7 +9,7 @@ export class Router {
     this.cleanup = null;
     this.onBeforeNavigate = options.onBeforeNavigate || null;
     this.onAfterNavigate = options.onAfterNavigate || null;
-    this.transitionDuration = options.transitionDuration ?? 160;
+    this.transitionDuration = options.transitionDuration ?? 100;
     this._swapping = false;
 
     if (!this.mountEl) {
@@ -20,10 +20,7 @@ export class Router {
   parseHash() {
     const raw = window.location.hash.slice(1) || '/';
     const [path, query] = raw.split('?');
-    return {
-      path: path || '/',
-      params: new URLSearchParams(query || '')
-    };
+    return { path: path || '/', params: new URLSearchParams(query || '') };
   }
 
   async resolve() {
@@ -48,30 +45,24 @@ export class Router {
       const dur = this.transitionDuration;
       const hasContent = this.mountEl.childElementCount > 0;
 
-      // Fast fade-out
       if (hasContent && dur > 0) {
-        this.mountEl.style.transition =
-          `opacity ${dur}ms cubic-bezier(0.4, 0, 1, 1)`;
+        this.mountEl.style.transition = `opacity ${dur}ms cubic-bezier(0.4, 0, 1, 1)`;
         this.mountEl.style.opacity = '0';
         await new Promise(r => setTimeout(r, dur));
       }
 
-      // Swap
       this.mountEl.innerHTML = '';
       this.mountEl.appendChild(template.content.cloneNode(true));
-
       this.current = route;
       this.currentPath = path;
       window.scrollTo({ top: 0, behavior: 'instant' });
 
-      // Fast fade-in
       if (dur > 0) {
         this.mountEl.style.transition = 'none';
         this.mountEl.style.opacity = '0';
         void this.mountEl.offsetHeight;
         requestAnimationFrame(() => {
-          this.mountEl.style.transition =
-            `opacity ${Math.round(dur * 1.2)}ms cubic-bezier(0, 0, 0.2, 1)`;
+          this.mountEl.style.transition = `opacity ${Math.round(dur * 1.3)}ms cubic-bezier(0, 0, 0.2, 1)`;
           this.mountEl.style.opacity = '1';
         });
       } else {
