@@ -1,0 +1,30 @@
+/* shared/styles/home.css — app SPA styles.
+   Will grow as views port. Currently only shell-level chrome. */
+
+.app-view {
+  min-height: 100vh;
+  padding: calc(24px + var(--safe-top)) 22px calc(24px + var(--safe-bottom));
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+.app-view h1 {
+  font-size: 1.6rem;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  color: var(--text);
+  margin-bottom: 8px;
+}
+
+.app-view p {
+  color: var(--text-2);
+  font-size: 0.95rem;
+  margin-bottom: 16px;
+}
+
+.app-view nav {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 16px;
+}
