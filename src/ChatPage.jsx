@@ -17,6 +17,8 @@ import {
   sendImageMessage,
   sendAudioMessage,
   toggleMessageReaction,
+  editTextMessage,
+  deleteMessage,
   subscribeToConversation,
   subscribeToReactions,
 } from "./data";
@@ -26,9 +28,11 @@ import {
   uploadAudioToCloudinary,
 } from "./chat-media";
 
+import useTyping from "./useTyping";
 import VoiceRecorder from "./VoiceRecorder";
 import MessageBubble from "./MessageBubble";
 import "./chat-features.css";
+import "./typing.css";
 
 export default function ChatPage({ session }) {
   const { userId: friendId } = useParams();
@@ -46,14 +50,21 @@ export default function ChatPage({ session }) {
 
   const fileInputRef = useRef(null);
   const bottomRef = useRef(null);
+  const messagesRef = useRef([]);
+
+  const {
+    friendTyping,
+    handleTyping,
+    stopTyping,
+  } = useTyping(currentUserId, friendId);
+
+  useEffect(() => {
+    messagesRef.current = messages;
+  }, [messages]);
 
   const loadReactions = useCallback(async (conversation) => {
     const ids = conversation
-      .filter(
-        (message) =>
-          message.message_type !== "audio" &&
-          message.message_type !== "call"
-      )
+      .filter((message) => message.message_type !== "call")
       .map((message) => message.id);
 
     const result = await getMessageReactions(ids);
@@ -180,7 +191,7 @@ export default function ChatPage({ session }) {
           const reaction = payload.new || payload.old;
           if (!reaction?.message_id) return;
 
-          const belongs = conversation.some(
+          const belongs = messagesRef.current.some(
             (message) => message.id === reaction.message_id
           );
 
@@ -250,6 +261,7 @@ export default function ChatPage({ session }) {
 
     setSending(true);
     setError("");
+    stopTyping();
 
     try {
       const message = await sendTextMessage(
@@ -276,7 +288,6 @@ export default function ChatPage({ session }) {
 
   async function handleImages(event) {
     const files = Array.from(event.target.files || []);
-
     event.target.value = "";
 
     if (!files.length || uploadingImages) return;
@@ -397,6 +408,46 @@ export default function ChatPage({ session }) {
     }
   }
 
+  async function handleEdit(messageId, newContent) {
+    try {
+      const updated = await editTextMessage(
+        messageId,
+        currentUserId,
+        newContent
+      );
+
+      setMessages((previous) =>
+        previous.map((message) =>
+          message.id === messageId ? { ...message, ...updated } : message
+        )
+      );
+    } catch (editError) {
+      setError(editError.message || "Could not edit message.");
+      throw editError;
+    }
+  }
+
+  async function handleDelete(messageId) {
+    try {
+      const updated = await deleteMessage(messageId, currentUserId);
+
+      setMessages((previous) =>
+        previous.map((message) =>
+          message.id === messageId ? { ...message, ...updated } : message
+        )
+      );
+
+      setReactions((previous) => {
+        const next = { ...previous };
+        delete next[messageId];
+        return next;
+      });
+    } catch (deleteError) {
+      setError(deleteError.message || "Could not delete message.");
+      throw deleteError;
+    }
+  }
+
   if (loading) {
     return (
       <div className="page-loading">
@@ -438,7 +489,11 @@ export default function ChatPage({ session }) {
           <div>
             <strong>{friend?.username || "User"}</strong>
             <span>
-              {friend?.status === "online" ? "Online" : "RelayTalk"}
+              {friendTyping
+                ? "typing..."
+                : friend?.status === "online"
+                  ? "Online"
+                  : "RelayTalk"}
             </span>
           </div>
         </div>
@@ -458,8 +513,21 @@ export default function ChatPage({ session }) {
               currentUserId={currentUserId}
               reactions={reactions[message.id] || []}
               onReact={handleReaction}
+              onEdit={handleEdit}
+              onDelete={handleDelete}
             />
           ))
+        )}
+
+        {friendTyping && (
+          <div className="typing-indicator">
+            <span className="typing-dots">
+              <i />
+              <i />
+              <i />
+            </span>
+            <span>{friend?.username || "Friend"} is typing...</span>
+          </div>
         )}
 
         <div ref={bottomRef} />
@@ -494,7 +562,11 @@ export default function ChatPage({ session }) {
 
         <input
           value={text}
-          onChange={(event) => setText(event.target.value)}
+          onChange={(event) => {
+            setText(event.target.value);
+            handleTyping();
+          }}
+          onBlur={stopTyping}
           placeholder="Write a message..."
           aria-label="Message"
           maxLength={5000}
