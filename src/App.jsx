@@ -10,12 +10,25 @@ import {
 
 import {
   getCurrentSession,
-  getMyProfile,
   listenToAuthChanges,
   signInWithUsername,
   signOut,
   signUpWithUsername
 } from "./auth";
+
+import Workspace from "./Workspace";
+import FriendsPage from "./FriendsPage";
+import ChatPage from "./ChatPage";
+import ProfilePage from "./ProfilePage";
+
+function Brand() {
+  return (
+    <Link to="/" className="brand">
+      <span className="brand-symbol">R</span>
+      <span>relaytalk</span>
+    </Link>
+  );
+}
 
 function LoadingScreen() {
   return (
@@ -26,29 +39,18 @@ function LoadingScreen() {
   );
 }
 
-function Brand({ light = false }) {
-  return (
-    <Link
-      to="/"
-      className={`brand ${light ? "brand-light" : ""}`}
-      aria-label="RelayTalk home"
-    >
-      <span className="brand-symbol">R</span>
-      <span>relaytalk</span>
-    </Link>
-  );
-}
-
 function PublicLayout({ children }) {
   return (
     <div className="public-layout">
       <header className="site-header">
         <Brand />
         <Link className="header-link" to="/login">
-          Sign in <span aria-hidden="true">↗</span>
+          Sign in ↗
         </Link>
       </header>
+
       {children}
+
       <footer className="site-footer">
         <Brand />
         <span>Connect. Talk. Stay close.</span>
@@ -81,12 +83,12 @@ function HomePage({ session }) {
           <div className="landing-actions">
             {session ? (
               <Link className="primary-button" to="/app">
-                Open RelayTalk <span>→</span>
+                Open RelayTalk →
               </Link>
             ) : (
               <>
                 <Link className="primary-button" to="/signup">
-                  Get started <span>→</span>
+                  Get started →
                 </Link>
                 <Link className="secondary-button" to="/login">
                   I already have an account
@@ -103,30 +105,22 @@ function HomePage({ session }) {
 
         <div className="landing-art" aria-hidden="true">
           <div className="art-glow" />
+
           <div className="conversation-card card-back">
             <div className="fake-avatar avatar-purple">A</div>
-            <div className="fake-lines">
-              <span />
-              <span />
-            </div>
+            <div className="fake-lines"><span /><span /></div>
             <div className="fake-time">now</div>
           </div>
 
           <div className="conversation-card card-middle">
             <div className="fake-avatar avatar-orange">M</div>
-            <div className="fake-lines">
-              <span />
-              <span />
-            </div>
+            <div className="fake-lines"><span /><span /></div>
             <div className="fake-time">2m</div>
           </div>
 
           <div className="conversation-card card-front">
             <div className="fake-avatar avatar-blue">R</div>
-            <div className="fake-lines">
-              <span />
-              <span />
-            </div>
+            <div className="fake-lines"><span /><span /></div>
             <div className="fake-time">online</div>
           </div>
 
@@ -140,14 +134,12 @@ function HomePage({ session }) {
   );
 }
 
-function AuthLayout({ children, title, subtitle, footer }) {
+function AuthLayout({ title, subtitle, children, footer }) {
   return (
     <PublicLayout>
       <main className="auth-page">
         <section className="auth-card">
-          <div className="auth-brand">
-            <Brand />
-          </div>
+          <div className="auth-brand"><Brand /></div>
 
           <div className="auth-heading">
             <h1>{title}</h1>
@@ -185,7 +177,7 @@ function LoginPage() {
 
       navigate("/app", { replace: true });
     } catch (err) {
-      setError(err.message || "Unable to sign in. Please try again.");
+      setError(err.message || "Unable to sign in.");
     } finally {
       setBusy(false);
     }
@@ -196,20 +188,17 @@ function LoginPage() {
       title="Welcome back."
       subtitle="Sign in to continue your conversations."
       footer={
-        <>
-          New to RelayTalk? <Link to="/signup">Create an account</Link>
-        </>
+        <>New to RelayTalk? <Link to="/signup">Create an account</Link></>
       }
     >
       <form className="auth-form" onSubmit={handleSubmit}>
         <label htmlFor="login-username">Username</label>
         <input
           id="login-username"
-          type="text"
-          placeholder="Enter your username"
-          autoComplete="username"
           value={username}
           onChange={(event) => setUsername(event.target.value)}
+          placeholder="Enter your username"
+          autoComplete="username"
           required
         />
 
@@ -217,10 +206,10 @@ function LoginPage() {
         <input
           id="login-password"
           type="password"
-          placeholder="Enter your password"
-          autoComplete="current-password"
           value={password}
           onChange={(event) => setPassword(event.target.value)}
+          placeholder="Enter your password"
+          autoComplete="current-password"
           required
         />
 
@@ -264,7 +253,7 @@ function SignupPage() {
 
       if (result.needsConfirmation) {
         setNotice(
-          "Your account was created. Complete the confirmation process configured for your existing Supabase project, then sign in."
+          "Your account was created. Complete the confirmation process configured for your account, then sign in."
         );
         return;
       }
@@ -282,22 +271,19 @@ function SignupPage() {
       title="Join RelayTalk."
       subtitle="Create your account and start connecting."
       footer={
-        <>
-          Already have an account? <Link to="/login">Sign in</Link>
-        </>
+        <>Already have an account? <Link to="/login">Sign in</Link></>
       }
     >
       <form className="auth-form" onSubmit={handleSubmit}>
         <label htmlFor="signup-username">Choose a username</label>
         <input
           id="signup-username"
-          type="text"
+          value={username}
+          onChange={(event) => setUsername(event.target.value)}
           placeholder="Your username"
           autoComplete="username"
           minLength={3}
           maxLength={20}
-          value={username}
-          onChange={(event) => setUsername(event.target.value)}
           required
         />
 
@@ -305,11 +291,11 @@ function SignupPage() {
         <input
           id="signup-password"
           type="password"
+          value={password}
+          onChange={(event) => setPassword(event.target.value)}
           placeholder="At least 6 characters"
           autoComplete="new-password"
           minLength={6}
-          value={password}
-          onChange={(event) => setPassword(event.target.value)}
           required
         />
 
@@ -317,10 +303,10 @@ function SignupPage() {
         <input
           id="signup-confirm"
           type="password"
-          placeholder="Enter your password again"
-          autoComplete="new-password"
           value={confirmPassword}
           onChange={(event) => setConfirmPassword(event.target.value)}
+          placeholder="Enter your password again"
+          autoComplete="new-password"
           required
         />
 
@@ -331,129 +317,8 @@ function SignupPage() {
           {busy ? "Creating account..." : "Create account"}
           {!busy && <span>→</span>}
         </button>
-
-        <p className="form-terms">
-          By creating an account, you agree to use RelayTalk responsibly.
-        </p>
       </form>
     </AuthLayout>
-  );
-}
-
-function DashboardPage({ session, onLogout }) {
-  const [profile, setProfile] = useState(null);
-  const [profileError, setProfileError] = useState("");
-  const [loadingProfile, setLoadingProfile] = useState(true);
-
-  useEffect(() => {
-    let active = true;
-
-    async function loadProfile() {
-      try {
-        const data = await getMyProfile(session.user.id);
-
-        if (active) {
-          setProfile(data);
-        }
-      } catch (err) {
-        if (active) {
-          setProfileError(
-            "Your account is connected, but the profile could not be loaded."
-          );
-        }
-      } finally {
-        if (active) {
-          setLoadingProfile(false);
-        }
-      }
-    }
-
-    loadProfile();
-
-    return () => {
-      active = false;
-    };
-  }, [session.user.id]);
-
-  const username =
-    profile?.username ||
-    session.user.user_metadata?.username ||
-    session.user.email?.split("@")[0] ||
-    "there";
-
-  return (
-    <div className="dashboard-page">
-      <header className="dashboard-header">
-        <Brand />
-        <button className="logout-button" onClick={onLogout}>
-          Sign out
-        </button>
-      </header>
-
-      <main className="dashboard-content">
-        <div className="dashboard-eyebrow">
-          <span className="status-dot" />
-          YOUR RELAYTALK ACCOUNT
-        </div>
-
-        <h1>
-          Good to see you,
-          <br />
-          <span>{username}.</span>
-        </h1>
-
-        <p className="dashboard-intro">
-          Your account has successfully connected to RelayTalk.
-        </p>
-
-        <section className="account-panel">
-          <div className="account-panel-heading">
-            <div className="account-avatar">
-              {username.charAt(0).toUpperCase()}
-            </div>
-            <div>
-              <strong>{profile?.full_name || username}</strong>
-              <span>@{username}</span>
-            </div>
-            <span className="account-status">Connected</span>
-          </div>
-
-          <div className="account-details">
-            <div>
-              <span>Account ID</span>
-              <strong>{session.user.id}</strong>
-            </div>
-            <div>
-              <span>Profile status</span>
-              <strong>
-                {loadingProfile
-                  ? "Loading..."
-                  : profile
-                    ? "Loaded"
-                    : "Not available"}
-              </strong>
-            </div>
-          </div>
-
-          {profileError && (
-            <p className="dashboard-warning">{profileError}</p>
-          )}
-        </section>
-
-        <section className="build-notice">
-          <div className="build-notice-icon">✦</div>
-          <div>
-            <h2>The new RelayTalk workspace</h2>
-            <p>
-              Your authentication is connected. The messaging,
-              friends, profile editing and calling modules are the
-              next integration stage. They will be connected to
-              your existing backend, not simulated with sample data.
-            </p>
-          </div>
-        </section>
-      </main>
-    </div>
   );
 }
 
@@ -466,17 +331,13 @@ function App() {
 
     getCurrentSession()
       .then((currentSession) => {
-        if (active) {
-          setSession(currentSession);
-        }
+        if (active) setSession(currentSession);
       })
       .catch((error) => {
         console.error("Session restore failed:", error);
       })
       .finally(() => {
-        if (active) {
-          setCheckingSession(false);
-        }
+        if (active) setCheckingSession(false);
       });
 
     const unsubscribe = listenToAuthChanges((_event, newSession) => {
@@ -492,18 +353,7 @@ function App() {
     };
   }, []);
 
-  async function handleLogout() {
-    try {
-      await signOut();
-    } catch (error) {
-      console.error("Sign out failed:", error);
-      window.alert("Unable to sign out. Please try again.");
-    }
-  }
-
-  if (checkingSession) {
-    return <LoadingScreen />;
-  }
+  if (checkingSession) return <LoadingScreen />;
 
   return (
     <Routes>
@@ -511,28 +361,27 @@ function App() {
 
       <Route
         path="/login"
-        element={
-          session ? <Navigate to="/app" replace /> : <LoginPage />
-        }
+        element={session ? <Navigate to="/app" replace /> : <LoginPage />}
       />
 
       <Route
         path="/signup"
-        element={
-          session ? <Navigate to="/app" replace /> : <SignupPage />
-        }
+        element={session ? <Navigate to="/app" replace /> : <SignupPage />}
       />
 
       <Route
         path="/app"
         element={
-          session ? (
-            <DashboardPage session={session} onLogout={handleLogout} />
-          ) : (
-            <Navigate to="/login" replace />
-          )
+          session
+            ? <Workspace session={session} />
+            : <Navigate to="/login" replace />
         }
-      />
+      >
+        <Route index element={<Navigate to="friends" replace />} />
+        <Route path="friends" element={<FriendsPage session={session} />} />
+        <Route path="chat/:friendId" element={<ChatPage session={session} />} />
+        <Route path="profile/:userId" element={<ProfilePage session={session} />} />
+      </Route>
 
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
