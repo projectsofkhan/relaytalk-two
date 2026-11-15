@@ -1,4 +1,4 @@
-// shared/router.js — hash router. Fast cross-fades.
+// shared/router.js — hash router. Cross-fades between views.
 
 export class Router {
   constructor(routes, options = {}) {
@@ -9,7 +9,7 @@ export class Router {
     this.cleanup = null;
     this.onBeforeNavigate = options.onBeforeNavigate || null;
     this.onAfterNavigate = options.onAfterNavigate || null;
-    this.transitionDuration = options.transitionDuration ?? 100;
+    this.transitionDuration = options.transitionDuration ?? 160;
     this._swapping = false;
 
     if (!this.mountEl) {
@@ -62,7 +62,7 @@ export class Router {
         this.mountEl.style.opacity = '0';
         void this.mountEl.offsetHeight;
         requestAnimationFrame(() => {
-          this.mountEl.style.transition = `opacity ${Math.round(dur * 1.3)}ms cubic-bezier(0, 0, 0.2, 1)`;
+          this.mountEl.style.transition = `opacity ${Math.round(dur * 1.2)}ms cubic-bezier(0, 0, 0.2, 1)`;
           this.mountEl.style.opacity = '1';
         });
       } else {
