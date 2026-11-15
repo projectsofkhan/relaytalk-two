@@ -1,14 +1,34 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import { ArrowLeft, Send, LoaderCircle } from "lucide-react";
+import {
+  ArrowLeft,
+  ImagePlus,
+  Send,
+  LoaderCircle,
+} from "lucide-react";
+
 import {
   areFriends,
   getConversation,
+  getMessageReactions,
   getProfile,
   markConversationRead,
   sendTextMessage,
+  sendImageMessage,
+  sendAudioMessage,
+  toggleMessageReaction,
   subscribeToConversation,
+  subscribeToReactions,
 } from "./data";
+
+import {
+  uploadImageToImgBB,
+  uploadAudioToCloudinary,
+} from "./chat-media";
+
+import VoiceRecorder from "./VoiceRecorder";
+import MessageBubble from "./MessageBubble";
+import "./chat-features.css";
 
 export default function ChatPage({ session }) {
   const { userId: friendId } = useParams();
@@ -16,29 +36,34 @@ export default function ChatPage({ session }) {
 
   const [friend, setFriend] = useState(null);
   const [messages, setMessages] = useState([]);
+  const [reactions, setReactions] = useState({});
   const [text, setText] = useState("");
+
   const [loading, setLoading] = useState(true);
   const [sending, setSending] = useState(false);
+  const [uploadingImages, setUploadingImages] = useState(false);
   const [error, setError] = useState("");
 
+  const fileInputRef = useRef(null);
   const bottomRef = useRef(null);
 
-  const loadMessages = useCallback(async () => {
-    if (!currentUserId || !friendId) return;
+  const loadReactions = useCallback(async (conversation) => {
+    const ids = conversation
+      .filter(
+        (message) =>
+          message.message_type !== "audio" &&
+          message.message_type !== "call"
+      )
+      .map((message) => message.id);
 
-    const conversation = await getConversation(currentUserId, friendId);
-    setMessages(conversation);
-
-    try {
-      await markConversationRead(friendId);
-    } catch (readError) {
-      console.warn("Unable to mark messages as read:", readError);
-    }
-  }, [currentUserId, friendId]);
+    const result = await getMessageReactions(ids);
+    setReactions(result);
+  }, []);
 
   useEffect(() => {
     let active = true;
-    let unsubscribe = null;
+    let unsubscribeMessages = null;
+    let unsubscribeReactions = null;
 
     async function initialise() {
       setLoading(true);
@@ -58,13 +83,14 @@ export default function ChatPage({ session }) {
           throw new Error("You can only chat with an accepted friend.");
         }
 
-        const profile = await getProfile(friendId);
-        if (!profile) throw new Error("This user could not be found.");
+        const [profile, conversation] = await Promise.all([
+          getProfile(friendId),
+          getConversation(currentUserId, friendId),
+        ]);
 
-        const conversation = await getConversation(
-          currentUserId,
-          friendId
-        );
+        if (!profile) {
+          throw new Error("This user could not be found.");
+        }
 
         if (!active) return;
 
@@ -72,49 +98,127 @@ export default function ChatPage({ session }) {
         setMessages(conversation);
 
         try {
-          await markConversationRead(friendId);
-        } catch (readError) {
-          console.warn("Unable to mark messages as read:", readError);
+          await loadReactions(conversation);
+        } catch (reactionError) {
+          console.warn("Could not load reactions:", reactionError);
         }
 
-        unsubscribe = subscribeToConversation(
+        try {
+          await markConversationRead(friendId);
+        } catch (readError) {
+          console.warn("Could not mark messages read:", readError);
+        }
+
+        unsubscribeMessages = subscribeToConversation(
           currentUserId,
           friendId,
           (payload) => {
             if (!active) return;
 
+            const incoming = payload.new || payload.old;
+            if (!incoming) return;
+
             if (payload.eventType === "DELETE") {
               setMessages((previous) =>
-                previous.filter((item) => item.id !== payload.old?.id)
+                previous.filter((item) => item.id !== incoming.id)
               );
+
+              setReactions((previous) => {
+                const next = { ...previous };
+                delete next[incoming.id];
+                return next;
+              });
+
               return;
             }
 
-            const incoming = payload.new;
-            if (!incoming) return;
-
-            setMessages((previous) => {
-              const exists = previous.some(
-                (item) => item.id === incoming.id
+            if (payload.eventType === "UPDATE") {
+              setMessages((previous) =>
+                previous.map((item) =>
+                  item.id === incoming.id
+                    ? { ...item, ...incoming }
+                    : item
+                )
               );
 
-              if (exists) {
-                return previous.map((item) =>
-                  item.id === incoming.id ? incoming : item
-                );
+              if (
+                incoming.content === "__DELETED__" ||
+                incoming.deleted === true
+              ) {
+                setReactions((previous) => {
+                  const next = { ...previous };
+                  delete next[incoming.id];
+                  return next;
+                });
               }
 
-              return [...previous, incoming].sort(
-                (a, b) =>
-                  new Date(a.created_at) - new Date(b.created_at)
-              );
-            });
+              return;
+            }
 
-            if (incoming.receiver_id === currentUserId) {
-              markConversationRead(friendId).catch(console.warn);
+            if (payload.eventType === "INSERT") {
+              setMessages((previous) => {
+                if (previous.some((item) => item.id === incoming.id)) {
+                  return previous;
+                }
+
+                return [...previous, incoming].sort(
+                  (a, b) =>
+                    new Date(a.created_at) - new Date(b.created_at)
+                );
+              });
+
+              if (incoming.receiver_id === currentUserId) {
+                markConversationRead(friendId).catch(console.warn);
+              }
             }
           }
         );
+
+        unsubscribeReactions = subscribeToReactions((payload) => {
+          if (!active) return;
+
+          const reaction = payload.new || payload.old;
+          if (!reaction?.message_id) return;
+
+          const belongs = conversation.some(
+            (message) => message.id === reaction.message_id
+          );
+
+          if (!belongs) return;
+
+          setReactions((previous) => {
+            const next = { ...previous };
+            const current = [...(next[reaction.message_id] || [])];
+
+            if (payload.eventType === "INSERT") {
+              if (
+                !current.some(
+                  (item) =>
+                    item.user_id === reaction.user_id &&
+                    item.emoji === reaction.emoji
+                )
+              ) {
+                current.push(reaction);
+              }
+            } else if (payload.eventType === "DELETE") {
+              const index = current.findIndex(
+                (item) => item.user_id === reaction.user_id
+              );
+
+              if (index !== -1) current.splice(index, 1);
+            } else if (payload.eventType === "UPDATE") {
+              const index = current.findIndex(
+                (item) => item.user_id === reaction.user_id
+              );
+
+              if (index !== -1) current[index] = reaction;
+              else current.push(reaction);
+            }
+
+            next[reaction.message_id] = current;
+            return next;
+          });
+        });
       } catch (loadError) {
         if (active) setError(loadError.message);
       } finally {
@@ -126,15 +230,19 @@ export default function ChatPage({ session }) {
 
     return () => {
       active = false;
-      if (unsubscribe) unsubscribe();
+      unsubscribeMessages?.();
+      unsubscribeReactions?.();
     };
-  }, [currentUserId, friendId]);
+  }, [currentUserId, friendId, loadReactions]);
 
   useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+    bottomRef.current?.scrollIntoView({
+      behavior: "smooth",
+      block: "end",
+    });
   }, [messages]);
 
-  async function handleSend(event) {
+  async function handleSendText(event) {
     event.preventDefault();
 
     const messageText = text.trim();
@@ -144,18 +252,18 @@ export default function ChatPage({ session }) {
     setError("");
 
     try {
-      const sentMessage = await sendTextMessage(
+      const message = await sendTextMessage(
         currentUserId,
         friendId,
         messageText
       );
 
       setMessages((previous) => {
-        if (previous.some((item) => item.id === sentMessage.id)) {
+        if (previous.some((item) => item.id === message.id)) {
           return previous;
         }
 
-        return [...previous, sentMessage];
+        return [...previous, message];
       });
 
       setText("");
@@ -163,6 +271,129 @@ export default function ChatPage({ session }) {
       setError(sendError.message || "Message could not be sent.");
     } finally {
       setSending(false);
+    }
+  }
+
+  async function handleImages(event) {
+    const files = Array.from(event.target.files || []);
+
+    event.target.value = "";
+
+    if (!files.length || uploadingImages) return;
+
+    const validFiles = files.filter(
+      (file) =>
+        file.type.startsWith("image/") &&
+        file.size <= 20 * 1024 * 1024
+    );
+
+    if (!validFiles.length) {
+      setError("Select an image smaller than 20 MB.");
+      return;
+    }
+
+    setUploadingImages(true);
+    setError("");
+
+    let successful = 0;
+    const failures = [];
+
+    try {
+      for (const file of validFiles.slice(0, 10)) {
+        try {
+          const uploaded = await uploadImageToImgBB(file);
+
+          const message = await sendImageMessage(
+            currentUserId,
+            friendId,
+            uploaded.imageUrl,
+            uploaded.thumbnailUrl
+          );
+
+          setMessages((previous) => {
+            if (previous.some((item) => item.id === message.id)) {
+              return previous;
+            }
+
+            return [...previous, message];
+          });
+
+          successful += 1;
+        } catch (uploadError) {
+          failures.push(uploadError.message);
+        }
+      }
+
+      if (failures.length) {
+        setError(
+          `${successful} image(s) sent. ${failures.length} image(s) failed.`
+        );
+      }
+    } finally {
+      setUploadingImages(false);
+    }
+  }
+
+  async function handleSendVoice(blob, duration) {
+    const uploaded = await uploadAudioToCloudinary(blob);
+
+    const message = await sendAudioMessage(
+      currentUserId,
+      friendId,
+      uploaded.url,
+      duration
+    );
+
+    setMessages((previous) => {
+      if (previous.some((item) => item.id === message.id)) {
+        return previous;
+      }
+
+      return [...previous, message];
+    });
+  }
+
+  async function handleReaction(messageId, emoji) {
+    const target = messages.find((item) => item.id === messageId);
+
+    if (
+      !target ||
+      target.content === "__DELETED__" ||
+      target.deleted ||
+      target.message_type === "audio" ||
+      target.message_type === "call" ||
+      target.image_url
+    ) {
+      return;
+    }
+
+    try {
+      const updated = await toggleMessageReaction(
+        messageId,
+        currentUserId,
+        emoji
+      );
+
+      setReactions((previous) => {
+        const current = [...(previous[messageId] || [])];
+
+        const existingIndex = current.findIndex(
+          (item) => item.user_id === currentUserId
+        );
+
+        if (existingIndex !== -1) {
+          current.splice(existingIndex, 1);
+        }
+
+        if (updated) current.push(updated);
+
+        return {
+          ...previous,
+          [messageId]: current,
+        };
+      });
+    } catch (reactionError) {
+      setError(reactionError.message || "Could not save reaction.");
     }
   }
 
@@ -206,7 +437,9 @@ export default function ChatPage({ session }) {
 
           <div>
             <strong>{friend?.username || "User"}</strong>
-            <span>{friend?.status === "online" ? "Online" : "RelayTalk"}</span>
+            <span>
+              {friend?.status === "online" ? "Online" : "RelayTalk"}
+            </span>
           </div>
         </div>
       </header>
@@ -218,46 +451,47 @@ export default function ChatPage({ session }) {
             <p>Send your first message to {friend?.username}.</p>
           </div>
         ) : (
-          messages.map((message) => {
-            const mine = message.sender_id === currentUserId;
-            const deleted =
-              message.deleted === true ||
-              message.deleted_at ||
-              message.content === "__DELETED__";
-
-            return (
-              <article
-                key={message.id}
-                className={`message-row ${mine ? "mine" : "theirs"}`}
-              >
-                <div className="message-bubble">
-                  {deleted ? (
-                    <em>This message was deleted.</em>
-                  ) : message.message_type === "audio" && message.audio_url ? (
-                    <audio controls src={message.audio_url} />
-                  ) : (
-                    message.content
-                  )}
-                  <time>
-                    {message.created_at
-                      ? new Date(message.created_at).toLocaleTimeString([], {
-                          hour: "2-digit",
-                          minute: "2-digit",
-                        })
-                      : ""}
-                    {mine && message.read ? " · Read" : ""}
-                  </time>
-                </div>
-              </article>
-            );
-          })
+          messages.map((message) => (
+            <MessageBubble
+              key={message.id}
+              message={message}
+              currentUserId={currentUserId}
+              reactions={reactions[message.id] || []}
+              onReact={handleReaction}
+            />
+          ))
         )}
+
         <div ref={bottomRef} />
       </div>
 
       {error && <p className="inline-error">{error}</p>}
 
-      <form className="message-composer" onSubmit={handleSend}>
+      <form className="message-composer" onSubmit={handleSendText}>
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept="image/*"
+          multiple
+          hidden
+          onChange={handleImages}
+        />
+
+        <button
+          type="button"
+          className="composer-attachment"
+          onClick={() => fileInputRef.current?.click()}
+          disabled={uploadingImages || sending}
+          aria-label="Attach images"
+          title="Attach images"
+        >
+          {uploadingImages ? (
+            <LoaderCircle className="spin" size={19} />
+          ) : (
+            <ImagePlus size={19} />
+          )}
+        </button>
+
         <input
           value={text}
           onChange={(event) => setText(event.target.value)}
@@ -266,9 +500,14 @@ export default function ChatPage({ session }) {
           maxLength={5000}
         />
 
+        <VoiceRecorder
+          onSend={handleSendVoice}
+          disabled={sending || uploadingImages}
+        />
+
         <button
           type="submit"
-          disabled={!text.trim() || sending}
+          disabled={!text.trim() || sending || uploadingImages}
           aria-label="Send message"
         >
           {sending ? (
