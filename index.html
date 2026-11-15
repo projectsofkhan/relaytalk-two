@@ -5,15 +5,26 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>RelayTalk — Connect</title>
   <meta name="theme-color" content="#ffffff">
+  
   <link rel="canonical" href="https://relaytalk.vercel.app/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="RelayTalk">
+  <meta property="og:title" content="RelayTalk — Connect with friends instantly">
+  <meta property="og:description" content="Fast, private, and simple messaging — made for real conversations.">
+  <meta property="og:url" content="https://relaytalk.vercel.app/">
+  <meta property="og:image" content="https://relaytalk.vercel.app/relayad.png?v=2">
+
   <link rel="icon" href="/favicon.ico" type="image/x-icon">
   <link rel="icon" href="/relay.png" type="image/png" sizes="192x192">
   <link rel="apple-touch-icon" href="/relay.png">
   <link rel="manifest" href="/manifest.json">
+  
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- New Premium Styles -->
   <link rel="stylesheet" href="/shared/styles/base.css">
   <link rel="stylesheet" href="/shared/styles/auth.css">
 </head>
@@ -25,29 +36,42 @@
   <template id="tpl-welcome">
     <section class="auth-view welcome-view">
       <div class="welcome-container">
+        
         <header class="hero">
           <img src="/relay.png" alt="RelayTalk" class="hero-logo">
           <h1 class="title">RelayTalk</h1>
           <p class="subtitle">Fast, private messaging for real friends.</p>
         </header>
+
         <ul class="features">
           <li class="feature-card">
             <span class="feature-icon"><i class="fas fa-search"></i></span>
-            <div class="feature-text"><h3>Find Friends</h3><p>Connect with people you know.</p></div>
+            <div class="feature-text">
+              <h3>Find Friends</h3>
+              <p>Connect with people you know.</p>
+            </div>
           </li>
           <li class="feature-card">
             <span class="feature-icon"><i class="fas fa-comment-dots"></i></span>
-            <div class="feature-text"><h3>Instant Chat</h3><p>Real-time messaging, no delays.</p></div>
+            <div class="feature-text">
+              <h3>Instant Chat</h3>
+              <p>Real-time messaging, no delays.</p>
+            </div>
           </li>
           <li class="feature-card">
             <span class="feature-icon"><i class="fas fa-shield-halved"></i></span>
-            <div class="feature-text"><h3>Private & Secure</h3><p>Your conversations stay yours.</p></div>
+            <div class="feature-text">
+              <h3>Private & Secure</h3>
+              <p>Your conversations stay yours.</p>
+            </div>
           </li>
         </ul>
+
         <div class="action-buttons">
           <button class="btn-primary" data-nav="/signup">Create Account</button>
           <button class="btn-secondary" data-nav="/login">Sign In</button>
         </div>
+
       </div>
     </section>
   </template>
@@ -57,33 +81,61 @@
     <section class="auth-view login-view">
       <header class="simple-header">
         <a href="/" class="simple-logo" data-nav="/">
-          <img src="/relay.png" alt="" class="simple-logo-img"><span>RelayTalk</span>
+          <img src="/relay.png" alt="RelayTalk" class="simple-logo-img">
+          <span>RelayTalk</span>
         </a>
       </header>
+
       <main class="auth-container">
         <div class="auth-header">
-          <div class="auth-logo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
+          <div class="auth-logo">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <rect x="3" y="11" width="18" height="11" rx="2"/>
+              <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+            </svg>
+          </div>
           <h1 class="auth-title">Welcome back</h1>
           <p class="auth-subtitle">Sign in to continue.</p>
         </div>
+
         <form class="auth-form" id="loginForm">
           <div class="form-group">
-            <label class="form-label" for="loginUsername">Username</label>
+            <label class="form-label" for="loginUsername">
+              <span class="form-label-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+              </span>
+              Username
+            </label>
             <input type="text" id="loginUsername" class="form-input" placeholder="Enter your username" required>
             <div class="error-message" id="usernameError"></div>
           </div>
+
           <div class="form-group">
-            <label class="form-label" for="loginPassword">Password</label>
+            <label class="form-label" for="loginPassword">
+              <span class="form-label-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+              </span>
+              Password
+            </label>
             <div class="password-input">
               <input type="password" id="loginPassword" class="form-input" placeholder="Enter your password" required>
-              <button type="button" class="password-toggle" id="passwordToggle" data-action="toggle-password"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
+              <button type="button" class="password-toggle" id="passwordToggle" data-action="toggle-password" aria-label="Show password">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+              </button>
             </div>
             <div class="error-message" id="passwordError"></div>
           </div>
-          <button type="submit" class="btn-primary" style="width:100%; margin-top:8px;" id="loginBtn">Sign In</button>
+
+          <button type="submit" class="btn-primary" style="width: 100%; margin-top: 8px;" id="loginBtn">
+            Sign In
+          </button>
         </form>
+
         <div class="success-message" id="successMessage"></div>
-        <p class="auth-footer" style="text-align:center; margin-top:24px; color:var(--text-2);">New here? <a href="#" data-nav="/signup" style="color:var(--primary); font-weight:600;">Create an account</a></p>
+
+        <p class="auth-footer" style="text-align: center; margin-top: 24px; color: var(--text-2);">
+          New here? <a href="#" data-nav="/signup" style="color: var(--primary); font-weight: 600;">Create an account</a>
+        </p>
       </main>
     </section>
   </template>
@@ -93,38 +145,124 @@
     <section class="auth-view signup-view">
       <header class="simple-header">
         <a href="/" class="simple-logo" data-nav="/">
-          <img src="/relay.png" alt="" class="simple-logo-img"><span>RelayTalk</span>
+          <img src="/relay.png" alt="RelayTalk" class="simple-logo-img">
+          <span>RelayTalk</span>
         </a>
       </header>
+
       <main class="auth-container">
         <div class="auth-header">
           <h1 class="auth-title">Create Account</h1>
           <p class="auth-subtitle">Join RelayTalk for free.</p>
         </div>
+
         <form class="auth-form" id="signupForm" novalidate>
           <div class="form-group">
             <label class="form-label" for="username">Username</label>
             <input type="text" id="username" class="form-input" placeholder="Choose a username" required>
             <div class="error-message" id="usernameError"></div>
           </div>
+
           <div class="form-group">
             <label class="form-label" for="password">Password</label>
             <div class="password-input">
               <input type="password" id="password" class="form-input" placeholder="At least 6 characters" required>
-              <button type="button" class="password-toggle" data-action="toggle-password"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
+              <button type="button" class="password-toggle" data-action="toggle-password" aria-label="Show password">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+              </button>
             </div>
             <div class="error-message" id="passwordError"></div>
           </div>
+
           <div class="form-group">
             <label class="form-label" for="confirmPassword">Confirm Password</label>
-            <input type="password" id="confirmPassword" class="form-input" placeholder="Re-enter password" required>
+            <input type="password" id="confirmPassword" class="form-input" placeholder="Re-enter your password" required>
             <div class="error-message" id="confirmError"></div>
           </div>
-          <button type="submit" class="btn-primary" style="width:100%; margin-top:8px;" id="submitBtn">Create Account</button>
+
+          <div class="terms-container" style="margin: 20px 0; padding: 16px; background: var(--bg); border-radius: var(--radius-md); border: 1px solid var(--border);">
+            <div class="terms-checkbox" style="display: flex; gap: 10px; align-items: flex-start;">
+              <input type="checkbox" id="terms" required style="margin-top: 4px;">
+              <label for="terms" style="font-size: 0.9rem; color: var(--text-2); cursor: pointer;">I agree to the Terms & Privacy Policy</label>
+            </div>
+            <div class="error-message" id="termsError"></div>
+            <div class="terms-buttons" style="display: flex; gap: 12px; margin-top: 12px;">
+              <button type="button" class="btn-secondary" style="padding: 8px; font-size: 0.8rem; min-height: 40px; flex: 1;" data-action="show-terms">Read Terms</button>
+              <button type="button" class="btn-secondary" style="padding: 8px; font-size: 0.8rem; min-height: 40px; flex: 1;" data-action="show-privacy">Read Privacy</button>
+            </div>
+          </div>
+
+          <button type="submit" class="btn-primary" style="width: 100%;" id="submitBtn">
+            Create Account
+          </button>
         </form>
-        <div class="success-container" id="successContainer" style="display:none;"></div>
-        <p class="auth-footer" style="text-align:center; margin-top:24px; color:var(--text-2);">Already have an account? <a href="#" data-nav="/login" style="color:var(--primary); font-weight:600;">Sign In</a></p>
+
+        <div class="success-container" id="successContainer" style="display: none;"></div>
+
+        <p class="auth-footer" style="text-align: center; margin-top: 24px; color: var(--text-2);">
+          Already have an account? <a href="#" data-nav="/login" style="color: var(--primary); font-weight: 600;">Sign In</a>
+        </p>
       </main>
+
+      <!-- Modals (Terms & Privacy) -->
+      <div class="modal-overlay" id="termsModal">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h2 class="modal-title">Terms & Conditions</h2>
+            <button class="modal-close" data-action="close-modal">×</button>
+          </div>
+          <div class="modal-body">
+            <h3>Welcome to RelayTalk</h3>
+            <p>By creating an account, you agree to these simple terms:</p>
+            <h3>Your account</h3>
+            <ul>
+              <li>You must be at least 13 years old to use RelayTalk</li>
+              <li>Your username must be unique and appropriate</li>
+              <li>You are responsible for keeping your password secure</li>
+            </ul>
+            <h3>Messaging rules</h3>
+            <ul>
+              <li>Be respectful to all users</li>
+              <li>No harassment, bullying, or hate speech</li>
+              <li>No spam or unsolicited messages</li>
+            </ul>
+            <div class="security-note">
+              <strong>Important Security Notice</strong>
+              <p>Your password cannot be recovered if forgotten. Please write it down securely.</p>
+            </div>
+            <p class="modal-meta" style="font-size: 0.8rem; color: var(--text-3); margin-top: 20px;">Last updated: December 2024</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-overlay" id="privacyModal">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h2 class="modal-title">Privacy Policy</h2>
+            <button class="modal-close" data-action="close-modal">×</button>
+          </div>
+          <div class="modal-body">
+            <h3>Your privacy matters</h3>
+            <p>At RelayTalk, we believe in simple, transparent privacy.</p>
+            <h3>What we store</h3>
+            <ul>
+              <li><strong>Username:</strong> your chosen display name</li>
+              <li><strong>Profile information:</strong> basic account details</li>
+              <li><strong>Messages:</strong> only between you and recipients</li>
+            </ul>
+            <h3>What we don't store</h3>
+            <ul>
+              <li>Email addresses</li>
+              <li>Phone numbers</li>
+              <li>Location data</li>
+            </ul>
+            <div class="security-note" style="background: var(--success-soft); border-color: var(--success); color: var(--success);">
+              <strong>Security first</strong>
+              <p style="color: var(--success);">RelayTalk is built with security in mind. Created by RelayTalk Org.</p>
+            </div>
+          </div>
+        </div>
+      </div>
     </section>
   </template>
 
