@@ -9,6 +9,10 @@ import { initFriends }    from './views/friends.js';
 import { initProfile }    from './views/profile.js';
 import { initViewFriend } from './views/view-friend.js';
 
+// Load global utilities (single instance each, they handle their own presence/realtime)
+import '/utils/callHub.js';
+import '/utils/offline-guard.js';
+
 const router = new Router({
   '/':        { template: 'tpl-dashboard',   init: initDashboard  },
   '/chats':   { template: 'tpl-chats',       init: initChats      },
@@ -27,7 +31,6 @@ bindNavLinks(router);
     window.location.replace('/#/login');
     return;
   }
-  // Make the Supabase client globally available to ported page logic.
   window.supabase = getSupabase();
   router.start();
 })();
