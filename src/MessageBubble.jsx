@@ -1,10 +1,13 @@
 import MessageReactions from "./MessageReactions";
+import MessageActions from "./MessageActions";
 
 export default function MessageBubble({
   message,
   currentUserId,
   reactions = [],
   onReact,
+  onEdit,
+  onDelete,
 }) {
   const mine = message.sender_id === currentUserId;
 
@@ -21,9 +24,13 @@ export default function MessageBubble({
     : "";
 
   function openImage() {
-    if (message.image_url) {
-      window.open(message.image_url, "_blank", "noopener,noreferrer");
-    }
+    if (!message.image_url) return;
+
+    window.open(
+      message.image_url,
+      "_blank",
+      "noopener,noreferrer"
+    );
   }
 
   return (
@@ -45,9 +52,6 @@ export default function MessageBubble({
                 src={message.thumbnail_url || message.image_url}
                 alt="Shared image"
                 loading="lazy"
-                onError={(event) => {
-                  event.currentTarget.src = message.image_url;
-                }}
               />
             </button>
           ) : message.message_type === "audio" || message.audio_url ? (
@@ -63,9 +67,18 @@ export default function MessageBubble({
 
           <time>
             {time}
+            {message.edited_at && !deleted ? " · Edited" : ""}
             {mine && message.read ? " · Read" : ""}
           </time>
         </div>
+
+        {mine && !deleted && (
+          <MessageActions
+            message={message}
+            onEdit={onEdit}
+            onDelete={onDelete}
+          />
+        )}
 
         {!deleted &&
           message.message_type !== "audio" &&
