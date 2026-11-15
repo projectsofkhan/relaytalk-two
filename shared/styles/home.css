@@ -1,6 +1,6 @@
 /* ============================================================
-   RelayTalk — App SPA styles (dashboard)
-   Brand: #0B84F3 · Zinc inks · Preserves old dashboard layout
+   RelayTalk — App SPA styles
+   Dashboard + Friends · Brand: #0B84F3 · Zinc palette
    ============================================================ */
 
 :root {
@@ -43,8 +43,12 @@
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* App body — shared shell baseline */
-.dashboard-root {
+/* ═══════════════════════════════════════════════════════════ */
+/* ROOT CONTAINERS                                            */
+/* ═══════════════════════════════════════════════════════════ */
+
+.dashboard-root,
+.friends-root {
   background: var(--bg);
   color: var(--text);
   font-size: 15px;
@@ -55,7 +59,7 @@
   position: relative;
 }
 
-/* Fallback for other app views */
+/* Fallback for not-yet-ported views */
 .app-view {
   min-height: 100vh;
   padding: calc(24px + env(safe-area-inset-top, 0px)) 22px calc(24px + env(safe-area-inset-bottom, 0px));
@@ -72,7 +76,7 @@
 .app-view p { color: var(--text-2); font-size: 0.95rem; margin-bottom: 16px; }
 
 /* ═══════════════════════════════════════════════════════════ */
-/* APP BAR                                                    */
+/* APP BAR (shared)                                           */
 /* ═══════════════════════════════════════════════════════════ */
 
 .app-bar {
@@ -157,7 +161,7 @@
 }
 
 /* ═══════════════════════════════════════════════════════════ */
-/* PAGE / GREETING                                            */
+/* PAGE / GREETING / PRIMARY ACTION (dashboard)               */
 /* ═══════════════════════════════════════════════════════════ */
 
 .page {
@@ -188,10 +192,6 @@
 }
 
 .greeting-sub { font-size: 0.9rem; color: var(--text-2); }
-
-/* ═══════════════════════════════════════════════════════════ */
-/* PRIMARY ACTION                                             */
-/* ═══════════════════════════════════════════════════════════ */
 
 .primary-action {
   display: flex;
@@ -260,7 +260,7 @@
 }
 
 /* ═══════════════════════════════════════════════════════════ */
-/* FRIEND ROW                                                 */
+/* FRIEND ROW (shared — dashboard + friends)                  */
 /* ═══════════════════════════════════════════════════════════ */
 
 .friend-item {
@@ -307,7 +307,7 @@
   inset: 0;
 }
 
-.friend-avatar > span:not(.friend-status-dot) {
+.friend-avatar > span:not(.friend-status-dot):not(.status-indicator-clean) {
   display: flex; align-items: center; justify-content: center;
   width: 100%; height: 100%; text-transform: uppercase;
 }
@@ -931,9 +931,16 @@
 .toast-close:hover { background: rgba(255, 255, 255, 0.1); color: #fff; }
 
 .toast-success { background: #16a34a; }
-.toast-error { background: #dc2626; }
+.toast-error   { background: #dc2626; }
 .toast-warning { background: #d97706; }
-.toast-info { background: #18181b; }
+.toast-info    { background: #18181b; }
+
+/* Simple variant used by friends view (uses .toast.success/.error/.info) */
+.toast i { font-size: 1rem; flex-shrink: 0; }
+.toast span { flex: 1; min-width: 0; font-size: 0.85rem; }
+.toast.success { background: #16a34a; }
+.toast.error   { background: #dc2626; }
+.toast.info    { background: #18181b; }
 
 /* ═══════════════════════════════════════════════════════════ */
 /* FOCUS                                                      */
@@ -949,7 +956,7 @@ button:focus-visible,
 }
 
 /* ═══════════════════════════════════════════════════════════ */
-/* RESPONSIVE                                                 */
+/* RESPONSIVE — dashboard baseline                            */
 /* ═══════════════════════════════════════════════════════════ */
 
 @media (max-width: 480px) {
@@ -974,4 +981,251 @@ button:focus-visible,
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
+}
+
+/* ============================================================
+   FRIENDS VIEW — specific pieces
+   ============================================================ */
+
+/* Cursor fix for friends — rows aren't clickable as a whole */
+.friends-root .friend-item { cursor: default; }
+
+/* ─────── Search bar under app-bar ─────── */
+.search-bar-wrap {
+  background: var(--bg);
+  border-bottom: 1px solid var(--border-soft);
+  position: sticky;
+  top: calc(64px + env(safe-area-inset-top, 0px));
+  z-index: 40;
+}
+
+.search-bar-inner {
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 12px 20px;
+}
+
+.clear-search {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-2);
+  font-size: 0.85rem;
+  transition: background 0.15s var(--ease);
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+.clear-search:hover { background: var(--bg-hover); }
+
+/* ─────── Friend avatar override ─────── */
+.friends-root .friend-avatar {
+  width: 46px;
+  height: 46px;
+  min-width: 46px;
+  min-height: 46px;
+  font-size: 1.1rem;
+  cursor: pointer;
+}
+
+/* ─────── Status indicator ─────── */
+.status-indicator-clean {
+  position: absolute;
+  right: -1px;
+  bottom: -1px;
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  border: 2.5px solid #fff;
+  z-index: 2;
+  transition: background 0.2s var(--ease);
+  box-sizing: content-box;
+}
+.status-indicator-clean.online { background: #16a34a; }
+.status-indicator-clean.offline { background: #ffffff; border-color: var(--border); }
+
+/* ─────── Friend info block ─────── */
+.friend-info-clean {
+  flex: 1;
+  min-width: 0;
+  cursor: pointer;
+}
+
+.friend-name-status {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.friend-name-clean {
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--text);
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.friend-status-clean {
+  font-size: 0.82rem;
+  color: var(--text-2);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.friend-status-clean.online { color: #16a34a; }
+
+/* ─────── Friend actions ─────── */
+.friend-actions {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.action-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.95rem;
+  transition: background 0.15s var(--ease), transform 0.15s var(--ease), box-shadow 0.15s var(--ease);
+  flex-shrink: 0;
+  border: none;
+  cursor: pointer;
+}
+.action-btn:active { transform: scale(0.94); }
+
+.message-btn {
+  background: transparent;
+  color: var(--primary);
+  border: 1.5px solid var(--primary);
+  font-size: 0.9rem;
+}
+.message-btn:hover {
+  background: var(--primary-soft);
+  border-color: var(--primary-hover);
+  color: var(--primary-hover);
+}
+
+.call-btn {
+  background: var(--primary);
+  color: #fff;
+  box-shadow: 0 2px 6px rgba(11, 132, 243, 0.25);
+}
+.call-btn:hover {
+  background: var(--primary-hover);
+  box-shadow: 0 4px 12px rgba(11, 132, 243, 0.35);
+}
+
+/* ─────── Search modal results (friends-specific class names) ─────── */
+.search-result-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 8px;
+  border-radius: var(--radius-md);
+  transition: background 0.15s var(--ease);
+}
+.search-result-item:hover { background: var(--bg-sub); }
+
+.search-result-avatar {
+  position: relative;
+  width: 42px;
+  height: 42px;
+  min-width: 42px;
+  min-height: 42px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #0B84F3, #5cc0fa);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.95rem;
+  font-weight: 500;
+  flex-shrink: 0;
+  overflow: hidden;
+  text-transform: uppercase;
+}
+.search-result-avatar img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+  display: block;
+  position: absolute;
+  inset: 0;
+}
+.search-result-avatar > span {
+  display: flex; align-items: center; justify-content: center;
+  width: 100%; height: 100%;
+  text-transform: uppercase;
+}
+
+.search-result-info { flex: 1; min-width: 0; }
+.search-result-name {
+  font-size: 0.92rem;
+  font-weight: 500;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-bottom: 1px;
+}
+.search-result-username {
+  font-size: 0.78rem;
+  color: var(--text-2);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.add-friend-btn {
+  padding: 7px 16px;
+  border-radius: var(--radius-pill);
+  background: var(--primary);
+  color: #fff;
+  font-size: 0.82rem;
+  font-weight: 500;
+  transition: background 0.15s var(--ease), box-shadow 0.15s var(--ease);
+  flex-shrink: 0;
+  white-space: nowrap;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+}
+.add-friend-btn:hover { background: var(--primary-hover); box-shadow: var(--shadow-2); }
+.add-friend-btn.added { background: var(--bg-hover); color: var(--text-2); cursor: default; }
+
+.empty-search {
+  text-align: center;
+  padding: 30px;
+  color: var(--text-3);
+}
+.empty-search i {
+  font-size: 2rem;
+  color: var(--border);
+  margin-bottom: 10px;
+  display: block;
+}
+
+/* ─────── Friends responsive ─────── */
+@media (max-width: 480px) {
+  .search-bar-inner { padding: 10px 14px; }
+  .search-bar-wrap  { top: calc(58px + env(safe-area-inset-top, 0px)); }
+
+  .friends-root .friend-avatar {
+    width: 42px; height: 42px;
+    min-width: 42px; min-height: 42px;
+    font-size: 1rem;
+  }
+  .action-btn { width: 36px; height: 36px; font-size: 0.85rem; }
 }
