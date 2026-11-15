@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 
   <title>RelayTalk — Fast, private messaging</title>
-  <meta name="description" content="A quiet place to talk to the people you know. Chat, call, and share — without the clutter.">
+  <meta name="description" content="Talk to the people you know. Search a friend, send a message, make a call. No ads, no clutter, no noise.">
   <meta name="theme-color" content="#ffffff">
 
   <link rel="canonical" href="https://relaytalk.vercel.app/">
@@ -13,7 +13,7 @@
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="RelayTalk">
   <meta property="og:title" content="RelayTalk — Fast, private messaging">
-  <meta property="og:description" content="A quiet place to talk to the people you know.">
+  <meta property="og:description" content="Talk to the people you know. No ads, no clutter, no noise.">
   <meta property="og:url" content="https://relaytalk.vercel.app/">
   <meta property="og:image" content="https://relaytalk.vercel.app/relayad.png?v=2">
   <meta property="og:image:width" content="1200">
@@ -22,7 +22,7 @@
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:site" content="@RelayTalk">
   <meta name="twitter:title" content="RelayTalk — Fast, private messaging">
-  <meta name="twitter:description" content="A quiet place to talk to the people you know.">
+  <meta name="twitter:description" content="Talk to the people you know. No ads, no clutter, no noise.">
   <meta name="twitter:image" content="https://relaytalk.vercel.app/relayad.png?v=2">
 
   <link rel="icon" href="/favicon.ico" type="image/x-icon">
@@ -72,17 +72,18 @@
         <section class="landing-hero">
           <p class="landing-eyebrow">Now available</p>
           <h1 class="landing-hero-title">
-            A quiet place to talk<br>
+            A quieter place to talk<br>
             to the people you know.
           </h1>
           <p class="landing-hero-sub">
-            Search for a friend by username. Send a message. Make a call.
+            Search for a friend. Send a message. Make a call.
             No ads, no clutter, no noise.
           </p>
           <div class="landing-hero-actions">
             <button class="btn-primary" data-nav="/signup">Create account</button>
             <button class="btn-secondary" data-nav="/login">Sign in</button>
           </div>
+          <p class="landing-hero-note">Free to use · No ads ever</p>
         </section>
 
         <!-- ─────────── FEATURES ─────────── -->
@@ -100,7 +101,7 @@
               </svg>
               <div>
                 <h3>Find friends</h3>
-                <p>Search by username. Send a request. They appear in your list.</p>
+                <p>Search by username and send a request.</p>
               </div>
             </div>
 
@@ -110,7 +111,7 @@
               </svg>
               <div>
                 <h3>Real-time chat</h3>
-                <p>Messages arrive instantly. No refresh, no delay, no polling.</p>
+                <p>Messages arrive instantly. No refresh, no delay.</p>
               </div>
             </div>
 
@@ -122,7 +123,7 @@
               </svg>
               <div>
                 <h3>Image messages</h3>
-                <p>Share photos inside a chat. Just like text.</p>
+                <p>Share photos in any chat.</p>
               </div>
             </div>
 
@@ -132,7 +133,7 @@
               </svg>
               <div>
                 <h3>Voice &amp; video calls</h3>
-                <p>One tap to call any friend — online or offline.</p>
+                <p>Call any friend with one tap.</p>
               </div>
             </div>
 
@@ -143,7 +144,7 @@
               </svg>
               <div>
                 <h3>Push notifications</h3>
-                <p>Get notified when a message arrives, even with the app closed.</p>
+                <p>Notified the moment a message arrives.</p>
               </div>
             </div>
 
@@ -153,7 +154,7 @@
               </svg>
               <div>
                 <h3>Privacy controls</h3>
-                <p>Choose what shows up in lock-screen notifications.</p>
+                <p>Control what shows on your lock screen.</p>
               </div>
             </div>
           </div>
@@ -170,17 +171,17 @@
             <div class="landing-step">
               <span class="landing-step-num">01</span>
               <h3>Create an account</h3>
-              <p>Pick a username, set a password. No email required.</p>
+              <p>Pick a username and password. No email needed.</p>
             </div>
             <div class="landing-step">
               <span class="landing-step-num">02</span>
               <h3>Find your people</h3>
-              <p>Search by username. Send a friend request. They accept — done.</p>
+              <p>Search by username, send a request, done.</p>
             </div>
             <div class="landing-step">
               <span class="landing-step-num">03</span>
               <h3>Start talking</h3>
-              <p>Open a chat. Send a message. Or call. That's it.</p>
+              <p>Open a chat, send a message, or call.</p>
             </div>
           </div>
         </section>
@@ -489,7 +490,6 @@
         if (!root || root.hasAttribute(boundFlag)) return;
         root.setAttribute(boundFlag, '1');
 
-        // Smooth-scroll for [data-scroll] buttons
         root.querySelectorAll('[data-scroll]').forEach(function (btn) {
           btn.addEventListener('click', function (e) {
             e.preventDefault();
@@ -499,7 +499,6 @@
           });
         });
 
-        // Reveal-on-scroll for [data-reveal] sections
         var revealEls = root.querySelectorAll('[data-reveal]');
         if (!revealEls.length) return;
 
@@ -529,7 +528,6 @@
         if (welcome) bindLanding(welcome);
       }).observe(outlet, { childList: true });
 
-      // In case welcome is already rendered before this script runs
       var existing = outlet.querySelector('.welcome-view');
       if (existing) bindLanding(existing);
     })();
