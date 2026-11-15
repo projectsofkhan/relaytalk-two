@@ -1,29 +1,31 @@
 /* ============================================================
    RelayTalk — Auth SPA styles
    Welcome (landing) · Login · Signup
-   Warm monochrome, refined motion.
+   Cool slate palette, deliberately-paced motion.
    ============================================================ */
 
 :root {
-  /* Warm monochrome palette (stone-toned) */
-  --ink:         #0c0a09;
-  --ink-hover:   #1c1917;
-  --ink-2:       #44403c;
-  --ink-3:       #78716c;
-  --ink-4:       #a8a29e;
+  /* Cool slate palette */
+  --ink:         #0f172a;
+  --ink-hover:   #1e293b;
+  --ink-2:       #475569;
+  --ink-3:       #64748b;
+  --ink-4:       #94a3b8;
 
-  --line:        #e7e5e4;
-  --line-soft:   #f5f5f4;
+  --line:        #e2e8f0;
+  --line-soft:   #f1f5f9;
 
   --surface:     #ffffff;
-  --surface-alt: #faf9f7;
+  --surface-alt: #f8fafc;
 
   --danger:      #dc2626;
-  --success:     #15803d;
-  --ring:        rgba(12, 10, 9, 0.06);
+  --success:     #16a34a;
+  --ring:        rgba(15, 23, 42, 0.07);
 
-  --ease-out:    cubic-bezier(0.22, 1, 0.36, 1);
-  --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+  /* Motion easings */
+  --ease-out:    cubic-bezier(0.22, 1, 0.36, 1);   /* entrances */
+  --ease-soft:   cubic-bezier(0.16, 1, 0.3, 1);    /* reveals, cross-fades */
+  --ease-io:     cubic-bezier(0.4, 0, 0.2, 1);     /* hovers, symmetric */
 }
 
 /* ──────────────────────────────────────────────────────────── */
@@ -35,7 +37,7 @@
   display: flex;
   flex-direction: column;
   background: var(--surface);
-  animation: pageIn 0.32s var(--ease-out);
+  animation: pageIn 520ms var(--ease-soft);
 }
 
 @keyframes pageIn {
@@ -72,8 +74,8 @@
   width: 36px;
   height: 36px;
   border-radius: 10px;
-  transition: background-color 0.2s var(--ease-out),
-              transform 0.15s var(--ease-out);
+  transition: background-color 280ms var(--ease-io),
+              transform 220ms var(--ease-io);
 }
 .auth-home:hover  { background: var(--surface-alt); }
 .auth-home:active { transform: scale(0.94); }
@@ -138,13 +140,13 @@
   color: var(--ink);
   font-size: 0.95rem;
   font-family: inherit;
-  transition: border-color 0.2s var(--ease-out),
-              box-shadow 0.2s var(--ease-out),
-              background-color 0.2s var(--ease-out);
+  transition: border-color 280ms var(--ease-io),
+              box-shadow 280ms var(--ease-io),
+              background-color 280ms var(--ease-io);
 }
 
 .form-input::placeholder { color: var(--ink-4); }
-.form-input:hover  { border-color: #d6d3d1; }
+.form-input:hover  { border-color: #cbd5e1; }
 .form-input:focus {
   outline: none;
   border-color: var(--ink);
@@ -169,9 +171,9 @@
   border-radius: 8px;
   color: var(--ink-4);
   cursor: pointer;
-  transition: color 0.2s var(--ease-out),
-              background-color 0.2s var(--ease-out),
-              transform 0.15s var(--ease-out);
+  transition: color 280ms var(--ease-io),
+              background-color 280ms var(--ease-io),
+              transform 180ms var(--ease-io);
 }
 .password-toggle:hover  { color: var(--ink); background: var(--surface-alt); }
 .password-toggle:active { transform: translateY(-50%) scale(0.92); }
@@ -196,7 +198,7 @@
   display: none;
 }
 
-.shake { animation: shake 0.35s ease-in-out; }
+.shake { animation: shake 0.42s ease-in-out; }
 @keyframes shake {
   0%, 100% { transform: translateX(0); }
   25%      { transform: translateX(-4px); }
@@ -250,8 +252,8 @@
   text-decoration: underline;
   text-underline-offset: 2px;
   text-decoration-color: var(--line);
-  transition: color 0.2s var(--ease-out),
-              text-decoration-color 0.2s var(--ease-out);
+  transition: color 280ms var(--ease-io),
+              text-decoration-color 280ms var(--ease-io);
 }
 .link-btn:hover {
   color: var(--ink);
@@ -273,11 +275,11 @@
   letter-spacing: -0.005em;
   cursor: pointer;
   will-change: transform;
-  transition: background-color 0.2s var(--ease-out),
-              color 0.2s var(--ease-out),
-              border-color 0.2s var(--ease-out),
-              transform 0.15s var(--ease-out),
-              box-shadow 0.2s var(--ease-out);
+  transition: background-color 280ms var(--ease-io),
+              color 280ms var(--ease-io),
+              border-color 280ms var(--ease-io),
+              transform 180ms var(--ease-io),
+              box-shadow 280ms var(--ease-io);
 }
 
 .btn-primary {
@@ -293,12 +295,12 @@
   background: var(--ink-hover);
   border-color: var(--ink-hover);
   transform: translateY(-1px);
-  box-shadow: 0 4px 10px rgba(12, 10, 9, 0.08);
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.1);
 }
 .btn-primary:active:not(:disabled) {
   transform: translateY(0) scale(0.98);
   box-shadow: none;
-  transition-duration: 0.08s;
+  transition-duration: 140ms;
 }
 .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
 
@@ -313,12 +315,12 @@
 }
 .btn-secondary:hover {
   background: var(--surface-alt);
-  border-color: #d6d3d1;
+  border-color: #cbd5e1;
   transform: translateY(-1px);
 }
 .btn-secondary:active {
   transform: translateY(0) scale(0.98);
-  transition-duration: 0.08s;
+  transition-duration: 140ms;
 }
 
 .btn-ghost {
@@ -331,7 +333,7 @@
   font-size: 0.88rem;
 }
 .btn-ghost:hover  { color: var(--ink); background: var(--surface-alt); }
-.btn-ghost:active { transform: scale(0.96); transition-duration: 0.08s; }
+.btn-ghost:active { transform: scale(0.96); transition-duration: 140ms; }
 
 .btn-block { width: 100%; }
 .btn-sm { padding: 8px 14px; min-height: 36px; font-size: 0.88rem; border-radius: 8px; }
@@ -351,9 +353,12 @@
   font-weight: 500;
   text-decoration: none;
   margin-left: 2px;
-  transition: color 0.2s var(--ease-out);
+  transition: color 280ms var(--ease-io);
 }
-.auth-footer a:hover { text-decoration: underline; text-underline-offset: 2px; }
+.auth-footer a:hover {
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
 
 /* ──────────────────────────────────────────────────────────── */
 /* Success states                                             */
@@ -367,11 +372,11 @@
   background: var(--surface-alt);
   border: 1px solid var(--line-soft);
   border-radius: 12px;
-  animation: fadeSlideUp 0.32s var(--ease-out);
+  animation: fadeSlideUp 480ms var(--ease-soft);
 }
 
 @keyframes fadeSlideUp {
-  from { opacity: 0; transform: translateY(8px); }
+  from { opacity: 0; transform: translateY(10px); }
   to   { opacity: 1; transform: translateY(0); }
 }
 
@@ -390,7 +395,10 @@
   margin-bottom: 4px;
 }
 
-.success-block p { color: var(--ink-2); font-size: 0.88rem; }
+.success-block p {
+  color: var(--ink-2);
+  font-size: 0.88rem;
+}
 
 .progress-track {
   width: 100%;
@@ -412,7 +420,7 @@
 .success-container {
   text-align: center;
   padding: 16px 0;
-  animation: fadeSlideUp 0.32s var(--ease-out);
+  animation: fadeSlideUp 480ms var(--ease-soft);
 }
 
 .success-icon {
@@ -464,7 +472,7 @@
 .modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(12, 10, 9, 0.4);
+  background: rgba(15, 23, 42, 0.42);
   display: none;
   justify-content: center;
   align-items: center;
@@ -473,7 +481,7 @@
   -webkit-backdrop-filter: blur(4px);
   padding: 20px;
   opacity: 0;
-  transition: opacity 0.24s var(--ease-in-out);
+  transition: opacity 340ms var(--ease-io);
 }
 .modal-overlay.visible { opacity: 1; }
 
@@ -486,8 +494,8 @@
   max-height: 82vh;
   overflow-y: auto;
   transform: scale(0.96) translateY(4px);
-  transition: transform 0.28s var(--ease-out);
-  box-shadow: 0 20px 48px rgba(12, 10, 9, 0.14);
+  transition: transform 380ms var(--ease-soft);
+  box-shadow: 0 20px 48px rgba(15, 23, 42, 0.16);
 }
 .modal-overlay.visible .modal-content { transform: scale(1) translateY(0); }
 
@@ -520,9 +528,9 @@
   font-size: 1.25rem;
   line-height: 1;
   cursor: pointer;
-  transition: background-color 0.2s var(--ease-out),
-              color 0.2s var(--ease-out),
-              transform 0.2s var(--ease-out);
+  transition: background-color 280ms var(--ease-io),
+              color 280ms var(--ease-io),
+              transform 320ms var(--ease-soft);
 }
 .modal-close:hover  { background: var(--surface-alt); color: var(--ink); transform: rotate(90deg); }
 .modal-close:active { transform: rotate(90deg) scale(0.92); }
@@ -577,7 +585,7 @@
   flex-direction: column;
   z-index: 2000;
   gap: 14px;
-  animation: overlayIn 0.2s var(--ease-out);
+  animation: overlayIn 320ms var(--ease-soft);
 }
 
 @keyframes overlayIn {
@@ -591,7 +599,7 @@
   border: 2px solid var(--line);
   border-top-color: var(--ink);
   border-radius: 50%;
-  animation: spin 0.7s linear infinite;
+  animation: spin 0.75s linear infinite;
 }
 @keyframes spin { to { transform: rotate(360deg); } }
 
@@ -643,7 +651,7 @@
   font-size: 0.98rem;
   letter-spacing: -0.01em;
   flex-shrink: 0;
-  transition: opacity 0.2s var(--ease-out);
+  transition: opacity 280ms var(--ease-io);
 }
 .landing-brand:hover { opacity: 0.7; }
 
@@ -670,11 +678,12 @@
   color: var(--ink-2);
   border-radius: 8px;
   cursor: pointer;
-  transition: color 0.2s var(--ease-out),
-              background-color 0.2s var(--ease-out);
+  transition: color 280ms var(--ease-io),
+              background-color 280ms var(--ease-io),
+              transform 180ms var(--ease-io);
 }
 .landing-nav button:hover  { color: var(--ink); background: var(--surface-alt); }
-.landing-nav button:active { transform: scale(0.97); transition-duration: 0.08s; }
+.landing-nav button:active { transform: scale(0.97); transition-duration: 140ms; }
 
 .landing-topbar-actions {
   display: flex;
@@ -693,7 +702,7 @@
   isolation: isolate;
 }
 
-/* Subtle warm glow at top */
+/* Cool-tinted glow at top */
 .landing-hero::before {
   content: '';
   position: absolute;
@@ -704,8 +713,8 @@
   height: 500px;
   background: radial-gradient(
     ellipse at center,
-    rgba(12, 10, 9, 0.035) 0%,
-    rgba(12, 10, 9, 0.015) 35%,
+    rgba(15, 23, 42, 0.045) 0%,
+    rgba(15, 23, 42, 0.02) 35%,
     transparent 70%
   );
   z-index: -1;
@@ -713,7 +722,7 @@
 }
 
 .landing-hero .landing-eyebrow {
-  animation: heroIn 0.7s var(--ease-out) 0.05s both;
+  animation: heroIn 900ms var(--ease-soft) 100ms both;
 }
 
 .landing-hero-title {
@@ -724,7 +733,7 @@
   color: var(--ink);
   max-width: 22ch;
   margin: 0 auto 20px;
-  animation: heroIn 0.8s var(--ease-out) 0.15s both;
+  animation: heroIn 1000ms var(--ease-soft) 220ms both;
 }
 
 .landing-hero-sub {
@@ -733,7 +742,7 @@
   line-height: 1.55;
   max-width: 52ch;
   margin: 0 auto 32px;
-  animation: heroIn 0.8s var(--ease-out) 0.25s both;
+  animation: heroIn 1000ms var(--ease-soft) 360ms both;
 }
 
 .landing-hero-actions {
@@ -741,7 +750,7 @@
   gap: 10px;
   flex-wrap: wrap;
   justify-content: center;
-  animation: heroIn 0.8s var(--ease-out) 0.35s both;
+  animation: heroIn 1000ms var(--ease-soft) 500ms both;
 }
 
 .landing-hero-actions .btn-primary,
@@ -756,11 +765,11 @@
   font-size: 0.78rem;
   color: var(--ink-3);
   letter-spacing: 0.01em;
-  animation: heroIn 0.8s var(--ease-out) 0.5s both;
+  animation: heroIn 1000ms var(--ease-soft) 650ms both;
 }
 
 @keyframes heroIn {
-  from { opacity: 0; transform: translateY(14px); }
+  from { opacity: 0; transform: translateY(16px); }
   to   { opacity: 1; transform: translateY(0); }
 }
 
@@ -828,8 +837,8 @@
   stroke-width: 1.6;
   stroke-linecap: round;
   stroke-linejoin: round;
-  transition: stroke 0.25s var(--ease-out),
-              transform 0.25s var(--ease-out);
+  transition: stroke 320ms var(--ease-io),
+              transform 320ms var(--ease-io);
 }
 
 .feature-item:hover .feature-icon {
@@ -901,7 +910,7 @@
   font-weight: 500;
   letter-spacing: -0.01em;
   color: var(--ink);
-  transition: color 0.2s var(--ease-out);
+  transition: color 280ms var(--ease-io);
 }
 .landing-faq-item summary::-webkit-details-marker { display: none; }
 .landing-faq-item summary:hover { color: var(--ink-2); }
@@ -913,8 +922,8 @@
   color: var(--ink-4);
   line-height: 1;
   margin-top: 2px;
-  transition: transform 0.3s var(--ease-out),
-              color 0.2s var(--ease-out);
+  transition: transform 380ms var(--ease-soft),
+              color 280ms var(--ease-io);
   flex-shrink: 0;
 }
 .landing-faq-item[open] summary::after {
@@ -931,7 +940,7 @@
 }
 
 .landing-faq-item[open] .landing-faq-body {
-  animation: faqOpen 0.3s var(--ease-out);
+  animation: faqOpen 420ms var(--ease-soft);
 }
 
 @keyframes faqOpen {
@@ -1013,7 +1022,7 @@
   color: var(--ink-3);
   cursor: pointer;
   text-decoration: none;
-  transition: color 0.2s var(--ease-out);
+  transition: color 280ms var(--ease-io);
 }
 .landing-footer-nav a:hover,
 .landing-footer-nav button:hover { color: var(--ink); }
@@ -1021,9 +1030,10 @@
 /* ─────── Reveal-on-scroll ─────── */
 [data-reveal] {
   opacity: 0;
-  transform: translateY(14px);
-  transition: opacity 0.7s var(--ease-out),
-              transform 0.7s var(--ease-out);
+  transform: translateY(16px);
+  transition: opacity 900ms var(--ease-soft),
+              transform 900ms var(--ease-soft);
+  will-change: opacity, transform;
 }
 [data-reveal].in-view {
   opacity: 1;
