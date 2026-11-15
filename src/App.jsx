@@ -20,6 +20,7 @@ import Workspace from "./Workspace";
 import FriendsPage from "./FriendsPage";
 import ChatPage from "./ChatPage";
 import ProfilePage from "./ProfilePage";
+import CallPage from "./CallPage";
 
 function Brand() {
   return (
@@ -381,6 +382,7 @@ function App() {
         <Route path="friends" element={<FriendsPage session={session} />} />
         <Route path="chat/:friendId" element={<ChatPage session={session} />} />
         <Route path="profile/:userId" element={<ProfilePage session={session} />} />
+        <Route path="call/:targetId" element={<CallPage session={session} />} />
       </Route>
 
       <Route path="*" element={<Navigate to="/" replace />} />
