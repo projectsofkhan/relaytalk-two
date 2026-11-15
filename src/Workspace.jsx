@@ -1,12 +1,14 @@
+
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import {
-  Home,
   Users,
   UserCircle,
   LogOut,
   MessageCircle,
 } from "lucide-react";
+
 import { signOut } from "./auth";
+import IncomingCallListener from "./IncomingCallListener";
 import "./workspace.css";
 
 export default function Workspace({ session }) {
@@ -24,6 +26,8 @@ export default function Workspace({ session }) {
 
   return (
     <div className="workspace">
+      <IncomingCallListener session={session} />
+
       <aside className="sidebar">
         <NavLink to="/app/friends" className="brand">
           <span className="brand-symbol">
