@@ -1,73 +1,94 @@
-
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
+import {
+  Home,
+  Users,
+  UserCircle,
+  LogOut,
+  MessageCircle,
+} from "lucide-react";
 import { signOut } from "./auth";
+import "./workspace.css";
 
 export default function Workspace({ session }) {
   const navigate = useNavigate();
-
-  const username =
-    session.user.user_metadata?.username ||
-    session.user.email?.split("@")[0] ||
-    "Account";
+  const userId = session?.user?.id;
 
   async function handleSignOut() {
     try {
       await signOut();
       navigate("/login", { replace: true });
     } catch (error) {
-      window.alert(error.message || "Could not sign out.");
+      console.error("Sign out failed:", error);
     }
   }
 
   return (
-    <div className="workspace-layout">
-      <aside className="workspace-sidebar">
-        <NavLink to="/" className="brand">
-          <span className="brand-symbol">R</span>
-          <span>relaytalk</span>
+    <div className="workspace">
+      <aside className="sidebar">
+        <NavLink to="/app/friends" className="brand">
+          <span className="brand-symbol">
+            <MessageCircle size={21} />
+          </span>
+          <span>RelayTalk</span>
         </NavLink>
 
-        <div className="sidebar-label">WORKSPACE</div>
-
-        <nav className="workspace-nav">
-          <NavLink to="/app/friends">
-            <span className="nav-icon">♧</span>
-            Friends
+        <nav className="sidebar-nav">
+          <NavLink to="/app/friends" className="sidebar-link">
+            <Users size={19} />
+            <span>Friends</span>
           </NavLink>
 
-          <NavLink to="/app/profile/me">
-            <span className="nav-icon">◉</span>
-            My profile
+          <NavLink
+            to={`/app/profile/${userId}`}
+            className="sidebar-link"
+          >
+            <UserCircle size={19} />
+            <span>My profile</span>
           </NavLink>
         </nav>
 
         <div className="sidebar-bottom">
-          <div className="sidebar-account">
-            <div className="sidebar-avatar">
-              {username.charAt(0).toUpperCase()}
+          <div className="sidebar-user">
+            <div className="avatar small">
+              {session?.user?.user_metadata?.username?.[0]?.toUpperCase() ||
+                session?.user?.email?.[0]?.toUpperCase() ||
+                "U"}
             </div>
-            <div>
-              <strong>{username}</strong>
+
+            <div className="sidebar-user-details">
+              <strong>
+                {session?.user?.user_metadata?.username ||
+                  session?.user?.email?.split("@")[0] ||
+                  "User"}
+              </strong>
               <span>Signed in</span>
             </div>
           </div>
 
-          <button className="sidebar-signout" onClick={handleSignOut}>
-            Sign out
+          <button
+            type="button"
+            className="sidebar-link logout-button"
+            onClick={handleSignOut}
+          >
+            <LogOut size={19} />
+            <span>Sign out</span>
           </button>
         </div>
       </aside>
 
       <main className="workspace-main">
-        <header className="workspace-topbar">
-          <span>RelayTalk workspace</span>
-          <span className="topbar-status">
-            <span className="status-dot" />
-            Connected account
-          </span>
+        <header className="mobile-header">
+          <NavLink to="/app/friends" className="brand">
+            <span className="brand-symbol">
+              <MessageCircle size={20} />
+            </span>
+            RelayTalk
+          </NavLink>
         </header>
 
-        <Outlet />
+        <div className="workspace-content">
+          <Outlet />
+        </div>
       </main>
     </div>
   );
