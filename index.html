@@ -4,26 +4,35 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 
-  <title>RelayTalk — Talk like it's just you two</title>
-  <meta name="description" content="One-to-one messaging for the people in your life. No ads, no feeds, no noise.">
+  <title>RelayTalk — Connect with friends instantly</title>
+
+  <meta name="description" content="RelayTalk — Connect with friends instantly. Fast, private, and simple messaging.">
+  <meta name="keywords" content="RelayTalk, messaging, chat, friends, secure messaging">
+  <meta name="robots" content="index, follow">
   <meta name="theme-color" content="#0B84F3">
+
+  <meta name="google-site-verification" content="y2KUdk5NLGrxUgulLoxvA0a2y3jQlVPObdNtYkIef2U" />
 
   <link rel="canonical" href="https://relaytalk.vercel.app/">
 
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="RelayTalk">
-  <meta property="og:title" content="RelayTalk — Talk like it's just you two">
-  <meta property="og:description" content="One-to-one messaging for the people in your life. No ads, no feeds, no noise.">
+  <meta property="og:title" content="RelayTalk — Connect with friends instantly">
+  <meta property="og:description" content="Fast, private, and simple messaging — made for real conversations.">
   <meta property="og:url" content="https://relaytalk.vercel.app/">
   <meta property="og:image" content="https://relaytalk.vercel.app/relayad.png?v=2">
+  <meta property="og:image:secure_url" content="https://relaytalk.vercel.app/relayad.png?v=2">
+  <meta property="og:image:type" content="image/png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="RelayTalk — Connect with friends instantly">
 
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:site" content="@RelayTalk">
-  <meta name="twitter:title" content="RelayTalk — Talk like it's just you two">
-  <meta name="twitter:description" content="One-to-one messaging for the people in your life.">
+  <meta name="twitter:title" content="RelayTalk — Connect with friends instantly">
+  <meta name="twitter:description" content="Fast, private, and simple messaging — made for real conversations.">
   <meta name="twitter:image" content="https://relaytalk.vercel.app/relayad.png?v=2">
+  <meta name="twitter:image:alt" content="RelayTalk — Connect with friends instantly">
 
   <link rel="icon" href="/favicon.ico" type="image/x-icon">
   <link rel="icon" href="/relay.png" type="image/png" sizes="192x192">
@@ -67,13 +76,11 @@
 
       <main>
 
-        <!-- HERO -->
         <section class="landing-hero">
           <span class="landing-badge">Free · No ads · Private</span>
-          <h1 class="landing-hero-title">Talk like it's<br>just you two.</h1>
+          <h1 class="landing-hero-title">Connect with friends instantly.</h1>
           <p class="landing-hero-sub">
-            One-to-one messaging for the people in your life.
-            No ads, no feeds, no noise.
+            Fast, private, and simple messaging — made for real conversations.
           </p>
           <div class="landing-hero-actions">
             <button class="btn-primary btn-lg" data-nav="/signup">Get started</button>
@@ -81,7 +88,6 @@
           </div>
         </section>
 
-        <!-- FEATURES -->
         <section id="features" class="landing-section">
           <header class="landing-section-head" data-reveal>
             <span class="landing-eyebrow">Features</span>
@@ -167,7 +173,6 @@
           </div>
         </section>
 
-        <!-- HOW IT WORKS (rebuilt with animated cards) -->
         <section id="how" class="landing-section landing-section-alt">
           <header class="landing-section-head" data-reveal>
             <span class="landing-eyebrow">How it works</span>
@@ -220,7 +225,6 @@
           </div>
         </section>
 
-        <!-- FAQ -->
         <section id="faq" class="landing-section">
           <header class="landing-section-head" data-reveal>
             <span class="landing-eyebrow">FAQ</span>
@@ -259,7 +263,6 @@
           </div>
         </section>
 
-        <!-- CTA -->
         <section class="landing-cta" data-reveal>
           <h2>Ready when you are.</h2>
           <p>Free forever. Two taps to get started.</p>
@@ -300,10 +303,6 @@
       </header>
 
       <main class="auth-main">
-        <div class="auth-brand">
-          <img src="/relay.png" alt="" class="auth-brand-logo">
-        </div>
-
         <header class="auth-header">
           <h1 class="auth-title">Welcome back</h1>
           <p class="auth-subtitle">Sign in to continue.</p>
@@ -369,10 +368,6 @@
       </header>
 
       <main class="auth-main">
-        <div class="auth-brand">
-          <img src="/relay.png" alt="" class="auth-brand-logo">
-        </div>
-
         <header class="auth-header">
           <h1 class="auth-title">Create your account</h1>
           <p class="auth-subtitle">Free forever. No email needed.</p>
@@ -434,74 +429,133 @@
         </p>
       </main>
 
+      <!-- Terms Modal -->
       <div class="modal-overlay" id="termsModal">
         <div class="modal-content">
           <header class="modal-header">
-            <h2 class="modal-title">Terms &amp; Conditions</h2>
+            <div class="modal-title-wrap">
+              <div class="modal-title-icon">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                  <polyline points="14 2 14 8 20 8"/>
+                </svg>
+              </div>
+              <div>
+                <h2 class="modal-title">Terms &amp; Conditions</h2>
+                <p class="modal-subtitle">Last updated December 2024</p>
+              </div>
+            </div>
             <button class="modal-close" data-action="close-modal" aria-label="Close">×</button>
           </header>
           <div class="modal-body">
-            <h3>Welcome to RelayTalk</h3>
-            <p>By creating an account, you agree to these simple terms:</p>
-            <h3>Your account</h3>
-            <ul>
-              <li>You must be at least 13 years old to use RelayTalk</li>
-              <li>Your username must be unique and appropriate</li>
-              <li>You are responsible for keeping your password secure</li>
-            </ul>
-            <h3>Messaging rules</h3>
-            <ul>
-              <li>Be respectful to all users</li>
-              <li>No harassment, bullying, or hate speech</li>
-              <li>No spam or unsolicited messages</li>
-              <li>Respect others' privacy</li>
-            </ul>
-            <div class="security-note">
-              <strong>Important Security Notice</strong>
-              <p>Your password cannot be recovered if forgotten. We don't store passwords in a way that allows recovery. Please write it down securely.</p>
+            <p class="modal-lead">By creating an account, you agree to these simple terms.</p>
+
+            <div class="modal-block">
+              <h3>Your account</h3>
+              <ul>
+                <li>You must be at least 13 years old to use RelayTalk</li>
+                <li>Your username must be unique and appropriate</li>
+                <li>You are responsible for keeping your password secure</li>
+              </ul>
             </div>
-            <h3>RelayTalk's promise</h3>
-            <p>We provide a secure, simple messaging platform for everyone to connect safely.</p>
-            <p class="modal-meta">Last updated: December 2024 · App Version 1.0</p>
+
+            <div class="modal-block">
+              <h3>Messaging rules</h3>
+              <ul>
+                <li>Be respectful to all users</li>
+                <li>No harassment, bullying, or hate speech</li>
+                <li>No spam or unsolicited messages</li>
+                <li>Respect others' privacy</li>
+              </ul>
+            </div>
+
+            <div class="modal-note">
+              <div class="modal-note-icon">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                </svg>
+              </div>
+              <div>
+                <strong>Important Security Notice</strong>
+                <p>Your password cannot be recovered if forgotten. Please write it down somewhere secure.</p>
+              </div>
+            </div>
+
+            <div class="modal-block">
+              <h3>RelayTalk's promise</h3>
+              <p>We provide a secure, simple messaging platform for everyone to connect safely.</p>
+            </div>
           </div>
+          <footer class="modal-footer">
+            <button type="button" class="btn-primary btn-block" data-action="close-modal">Got it</button>
+          </footer>
         </div>
       </div>
 
+      <!-- Privacy Modal -->
       <div class="modal-overlay" id="privacyModal">
         <div class="modal-content">
           <header class="modal-header">
-            <h2 class="modal-title">Privacy Policy</h2>
+            <div class="modal-title-wrap">
+              <div class="modal-title-icon">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                </svg>
+              </div>
+              <div>
+                <h2 class="modal-title">Privacy Policy</h2>
+                <p class="modal-subtitle">Privacy is not a feature — it's our foundation</p>
+              </div>
+            </div>
             <button class="modal-close" data-action="close-modal" aria-label="Close">×</button>
           </header>
           <div class="modal-body">
-            <h3>Your privacy matters</h3>
-            <p>At RelayTalk, we believe in simple, transparent privacy.</p>
-            <h3>What we store</h3>
-            <ul>
-              <li><strong>Username:</strong> your chosen display name</li>
-              <li><strong>Profile information:</strong> basic account details</li>
-              <li><strong>Messages:</strong> only between you and recipients</li>
-            </ul>
-            <h3>What we don't store</h3>
-            <ul>
-              <li>Email addresses</li>
-              <li>Phone numbers</li>
-              <li>Location data</li>
-              <li>Contact lists</li>
-            </ul>
-            <h3>Your data is yours</h3>
-            <ul>
-              <li>Messages are stored only as long as needed</li>
-              <li>We don't sell your data to anyone</li>
-              <li>We don't show ads</li>
-              <li>All data is encrypted and secured in the cloud</li>
-            </ul>
-            <div class="security-note">
-              <strong>Security first</strong>
-              <p>RelayTalk is built with security in mind. Created by RelayChat to provide safe, private messaging for everyone.</p>
+            <p class="modal-lead">At RelayTalk, we believe in simple, transparent privacy.</p>
+
+            <div class="modal-block">
+              <h3>What we store</h3>
+              <ul>
+                <li><strong>Username:</strong> your chosen display name</li>
+                <li><strong>Profile information:</strong> basic account details</li>
+                <li><strong>Messages:</strong> only between you and recipients</li>
+              </ul>
             </div>
-            <p class="modal-meta">Privacy is not a feature — it's our foundation.</p>
+
+            <div class="modal-block">
+              <h3>What we don't store</h3>
+              <ul>
+                <li>Email addresses</li>
+                <li>Phone numbers</li>
+                <li>Location data</li>
+                <li>Contact lists</li>
+              </ul>
+            </div>
+
+            <div class="modal-block">
+              <h3>Your data is yours</h3>
+              <ul>
+                <li>Messages are stored only as long as needed</li>
+                <li>We don't sell your data to anyone</li>
+                <li>We don't show ads</li>
+                <li>All data is encrypted and secured in the cloud</li>
+              </ul>
+            </div>
+
+            <div class="modal-note">
+              <div class="modal-note-icon">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                </svg>
+              </div>
+              <div>
+                <strong>Security first</strong>
+                <p>RelayTalk is built with security in mind. Created by RelayChat to provide safe, private messaging for everyone.</p>
+              </div>
+            </div>
           </div>
+          <footer class="modal-footer">
+            <button type="button" class="btn-primary btn-block" data-action="close-modal">Got it</button>
+          </footer>
         </div>
       </div>
 
