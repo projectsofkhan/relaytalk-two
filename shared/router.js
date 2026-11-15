@@ -1,5 +1,4 @@
-// shared/router.js — hash router for <template>-based SPAs.
-// Cross-fades + slides between views.
+// shared/router.js — hash router. Fast cross-fades between views.
 
 export class Router {
   constructor(routes, options = {}) {
@@ -10,7 +9,7 @@ export class Router {
     this.cleanup = null;
     this.onBeforeNavigate = options.onBeforeNavigate || null;
     this.onAfterNavigate = options.onAfterNavigate || null;
-    this.transitionDuration = options.transitionDuration ?? 280;
+    this.transitionDuration = options.transitionDuration ?? 160;
     this._swapping = false;
 
     if (!this.mountEl) {
@@ -49,12 +48,11 @@ export class Router {
       const dur = this.transitionDuration;
       const hasContent = this.mountEl.childElementCount > 0;
 
-      // Outgoing: fade out + slide up
+      // Fast fade-out
       if (hasContent && dur > 0) {
         this.mountEl.style.transition =
-          `opacity ${dur}ms cubic-bezier(0.4, 0, 1, 1), transform ${dur}ms cubic-bezier(0.4, 0, 1, 1)`;
+          `opacity ${dur}ms cubic-bezier(0.4, 0, 1, 1)`;
         this.mountEl.style.opacity = '0';
-        this.mountEl.style.transform = 'translateY(-6px)';
         await new Promise(r => setTimeout(r, dur));
       }
 
@@ -66,21 +64,18 @@ export class Router {
       this.currentPath = path;
       window.scrollTo({ top: 0, behavior: 'instant' });
 
-      // Incoming: fade in + slide up from 12px
+      // Fast fade-in
       if (dur > 0) {
         this.mountEl.style.transition = 'none';
         this.mountEl.style.opacity = '0';
-        this.mountEl.style.transform = 'translateY(12px)';
         void this.mountEl.offsetHeight;
         requestAnimationFrame(() => {
           this.mountEl.style.transition =
-            `opacity ${Math.round(dur * 1.4)}ms cubic-bezier(0, 0, 0.2, 1), transform ${Math.round(dur * 1.4)}ms cubic-bezier(0, 0, 0.2, 1)`;
+            `opacity ${Math.round(dur * 1.2)}ms cubic-bezier(0, 0, 0.2, 1)`;
           this.mountEl.style.opacity = '1';
-          this.mountEl.style.transform = 'translateY(0)';
         });
       } else {
         this.mountEl.style.opacity = '1';
-        this.mountEl.style.transform = 'translateY(0)';
       }
 
       if (typeof route.init === 'function') {
