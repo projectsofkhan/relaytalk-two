@@ -1,67 +1,50 @@
-// home/home.js — bulletproof boot script
+// home/home.js — App SPA entry.
+import { Router, bindNavLinks } from '/shared/router.js';
+import { getSession, getSupabase } from '/shared/supabase.js';
 
-(async function() {
-  const outlet = document.getElementById('view-outlet');
-  
+import { initDashboard }  from './views/dashboard.js';
+import { initChats }      from './views/chats.js';
+import { initFriends }    from './views/friends.js';
+import { initProfile }    from './views/profile.js';
+import { initViewFriend } from './views/view-friend.js';
+
+// Load background utils (each wrapped in try/catch so one failure doesn't kill the app)
+(async () => {
+  try { await import('/utils/callHub.js'); } catch(e) { console.warn('callHub missing'); }
+  try { await import('/utils/pushClient.js'); } catch(e) { console.warn('pushClient missing'); }
+  try { await import('/utils/native-init.js'); } catch(e) { console.warn('native-init missing'); }
+  try { await import('/utils/offline-guard.js'); } catch(e) { console.warn('offline-guard missing'); }
+})();
+
+const router = new Router({
+  '/':        { template: 'tpl-dashboard',   init: initDashboard  },
+  '/chats':   { template: 'tpl-chats',       init: initChats      },
+  '/friends': { template: 'tpl-friends',     init: initFriends    },
+  '/profile': { template: 'tpl-profile',     init: initProfile    },
+  '/user':    { template: 'tpl-view-friend', init: initViewFriend }
+}, {
+  mount: document.getElementById('view-outlet')
+});
+
+bindNavLinks(router);
+
+(async function boot() {
   try {
-    const { Router, bindNavLinks } = await import('/shared/router.js');
-    const { getSession, getSupabase } = await import('/shared/supabase.js');
-    
-    // 1. Load views safely (one missing file won't kill the app)
-    const views = {};
-    const viewFiles = ['dashboard', 'chats', 'friends', 'profile', 'view-friend'];
-    
-    for (const v of viewFiles) {
-      try {
-        views[v] = await import(`./views/${v}.js`);
-        console.log(`✅ View loaded: ${v}`);
-      } catch (e) {
-        console.error(`❌ View FAILED: ${v}`, e);
-      }
-    }
-    
-    // 2. Load background utils safely
-    ['callHub', 'pushClient', 'offline-guard', 'native-init'].forEach(async (u) => {
-      try { 
-        await import(`/utils/${u}.js`); 
-      } catch (e) { 
-        console.warn(`⚠️ Util FAILED: ${u}`); 
-      }
-    });
-    
-    // 3. Setup Router
-    const router = new Router({
-      '/':        { template: 'tpl-dashboard',   init: views.dashboard?.initDashboard || (()=>()=>{}) },
-      '/chats':   { template: 'tpl-chats',       init: views.chats?.initChats || (()=>()=>{}) },
-      '/friends': { template: 'tpl-friends',     init: views.friends?.initFriends || (()=>()=>{}) },
-      '/profile': { template: 'tpl-profile',     init: views.profile?.initProfile || (()=>()=>{}) },
-      '/user':    { template: 'tpl-view-friend', init: views['view-friend']?.initViewFriend || (()=>()=>{}) }
-    }, { mount: outlet });
-    
-    bindNavLinks(router);
-    
-    // 4. Boot
     const session = await getSession();
     if (!session) {
       window.location.replace('/#/login');
       return;
     }
-    
     window.supabase = getSupabase();
     router.start();
-    
   } catch (err) {
-    // 🚨 IF ANYTHING FAILS, SHOW IT ON SCREEN
-    console.error('FATAL BOOT ERROR:', err);
-    if (outlet) {
-      outlet.innerHTML = `
-        <div style="padding: 40px 20px; text-align: center; font-family: sans-serif; background: #fff; min-height: 100vh;">
-          <h2 style="color: #dc2626; margin-bottom: 16px;">App Failed to Start</h2>
-          <p style="color: #333; margin-bottom: 24px; font-size: 15px; font-weight: bold;">${err.message}</p>
-          <pre style="background: #f4f4f5; padding: 16px; border-radius: 8px; font-size: 12px; text-align: left; overflow-x: auto; color: #666; white-space: pre-wrap;">${err.stack || ''}</pre>
-          <button onclick="location.reload()" style="margin-top: 20px; padding: 12px 24px; background: #0B84F3; color: white; border: none; border-radius: 8px; font-size: 15px; font-weight: bold;">Reload Page</button>
-        </div>
-      `;
-    }
+    console.error("BOOT ERROR:", err);
+    document.getElementById('view-outlet').innerHTML = `
+      <div style="padding: 40px; text-align: center; font-family: sans-serif;">
+        <h2 style="color: red;">Boot Error</h2>
+        <p>${err.message}</p>
+        <p>Check if /shared/router.js and /shared/supabase.js exist.</p>
+      </div>
+    `;
   }
 })();
