@@ -1,0 +1,269 @@
+
+.call-page {
+  min-height: calc(100vh - 76px);
+  display: flex;
+  flex-direction: column;
+  background: #111827;
+  color: #fff;
+  border-radius: 18px;
+  overflow: hidden;
+}
+
+.call-page-header {
+  min-height: 72px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 20px;
+  background: #182234;
+  border-bottom: 1px solid #29364b;
+}
+
+.call-page-header > div {
+  display: grid;
+  gap: 4px;
+}
+
+.call-page-header strong {
+  font-size: 15px;
+}
+
+.call-page-header span {
+  color: #aab6c8;
+  font-size: 12px;
+}
+
+.call-back-button {
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  color: #fff;
+  background: #29364b;
+  border: 0;
+  border-radius: 12px;
+  cursor: pointer;
+}
+
+.jitsi-container {
+  position: relative;
+  min-height: 420px;
+  flex: 1;
+  background: #0b1220;
+}
+
+.jitsi-container iframe {
+  width: 100% !important;
+  height: 100% !important;
+  min-height: 420px;
+  border: 0;
+}
+
+.call-waiting {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  pointer-events: none;
+  text-align: center;
+}
+
+.call-waiting-avatar {
+  width: 92px;
+  height: 92px;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  border-radius: 50%;
+  background: #34466a;
+  color: #fff;
+  font-size: 34px;
+  font-weight: 700;
+}
+
+.call-waiting-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.call-waiting h2 {
+  margin: 5px 0 0;
+  font-size: 21px;
+}
+
+.call-waiting p {
+  margin: 0;
+  color: #aab6c8;
+  font-size: 13px;
+}
+
+.call-error {
+  padding: 12px 18px;
+  color: #ffd7d7;
+  background: #642b36;
+  font-size: 13px;
+}
+
+.call-controls {
+  min-height: 82px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+  padding: 15px;
+  background: #182234;
+  border-top: 1px solid #29364b;
+}
+
+.call-control {
+  width: 48px;
+  height: 48px;
+  display: grid;
+  place-items: center;
+  color: #fff;
+  background: #34445c;
+  border: 0;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.call-control:hover:not(:disabled) {
+  transform: translateY(-2px);
+  background: #465b79;
+}
+
+.call-control:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.call-control.active {
+  background: #64748b;
+}
+
+.call-control.call-hangup {
+  width: 56px;
+  height: 56px;
+  background: #e5484d;
+}
+
+.call-control.call-hangup:hover {
+  background: #c9363b;
+}
+
+.incoming-call-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  background: rgba(9, 14, 25, 0.72);
+  backdrop-filter: blur(8px);
+}
+
+.incoming-call-card {
+  width: min(100%, 360px);
+  padding: 30px 24px;
+  border: 1px solid #e8eaf0;
+  border-radius: 22px;
+  background: #fff;
+  color: #171923;
+  text-align: center;
+  box-shadow: 0 25px 80px rgba(0, 0, 0, 0.25);
+}
+
+.incoming-call-avatar {
+  width: 86px;
+  height: 86px;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  margin: 0 auto 18px;
+  border-radius: 50%;
+  background: #e9ebff;
+  color: #4d5de1;
+  font-size: 30px;
+  font-weight: 700;
+}
+
+.incoming-call-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.incoming-call-label {
+  color: #5968ed;
+  font-size: 12px;
+  font-weight: 750;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.incoming-call-card h2 {
+  margin: 9px 0 5px;
+  font-size: 22px;
+}
+
+.incoming-call-card p {
+  margin: 0;
+  color: #777d8d;
+  font-size: 13px;
+}
+
+.incoming-call-actions {
+  display: flex;
+  justify-content: center;
+  gap: 35px;
+  margin: 27px 0 12px;
+}
+
+.incoming-call-actions button {
+  width: 58px;
+  height: 58px;
+  display: grid;
+  place-items: center;
+  color: #fff;
+  border: 0;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.incoming-decline {
+  background: #e5484d;
+}
+
+.incoming-accept {
+  background: #20a66a;
+}
+
+.incoming-call-actions button:disabled {
+  opacity: 0.55;
+  cursor: wait;
+}
+
+.incoming-call-card small {
+  color: #777d8d;
+}
+
+@media (max-width: 600px) {
+  .call-page {
+    min-height: calc(100dvh - 90px);
+    border-radius: 12px;
+  }
+
+  .jitsi-container,
+  .jitsi-container iframe {
+    min-height: 360px;
+  }
+
+  .call-controls {
+    min-height: 76px;
+  }
+}
