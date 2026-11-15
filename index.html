@@ -2,618 +2,132 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"> 
-
-  <title>RelayTalk — Connect with friends instantly</title>
-
-  <meta name="description" content="RelayTalk — Connect with friends instantly. Fast, private, and simple messaging.">
-  <meta name="keywords" content="RelayTalk, messaging, chat, friends, secure messaging">
-  <meta name="robots" content="index, follow">
-  <meta name="theme-color" content="#0B84F3">
-
-  <meta name="author" content="RelayTalk Org">
-  <meta name="google-site-verification" content="y2KUdk5NLGrxUgulLoxvA0a2y3jQlVPObdNtYkIef2U" />
-
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>RelayTalk — Connect</title>
+  <meta name="theme-color" content="#ffffff">
   <link rel="canonical" href="https://relaytalk.vercel.app/">
-
-  <meta property="og:type" content="website">
-  <meta property="og:site_name" content="RelayTalk">
-  <meta property="og:title" content="RelayTalk — Connect with friends instantly">
-  <meta property="og:description" content="Fast, private, and simple messaging — made for real conversations.">
-  <meta property="og:url" content="https://relaytalk.vercel.app/">
-  <meta property="og:image" content="https://relaytalk.vercel.app/relayad.png?v=2">
-  <meta property="og:image:secure_url" content="https://relaytalk.vercel.app/relayad.png?v=2">
-  <meta property="og:image:type" content="image/png">
-  <meta property="og:image:width" content="1200">
-  <meta property="og:image:height" content="630">
-  <meta property="og:image:alt" content="RelayTalk — Connect with friends instantly">
-
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:site" content="@RelayTalk">
-  <meta name="twitter:title" content="RelayTalk — Connect with friends instantly">
-  <meta name="twitter:description" content="Fast, private, and simple messaging — made for real conversations.">
-  <meta name="twitter:image" content="https://relaytalk.vercel.app/relayad.png?v=2">
-  <meta name="twitter:image:alt" content="RelayTalk — Connect with friends instantly">
-
   <link rel="icon" href="/favicon.ico" type="image/x-icon">
   <link rel="icon" href="/relay.png" type="image/png" sizes="192x192">
   <link rel="apple-touch-icon" href="/relay.png">
   <link rel="manifest" href="/manifest.json">
-
-  <link rel="preload" as="image" href="/relay.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="/shared/styles/base.css">
   <link rel="stylesheet" href="/shared/styles/auth.css">
 </head>
 <body>
   <main id="view-outlet" class="view-outlet" aria-live="polite"></main>
-
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <!-- ═══════════ VIEW: Welcome ═══════════ -->
   <template id="tpl-welcome">
-    <section class="welcome-view">
-
-      <header class="landing-topbar">
-        <div class="landing-topbar-inner">
-          <a href="/" class="landing-brand" data-nav="/" aria-label="RelayTalk home">
-            <img src="/relay.png" alt="" class="landing-brand-logo">
-            <span>RelayTalk</span>
-          </a>
-          <nav class="landing-nav" aria-label="Sections">
-            <button type="button" data-scroll="features">Features</button>
-            <button type="button" data-scroll="how">How it works</button>
-            <button type="button" data-scroll="faq">FAQ</button>
-          </nav>
-          <div class="landing-topbar-actions">
-            <button class="btn-ghost btn-topbar" data-nav="/login">Sign in</button>
-            <button class="btn-primary btn-topbar" data-nav="/signup">Get started</button>
-          </div>
+    <section class="auth-view welcome-view">
+      <div class="welcome-container">
+        <header class="hero">
+          <img src="/relay.png" alt="RelayTalk" class="hero-logo">
+          <h1 class="title">RelayTalk</h1>
+          <p class="subtitle">Fast, private messaging for real friends.</p>
+        </header>
+        <ul class="features">
+          <li class="feature-card">
+            <span class="feature-icon"><i class="fas fa-search"></i></span>
+            <div class="feature-text"><h3>Find Friends</h3><p>Connect with people you know.</p></div>
+          </li>
+          <li class="feature-card">
+            <span class="feature-icon"><i class="fas fa-comment-dots"></i></span>
+            <div class="feature-text"><h3>Instant Chat</h3><p>Real-time messaging, no delays.</p></div>
+          </li>
+          <li class="feature-card">
+            <span class="feature-icon"><i class="fas fa-shield-halved"></i></span>
+            <div class="feature-text"><h3>Private & Secure</h3><p>Your conversations stay yours.</p></div>
+          </li>
+        </ul>
+        <div class="action-buttons">
+          <button class="btn-primary" data-nav="/signup">Create Account</button>
+          <button class="btn-secondary" data-nav="/login">Sign In</button>
         </div>
-      </header>
-
-      <main>
-
-        <section class="landing-hero">
-          <span class="landing-badge">Free · No ads · Private</span>
-          <h1 class="landing-hero-title">Connect with friends instantly.</h1>
-          <p class="landing-hero-sub">
-            Fast, private, and simple messaging — made for real conversations.
-          </p>
-          <div class="landing-hero-actions">
-            <button class="btn-primary btn-lg" data-nav="/signup">Get started</button>
-            <button class="btn-secondary btn-lg" data-nav="/login">Sign in</button>
-          </div>
-        </section>
-
-        <section id="features" class="landing-section">
-          <header class="landing-section-head" data-reveal>
-            <span class="landing-eyebrow">Features</span>
-            <h2>Everything you need.<br>Nothing you don't.</h2>
-          </header>
-
-          <div class="landing-feature-grid">
-            <div class="feature-item" data-reveal style="--stagger:0ms">
-              <div class="feature-icon-wrap">
-                <svg class="feature-icon" viewBox="0 0 24 24" aria-hidden="true">
-                  <circle cx="11" cy="11" r="7"/>
-                  <line x1="21" y1="21" x2="16.65" y2="16.65"/>
-                </svg>
-              </div>
-              <div>
-                <h3>Find friends</h3>
-                <p>Search by username. Send a request. Done.</p>
-              </div>
-            </div>
-
-            <div class="feature-item" data-reveal style="--stagger:60ms">
-              <div class="feature-icon-wrap">
-                <svg class="feature-icon" viewBox="0 0 24 24" aria-hidden="true">
-                  <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/>
-                </svg>
-              </div>
-              <div>
-                <h3>Real-time chat</h3>
-                <p>Messages land instantly. No refresh, no delay.</p>
-              </div>
-            </div>
-
-            <div class="feature-item" data-reveal style="--stagger:120ms">
-              <div class="feature-icon-wrap">
-                <svg class="feature-icon" viewBox="0 0 24 24" aria-hidden="true">
-                  <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
-                </svg>
-              </div>
-              <div>
-                <h3>Voice &amp; video</h3>
-                <p>Call anyone in your list. One tap.</p>
-              </div>
-            </div>
-
-            <div class="feature-item" data-reveal style="--stagger:0ms">
-              <div class="feature-icon-wrap">
-                <svg class="feature-icon" viewBox="0 0 24 24" aria-hidden="true">
-                  <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
-                  <circle cx="8.5" cy="8.5" r="1.5"/>
-                  <polyline points="21 15 16 10 5 21"/>
-                </svg>
-              </div>
-              <div>
-                <h3>Photo messages</h3>
-                <p>Drop a photo into any conversation.</p>
-              </div>
-            </div>
-
-            <div class="feature-item" data-reveal style="--stagger:60ms">
-              <div class="feature-icon-wrap">
-                <svg class="feature-icon" viewBox="0 0 24 24" aria-hidden="true">
-                  <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
-                  <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
-                </svg>
-              </div>
-              <div>
-                <h3>Push notifications</h3>
-                <p>Notified the moment a message arrives.</p>
-              </div>
-            </div>
-
-            <div class="feature-item" data-reveal style="--stagger:120ms">
-              <div class="feature-icon-wrap">
-                <svg class="feature-icon" viewBox="0 0 24 24" aria-hidden="true">
-                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-                </svg>
-              </div>
-              <div>
-                <h3>Privacy controls</h3>
-                <p>Decide what appears on your lock screen.</p>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <section id="how" class="landing-section landing-section-alt">
-          <header class="landing-section-head" data-reveal>
-            <span class="landing-eyebrow">How it works</span>
-            <h2>Three steps. Then you're chatting.</h2>
-          </header>
-
-          <div class="landing-steps">
-            <article class="step-card" data-reveal style="--stagger:0ms">
-              <header class="step-head">
-                <span class="step-num">01</span>
-                <span class="step-icon" aria-hidden="true">
-                  <svg viewBox="0 0 24 24">
-                    <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
-                    <circle cx="9" cy="7" r="4"/>
-                    <line x1="19" y1="8" x2="19" y2="14"/>
-                    <line x1="22" y1="11" x2="16" y2="11"/>
-                  </svg>
-                </span>
-              </header>
-              <h3>Create an account</h3>
-              <p>Pick a username and password. No email needed.</p>
-            </article>
-
-            <article class="step-card" data-reveal style="--stagger:80ms">
-              <header class="step-head">
-                <span class="step-num">02</span>
-                <span class="step-icon" aria-hidden="true">
-                  <svg viewBox="0 0 24 24">
-                    <circle cx="11" cy="11" r="7"/>
-                    <line x1="21" y1="21" x2="16.65" y2="16.65"/>
-                  </svg>
-                </span>
-              </header>
-              <h3>Find your friends</h3>
-              <p>Search by username. Send a request. They accept.</p>
-            </article>
-
-            <article class="step-card" data-reveal style="--stagger:160ms">
-              <header class="step-head">
-                <span class="step-num">03</span>
-                <span class="step-icon" aria-hidden="true">
-                  <svg viewBox="0 0 24 24">
-                    <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/>
-                  </svg>
-                </span>
-              </header>
-              <h3>Start talking</h3>
-              <p>Open a chat, send a message, or make a call.</p>
-            </article>
-          </div>
-        </section>
-
-        <section id="faq" class="landing-section">
-          <header class="landing-section-head" data-reveal>
-            <span class="landing-eyebrow">FAQ</span>
-            <h2>Questions, answered.</h2>
-          </header>
-
-          <div class="landing-faq" data-reveal>
-            <details class="landing-faq-item">
-              <summary>Do I need an email to sign up?</summary>
-              <div class="landing-faq-body">No. A username and a password is all.</div>
-            </details>
-            <details class="landing-faq-item">
-              <summary>How do I find a friend?</summary>
-              <div class="landing-faq-body">Search by username in the app. Send a request — once they accept, they're in your list.</div>
-            </details>
-            <details class="landing-faq-item">
-              <summary>Can I edit or delete messages?</summary>
-              <div class="landing-faq-body">Yes. Long-press any message you sent. Edit or delete it.</div>
-            </details>
-            <details class="landing-faq-item">
-              <summary>Can I make voice and video calls?</summary>
-              <div class="landing-faq-body">Yes. One tap from any chat.</div>
-            </details>
-            <details class="landing-faq-item">
-              <summary>Are there ads?</summary>
-              <div class="landing-faq-body">None. Free forever, no ads, no data selling.</div>
-            </details>
-            <details class="landing-faq-item">
-              <summary>What if I forget my password?</summary>
-              <div class="landing-faq-body">Passwords can't be recovered — we never store them readable. Keep it safe.</div>
-            </details>
-            <details class="landing-faq-item">
-              <summary>Can I install it like an app?</summary>
-              <div class="landing-faq-body">Yes. On iPhone: Share → Add to Home Screen. On Android: Install app.</div>
-            </details>
-          </div>
-        </section>
-
-        <section class="landing-cta" data-reveal>
-          <h2>Ready when you are.</h2>
-          <p>Free forever. Two taps to get started.</p>
-          <div class="landing-cta-actions">
-            <button class="btn-primary btn-lg" data-nav="/signup">Get started</button>
-            <button class="btn-secondary btn-lg" data-nav="/login">Sign in</button>
-          </div>
-        </section>
-
-      </main>
-
-      <footer class="landing-footer">
-        <div class="landing-footer-inner">
-          <span class="landing-footer-copy">© 2026 RelayTalk Org</span>
-          <nav class="landing-footer-nav" aria-label="Footer">
-            <a href="/about/">About</a>
-            <button type="button" data-scroll="features">Features</button>
-            <button type="button" data-scroll="faq">FAQ</button>
-          </nav>
-        </div>
-      </footer>
-
+      </div>
     </section>
   </template>
 
   <!-- ═══════════ VIEW: Login ═══════════ -->
   <template id="tpl-login">
     <section class="auth-view login-view">
-      <header class="auth-topbar">
-        <button type="button" class="back-btn" data-nav="/" aria-label="Back to home">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-               stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <line x1="19" y1="12" x2="5" y2="12"></line>
-            <polyline points="12 19 5 12 12 5"></polyline>
-          </svg>
-          <span>Back</span>
-        </button>
+      <header class="simple-header">
+        <a href="/" class="simple-logo" data-nav="/">
+          <img src="/relay.png" alt="" class="simple-logo-img"><span>RelayTalk</span>
+        </a>
       </header>
-
-      <main class="auth-main">
-        <header class="auth-header">
+      <main class="auth-container">
+        <div class="auth-header">
+          <div class="auth-logo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
           <h1 class="auth-title">Welcome back</h1>
           <p class="auth-subtitle">Sign in to continue.</p>
-        </header>
-
+        </div>
         <form class="auth-form" id="loginForm">
           <div class="form-group">
             <label class="form-label" for="loginUsername">Username</label>
-            <input type="text" id="loginUsername" class="form-input"
-                   placeholder="Enter your username" required
-                   minlength="3" maxlength="20" autocomplete="username">
+            <input type="text" id="loginUsername" class="form-input" placeholder="Enter your username" required>
             <div class="error-message" id="usernameError"></div>
           </div>
-
           <div class="form-group">
             <label class="form-label" for="loginPassword">Password</label>
             <div class="password-input">
-              <input type="password" id="loginPassword" class="form-input"
-                     placeholder="Enter your password" required minlength="6"
-                     autocomplete="current-password">
-              <button type="button" class="password-toggle" id="passwordToggle"
-                      data-action="toggle-password" aria-label="Show password">
-                <svg viewBox="0 0 24 24" aria-hidden="true">
-                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
-                  <circle cx="12" cy="12" r="3"/>
-                </svg>
-              </button>
+              <input type="password" id="loginPassword" class="form-input" placeholder="Enter your password" required>
+              <button type="button" class="password-toggle" id="passwordToggle" data-action="toggle-password"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
             </div>
             <div class="error-message" id="passwordError"></div>
           </div>
-
-          <button type="submit" class="btn-primary btn-block auth-btn" id="loginBtn">
-            Sign in
-          </button>
+          <button type="submit" class="btn-primary" style="width:100%; margin-top:8px;" id="loginBtn">Sign In</button>
         </form>
-
         <div class="success-message" id="successMessage"></div>
-
-        <p class="auth-footer">
-          New to RelayTalk? <a href="#" data-nav="/signup">Create an account</a>
-        </p>
+        <p class="auth-footer" style="text-align:center; margin-top:24px; color:var(--text-2);">New here? <a href="#" data-nav="/signup" style="color:var(--primary); font-weight:600;">Create an account</a></p>
       </main>
-
-      <div class="loading-overlay" id="loadingOverlay">
-        <div class="login-loader"></div>
-        <p class="loading-text">Signing you in…</p>
-      </div>
     </section>
   </template>
 
   <!-- ═══════════ VIEW: Signup ═══════════ -->
   <template id="tpl-signup">
     <section class="auth-view signup-view">
-      <header class="auth-topbar">
-        <button type="button" class="back-btn" data-nav="/" aria-label="Back to home">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-               stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <line x1="19" y1="12" x2="5" y2="12"></line>
-            <polyline points="12 19 5 12 12 5"></polyline>
-          </svg>
-          <span>Back</span>
-        </button>
+      <header class="simple-header">
+        <a href="/" class="simple-logo" data-nav="/">
+          <img src="/relay.png" alt="" class="simple-logo-img"><span>RelayTalk</span>
+        </a>
       </header>
-
-      <main class="auth-main">
-        <header class="auth-header">
-          <h1 class="auth-title">Create your account</h1>
-          <p class="auth-subtitle">Free forever. No email needed.</p>
-        </header>
-
+      <main class="auth-container">
+        <div class="auth-header">
+          <h1 class="auth-title">Create Account</h1>
+          <p class="auth-subtitle">Join RelayTalk for free.</p>
+        </div>
         <form class="auth-form" id="signupForm" novalidate>
           <div class="form-group">
             <label class="form-label" for="username">Username</label>
-            <input type="text" id="username" class="form-input"
-                   placeholder="Choose a username" required
-                   minlength="3" maxlength="20" autocomplete="username">
+            <input type="text" id="username" class="form-input" placeholder="Choose a username" required>
             <div class="error-message" id="usernameError"></div>
           </div>
-
           <div class="form-group">
             <label class="form-label" for="password">Password</label>
             <div class="password-input">
-              <input type="password" id="password" class="form-input"
-                     placeholder="At least 6 characters" required minlength="6"
-                     autocomplete="new-password">
-              <button type="button" class="password-toggle"
-                      data-action="toggle-password" aria-label="Show password">
-                <svg viewBox="0 0 24 24" aria-hidden="true">
-                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
-                  <circle cx="12" cy="12" r="3"/>
-                </svg>
-              </button>
+              <input type="password" id="password" class="form-input" placeholder="At least 6 characters" required>
+              <button type="button" class="password-toggle" data-action="toggle-password"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
             </div>
             <div class="error-message" id="passwordError"></div>
           </div>
-
           <div class="form-group">
-            <label class="form-label" for="confirmPassword">Confirm password</label>
-            <input type="password" id="confirmPassword" class="form-input"
-                   placeholder="Re-enter your password" required autocomplete="new-password">
+            <label class="form-label" for="confirmPassword">Confirm Password</label>
+            <input type="password" id="confirmPassword" class="form-input" placeholder="Re-enter password" required>
             <div class="error-message" id="confirmError"></div>
           </div>
-
-          <div class="terms-group">
-            <div class="terms-row">
-              <input type="checkbox" id="terms" required class="terms-check">
-              <label for="terms" class="terms-text">I agree to the</label>
-              <button type="button" class="terms-link" data-action="show-terms">Terms</button>
-              <span class="terms-and">and</span>
-              <button type="button" class="terms-link" data-action="show-privacy">Privacy Policy</button>
-            </div>
-            <div class="error-message" id="termsError"></div>
-          </div>
-
-          <button type="submit" class="btn-primary btn-block auth-btn" id="submitBtn">
-            Create account
-          </button>
+          <button type="submit" class="btn-primary" style="width:100%; margin-top:8px;" id="submitBtn">Create Account</button>
         </form>
-
         <div class="success-container" id="successContainer" style="display:none;"></div>
-
-        <p class="auth-footer">
-          Already have an account? <a href="#" data-nav="/login">Sign in</a>
-        </p>
+        <p class="auth-footer" style="text-align:center; margin-top:24px; color:var(--text-2);">Already have an account? <a href="#" data-nav="/login" style="color:var(--primary); font-weight:600;">Sign In</a></p>
       </main>
-
-      <!-- Terms Modal -->
-      <div class="modal-overlay" id="termsModal">
-        <div class="modal-content">
-          <header class="modal-header">
-            <div class="modal-title-wrap">
-              <div class="modal-title-icon">
-                <svg viewBox="0 0 24 24" aria-hidden="true">
-                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-                  <polyline points="14 2 14 8 20 8"/>
-                </svg>
-              </div>
-              <div>
-                <h2 class="modal-title">Terms &amp; Conditions</h2>
-                <p class="modal-subtitle">Last updated December 2024</p>
-              </div>
-            </div>
-            <button class="modal-close" data-action="close-modal" aria-label="Close">×</button>
-          </header>
-          <div class="modal-body">
-            <p class="modal-lead">By creating an account, you agree to these simple terms.</p>
-
-            <div class="modal-block">
-              <h3>Your account</h3>
-              <ul>
-                <li>You must be at least 13 years old to use RelayTalk</li>
-                <li>Your username must be unique and appropriate</li>
-                <li>You are responsible for keeping your password secure</li>
-              </ul>
-            </div>
-
-            <div class="modal-block">
-              <h3>Messaging rules</h3>
-              <ul>
-                <li>Be respectful to all users</li>
-                <li>No harassment, bullying, or hate speech</li>
-                <li>No spam or unsolicited messages</li>
-                <li>Respect others' privacy</li>
-              </ul>
-            </div>
-
-            <div class="modal-note">
-              <div class="modal-note-icon">
-                <svg viewBox="0 0 24 24" aria-hidden="true">
-                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-                </svg>
-              </div>
-              <div>
-                <strong>Important Security Notice</strong>
-                <p>Your password cannot be recovered if forgotten. Please write it down somewhere secure.</p>
-              </div>
-            </div>
-
-            <div class="modal-block">
-              <h3>RelayTalk Org's promise</h3>
-              <p>We provide a secure, simple messaging platform for everyone to connect safely.</p>
-            </div>
-          </div>
-          <footer class="modal-footer">
-            <button type="button" class="btn-primary btn-block" data-action="close-modal">Got it</button>
-          </footer>
-        </div>
-      </div>
-
-      <!-- Privacy Modal -->
-      <div class="modal-overlay" id="privacyModal">
-        <div class="modal-content">
-          <header class="modal-header">
-            <div class="modal-title-wrap">
-              <div class="modal-title-icon">
-                <svg viewBox="0 0 24 24" aria-hidden="true">
-                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-                </svg>
-              </div>
-              <div>
-                <h2 class="modal-title">Privacy Policy</h2>
-                <p class="modal-subtitle">Privacy is not a feature — it's our foundation</p>
-              </div>
-            </div>
-            <button class="modal-close" data-action="close-modal" aria-label="Close">×</button>
-          </header>
-          <div class="modal-body">
-            <p class="modal-lead">At RelayTalk, we believe in simple, transparent privacy.</p>
-
-            <div class="modal-block">
-              <h3>What we store</h3>
-              <ul>
-                <li><strong>Username:</strong> your chosen display name</li>
-                <li><strong>Profile information:</strong> basic account details</li>
-                <li><strong>Messages:</strong> only between you and recipients</li>
-              </ul>
-            </div>
-
-            <div class="modal-block">
-              <h3>What we don't store</h3>
-              <ul>
-                <li>Email addresses</li>
-                <li>Phone numbers</li>
-                <li>Location data</li>
-                <li>Contact lists</li>
-              </ul>
-            </div>
-
-            <div class="modal-block">
-              <h3>Your data is yours</h3>
-              <ul>
-                <li>Messages are stored only as long as needed</li>
-                <li>We don't sell your data to anyone</li>
-                <li>We don't show ads</li>
-                <li>All data is encrypted and secured in the cloud</li>
-              </ul>
-            </div>
-
-            <div class="modal-note">
-              <div class="modal-note-icon">
-                <svg viewBox="0 0 24 24" aria-hidden="true">
-                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-                </svg>
-              </div>
-              <div>
-                <strong>Security first</strong>
-                <p>RelayTalk is built with security in mind. Created by RelayTalk Org to provide safe, private messaging for everyone.</p>
-              </div>
-            </div>
-          </div>
-          <footer class="modal-footer">
-            <button type="button" class="btn-primary btn-block" data-action="close-modal">Got it</button>
-          </footer>
-        </div>
-      </div>
-
     </section>
   </template>
 
   <script type="module" src="/auth.js"></script>
-
-  <script>
-    (function () {
-      var boundFlag = 'data-landing-bound';
-
-      function bindLanding(root) {
-        if (!root || root.hasAttribute(boundFlag)) return;
-        root.setAttribute(boundFlag, '1');
-
-        root.querySelectorAll('[data-scroll]').forEach(function (btn) {
-          btn.addEventListener('click', function (e) {
-            e.preventDefault();
-            var id = btn.getAttribute('data-scroll');
-            var target = root.querySelector('#' + id);
-            if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-          });
-        });
-
-        var revealEls = root.querySelectorAll('[data-reveal]');
-        if (!revealEls.length) return;
-
-        var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-        if (reduceMotion || !('IntersectionObserver' in window)) {
-          revealEls.forEach(function (el) { el.classList.add('in-view'); });
-          return;
-        }
-
-        var observer = new IntersectionObserver(function (entries) {
-          entries.forEach(function (entry) {
-            if (entry.isIntersecting) {
-              entry.target.classList.add('in-view');
-              observer.unobserve(entry.target);
-            }
-          });
-        }, { threshold: 0.05, rootMargin: '0px 0px -5% 0px' });
-
-        revealEls.forEach(function (el) { observer.observe(el); });
-      }
-
-      var outlet = document.getElementById('view-outlet');
-      if (!outlet) return;
-
-      new MutationObserver(function () {
-        var welcome = outlet.querySelector('.welcome-view');
-        if (welcome) bindLanding(welcome);
-      }).observe(outlet, { childList: true });
-
-      var existing = outlet.querySelector('.welcome-view');
-      if (existing) bindLanding(existing);
-    })();
-  </script>
 </body>
 </html>
