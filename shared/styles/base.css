@@ -1,4 +1,6 @@
-/* shared/styles/base.css — tokens, reset, shared primitives. */
+/* ============================================================
+   RelayTalk — Base Design System
+   ============================================================ */
 
 *, *::before, *::after {
   box-sizing: border-box;
@@ -8,41 +10,46 @@
 }
 
 :root {
-  --primary: #007acc;
-  --primary-hover: #0066a8;
-  --primary-active: #005a9e;
-  --primary-soft: rgba(0, 122, 204, 0.08);
-  --primary-soft-2: rgba(0, 122, 204, 0.14);
+  /* Brand Colors */
+  --primary: #0B84F3;
+  --primary-hover: #0972d9;
+  --primary-active: #085fbc;
+  --primary-soft: #e7f3fe;
+  --primary-gradient: linear-gradient(135deg, #0B84F3, #5cc0fa);
 
-  --danger: #d93025;
-  --success: #1e8e3e;
+  /* UI Colors */
+  --bg: #f8fafc;            /* Softer background for app */
+  --surface: #ffffff;       /* Pure white for cards */
+  --surface-hover: #f1f5f9;
+  
+  --text: #0f172a;
+  --text-2: #475569;
+  --text-3: #94a3b8;
+  
+  --border: #e2e8f0;
+  --border-soft: #f1f5f9;
+  
+  --danger: #ef4444;
+  --danger-soft: #fee2e2;
+  --success: #10b981;
+  --success-soft: #d1fae5;
 
-  --bg: #ffffff;
-  --bg-sub: #f5f8fb;
-  --bg-hover: #eef3f8;
-
-  --text: #0a2540;
-  --text-2: #5f6368;
-  --text-3: #8a94a6;
-
-  --border: #d8e0ea;
-  --border-soft: #e6ecf3;
-
+  /* Radii */
   --radius-sm: 8px;
-  --radius-md: 12px;
-  --radius-lg: 16px;
-  --radius-xl: 22px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --radius-xl: 28px;
   --radius-pill: 999px;
 
-  --shadow-1: 0 1px 2px rgba(10, 37, 64, 0.06), 0 1px 3px rgba(10, 37, 64, 0.05);
-  --shadow-2: 0 2px 8px rgba(10, 37, 64, 0.08), 0 1px 2px rgba(10, 37, 64, 0.04);
-  --shadow-3: 0 10px 28px rgba(10, 37, 64, 0.12);
+  /* Shadows */
+  --shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.05);
+  --shadow-md: 0 4px 12px rgba(15, 23, 42, 0.08);
+  --shadow-lg: 0 12px 32px rgba(15, 23, 42, 0.12);
+  --shadow-glow: 0 8px 24px rgba(11, 132, 243, 0.25);
 
+  /* Easing */
   --ease: cubic-bezier(0.22, 1, 0.36, 1);
-  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
-
-  --safe-top: env(safe-area-inset-top, 0px);
-  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 html, body { height: 100%; }
@@ -50,8 +57,7 @@ html, body { height: 100%; }
 body {
   background: var(--bg);
   color: var(--text);
-  font-family: 'Google Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
-               'Helvetica Neue', Arial, sans-serif;
+  font-family: 'Google Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   font-size: 15px;
   line-height: 1.5;
   min-height: 100vh;
@@ -66,51 +72,112 @@ a { color: var(--primary); text-decoration: none; }
 img { display: block; max-width: 100%; }
 
 *:focus { outline: none; }
-*:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; border-radius: 6px; }
+*:focus-visible { outline: 2px solid var(--primary); outline-offset: 3px; border-radius: 4px; }
 
-/* View outlet */
+/* View Outlet */
 .view-outlet { display: block; width: 100%; min-height: 100vh; }
 
-/* Buttons */
+/* Universal Fade-In for Views */
+@keyframes fadeInView {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.dashboard-root, .friends-root, .chat-view, .profile-root, .view-root, .auth-view {
+  animation: fadeInView 0.4s var(--ease) forwards;
+}
+
+/* Premium Buttons */
 .btn-primary, .btn-secondary {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 14px 20px;
+  padding: 14px 24px;
   border-radius: var(--radius-md);
   font-size: 0.98rem;
-  font-weight: 500;
-  font-family: inherit;
-  min-height: 52px;
-  cursor: pointer;
-  border: 1px solid transparent;
-  transition: background 0.2s var(--ease), color 0.2s var(--ease),
-              border-color 0.2s var(--ease), box-shadow 0.2s var(--ease),
-              transform 0.2s var(--ease);
+  font-weight: 600;
   letter-spacing: 0.01em;
+  min-height: 52px;
+  border: 1px solid transparent;
+  transition: all 0.25s var(--ease);
+  font-family: inherit;
 }
 
 .btn-primary {
   background: var(--primary);
   color: #ffffff;
-  box-shadow: 0 4px 14px rgba(0, 122, 204, 0.25);
+  box-shadow: var(--shadow-glow);
 }
-.btn-primary:hover { background: var(--primary-hover); transform: translateY(-1px); box-shadow: 0 8px 22px rgba(0,122,204,0.32); }
-.btn-primary:active { background: var(--primary-active); transform: translateY(0) scale(0.99); box-shadow: 0 2px 8px rgba(0,122,204,0.24); }
+.btn-primary:hover:not(:disabled) {
+  background: var(--primary-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 28px rgba(11, 132, 243, 0.35);
+}
+.btn-primary:active:not(:disabled) {
+  transform: translateY(0) scale(0.98);
+  box-shadow: var(--shadow-sm);
+}
 
 .btn-secondary {
-  background: var(--bg);
+  background: var(--surface);
   color: var(--primary);
   border-color: var(--border);
+  box-shadow: var(--shadow-sm);
 }
-.btn-secondary:hover { background: var(--primary-soft); border-color: var(--primary); transform: translateY(-1px); }
-.btn-secondary:active { background: var(--primary-soft-2); transform: translateY(0) scale(0.99); }
+.btn-secondary:hover {
+  background: var(--surface-hover);
+  border-color: var(--primary);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+.btn-secondary:active {
+  transform: translateY(0) scale(0.98);
+}
 
-/* Reduced motion */
+/* Loading Spinners - Smooth Fade Out */
+.loading-indicator, .loading-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(248, 250, 252, 0.85);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  gap: 16px;
+  transition: opacity 0.4s var(--ease), visibility 0.4s var(--ease);
+}
+
+.loading-indicator.hidden, .loading-overlay.hidden {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid var(--primary-soft);
+  border-top-color: var(--primary);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.loading-text {
+  color: var(--primary);
+  font-size: 0.95rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+/* Reduced Motion */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
 }
