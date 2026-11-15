@@ -1,66 +1,58 @@
-
 import { supabase } from "./supabase";
 
-function usernameToEmail(username) {
-  return `${username.trim()}@luster.test`;
+const USERNAME_EMAIL_DOMAIN = "@luster.test";
+
+function normalizeUsername(username) {
+  return String(username || "").trim();
 }
 
-export function validateUsername(username) {
-  const value = username.trim();
+function usernameToEmail(username) {
+  return `${normalizeUsername(username)}${USERNAME_EMAIL_DOMAIN}`;
+}
 
-  if (value.length < 3 || value.length > 20) {
-    return "Username must be between 3 and 20 characters.";
-  }
+export async function getCurrentSession() {
+  const { data, error } = await supabase.auth.getSession();
 
-  if (!/^[a-zA-Z0-9_.]+$/.test(value)) {
-    return "Only letters, numbers, underscores and dots are allowed.";
-  }
+  if (error) throw error;
 
-  return null;
+  return data.session;
+}
+
+export function listenToAuthChanges(callback) {
+  const {
+    data: { subscription },
+  } = supabase.auth.onAuthStateChange((_event, session) => {
+    callback(session);
+  });
+
+  return () => subscription.unsubscribe();
 }
 
 export async function signInWithUsername(username, password) {
-  const usernameError = validateUsername(username);
+  const cleanUsername = normalizeUsername(username);
 
-  if (usernameError) {
-    return { success: false, error: usernameError };
-  }
-
-  if (!password) {
-    return { success: false, error: "Please enter your password." };
+  if (!cleanUsername || !password) {
+    throw new Error("Enter your username and password.");
   }
 
   const { data, error } = await supabase.auth.signInWithPassword({
-    email: usernameToEmail(username),
-    password
+    email: usernameToEmail(cleanUsername),
+    password,
   });
 
   if (error) {
     if (error.message.includes("Invalid login credentials")) {
-      return {
-        success: false,
-        error: "Invalid username or password."
-      };
+      throw new Error("Invalid username or password.");
     }
 
     if (error.message.includes("Email not confirmed")) {
-      return {
-        success: false,
-        error: "Your account needs email confirmation."
-      };
+      throw new Error("Your account email has not been confirmed.");
     }
 
-    return {
-      success: false,
-      error: error.message
-    };
+    throw new Error(error.message || "Unable to sign in.");
   }
 
-  return {
-    success: true,
-    user: data.user,
-    session: data.session
-  };
+  return data;
 }
 
 export async function signUpWithUsername(
@@ -68,37 +60,33 @@ export async function signUpWithUsername(
   password,
   confirmPassword
 ) {
-  const usernameError = validateUsername(username);
+  const cleanUsername = normalizeUsername(username);
 
-  if (usernameError) {
-    return { success: false, error: usernameError };
+  if (!/^[a-zA-Z0-9_.]{3,20}$/.test(cleanUsername)) {
+    throw new Error(
+      "Username must be 3–20 characters and contain only letters, numbers, dots or underscores."
+    );
   }
 
-  if (password.length < 6) {
-    return {
-      success: false,
-      error: "Password must contain at least 6 characters."
-    };
+  if (!password || password.length < 6) {
+    throw new Error("Password must contain at least 6 characters.");
   }
 
   if (password !== confirmPassword) {
-    return {
-      success: false,
-      error: "Passwords do not match."
-    };
+    throw new Error("Passwords do not match.");
   }
 
-  const cleanUsername = username.trim();
+  const email = usernameToEmail(cleanUsername);
 
   const { data, error } = await supabase.auth.signUp({
-    email: usernameToEmail(cleanUsername),
+    email,
     password,
     options: {
       data: {
         username: cleanUsername,
-        full_name: cleanUsername
-      }
-    }
+        full_name: cleanUsername,
+      },
+    },
   });
 
   if (error) {
@@ -106,103 +94,32 @@ export async function signUpWithUsername(
       error.message.toLowerCase().includes("already registered") ||
       error.message.toLowerCase().includes("already exists")
     ) {
-      return {
-        success: false,
-        error: "That username is already taken."
-      };
+      throw new Error("That username is already taken.");
     }
 
-    return {
-      success: false,
-      error: error.message
-    };
+    throw new Error(error.message || "Unable to create your account.");
   }
 
-  // Preserve the original app's automatic sign-in behaviour.
-  // If confirmation is enabled, Supabase may not create a session yet.
-  if (!data.session && data.user) {
-    const loginResult = await supabase.auth.signInWithPassword({
-      email: usernameToEmail(cleanUsername),
-      password
+  // Match the original application: attempt an immediate login.
+  // The existing database trigger remains responsible for profile creation.
+  const { data: loginData, error: loginError } =
+    await supabase.auth.signInWithPassword({
+      email,
+      password,
     });
 
-    if (loginResult.error) {
-      return {
-        success: true,
-        user: data.user,
-        session: null,
-        needsConfirmation: true
-      };
-    }
-
-    return {
-      success: true,
-      user: loginResult.data.user,
-      session: loginResult.data.session,
-      needsConfirmation: false
-    };
-  }
-
   return {
-    success: true,
     user: data.user,
-    session: data.session,
-    needsConfirmation: false
+    session: loginData?.session || null,
+    autoLogin: !loginError && !!loginData?.session,
+    loginError: loginError?.message || null,
   };
 }
 
 export async function signOut() {
   const { error } = await supabase.auth.signOut();
 
-  if (error) {
-    throw error;
-  }
+  if (error) throw error;
 
   return true;
-}
-
-export async function getCurrentUser() {
-  const { data, error } = await supabase.auth.getUser();
-
-  if (error) {
-    return null;
-  }
-
-  return data.user ?? null;
-}
-
-export async function getCurrentSession() {
-  const { data, error } = await supabase.auth.getSession();
-
-  if (error) {
-    throw error;
-  }
-
-  return data.session;
-}
-
-export function listenToAuthChanges(callback) {
-  const { data } = supabase.auth.onAuthStateChange(
-    (event, session) => {
-      callback(event, session);
-    }
-  );
-
-  return () => {
-    data.subscription.unsubscribe();
-  };
-}
-
-export async function getMyProfile(userId) {
-  const { data, error } = await supabase
-    .from("profiles")
-    .select("*")
-    .eq("id", userId)
-    .maybeSingle();
-
-  if (error) {
-    throw error;
-  }
-
-  return data;
 }
