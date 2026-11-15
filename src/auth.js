@@ -1,3 +1,4 @@
+
 import { supabase } from "./supabase";
 
 const USERNAME_EMAIL_DOMAIN = "@luster.test";
@@ -21,11 +22,13 @@ export async function getCurrentSession() {
 export function listenToAuthChanges(callback) {
   const {
     data: { subscription },
-  } = supabase.auth.onAuthStateChange((_event, session) => {
-    callback(session);
+  } = supabase.auth.onAuthStateChange((event, session) => {
+    callback(event, session);
   });
 
-  return () => subscription.unsubscribe();
+  return () => {
+    subscription.unsubscribe();
+  };
 }
 
 export async function signInWithUsername(username, password) {
@@ -52,7 +55,11 @@ export async function signInWithUsername(username, password) {
     throw new Error(error.message || "Unable to sign in.");
   }
 
-  return data;
+  return {
+    success: true,
+    user: data.user,
+    session: data.session,
+  };
 }
 
 export async function signUpWithUsername(
@@ -100,19 +107,25 @@ export async function signUpWithUsername(
     throw new Error(error.message || "Unable to create your account.");
   }
 
-  // Match the original application: attempt an immediate login.
-  // The existing database trigger remains responsible for profile creation.
-  const { data: loginData, error: loginError } =
-    await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
+  let session = data.session || null;
+
+  if (!session) {
+    const { data: loginData, error: loginError } =
+      await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+
+    if (!loginError) {
+      session = loginData.session || null;
+    }
+  }
 
   return {
+    success: true,
     user: data.user,
-    session: loginData?.session || null,
-    autoLogin: !loginError && !!loginData?.session,
-    loginError: loginError?.message || null,
+    session,
+    needsConfirmation: !session,
   };
 }
 
