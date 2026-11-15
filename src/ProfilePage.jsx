@@ -1,6 +1,14 @@
+
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import { ArrowLeft, MessageCircle, UserPlus } from "lucide-react";
+import {
+  ArrowLeft,
+  MessageCircle,
+  UserPlus,
+  Phone,
+  Video,
+} from "lucide-react";
+
 import {
   areFriends,
   getProfile,
@@ -116,13 +124,31 @@ export default function ProfilePage({ session }) {
         {!viewingSelf && (
           <div className="profile-actions">
             {isFriend ? (
-              <Link
-                className="primary-button"
-                to={`/app/chat/${userId}`}
-              >
-                <MessageCircle size={17} />
-                Message
-              </Link>
+              <>
+                <Link
+                  className="primary-button"
+                  to={`/app/chat/${userId}`}
+                >
+                  <MessageCircle size={17} />
+                  Message
+                </Link>
+
+                <Link
+                  className="secondary-button"
+                  to={`/app/call/${userId}?mode=audio`}
+                >
+                  <Phone size={17} />
+                  Audio call
+                </Link>
+
+                <Link
+                  className="secondary-button"
+                  to={`/app/call/${userId}?mode=video`}
+                >
+                  <Video size={17} />
+                  Video call
+                </Link>
+              </>
             ) : requestSent ? (
               <button className="secondary-button" disabled>
                 Request sent
