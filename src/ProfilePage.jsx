@@ -1,18 +1,22 @@
-
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import { getProfile, sendFriendRequest } from "./data";
-import { supabase } from "./supabase";
+import { ArrowLeft, MessageCircle, UserPlus } from "lucide-react";
+import {
+  areFriends,
+  getProfile,
+  sendFriendRequest,
+} from "./data";
 
 export default function ProfilePage({ session }) {
   const { userId } = useParams();
-  const myId = session.user.id;
+  const currentUserId = session?.user?.id;
+  const viewingSelf = userId === currentUserId;
 
   const [profile, setProfile] = useState(null);
   const [isFriend, setIsFriend] = useState(false);
   const [requestSent, setRequestSent] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [busy, setBusy] = useState(false);
+  const [working, setWorking] = useState(false);
   const [error, setError] = useState("");
 
   useEffect(() => {
@@ -23,41 +27,24 @@ export default function ProfilePage({ session }) {
       setError("");
 
       try {
-        const data = await getProfile(userId);
+        const result = await getProfile(userId);
 
-        if (!data) throw new Error("Profile not found.");
+        if (!result) {
+          throw new Error("This profile could not be found.");
+        }
+
+        let friendship = false;
+
+        if (!viewingSelf) {
+          friendship = await areFriends(currentUserId, userId);
+        }
 
         if (!active) return;
-        setProfile(data);
 
-        if (userId === myId) return;
-
-        const [friendResult, requestResult] = await Promise.all([
-          supabase
-            .from("friends")
-            .select("friend_id")
-            .eq("user_id", myId)
-            .eq("friend_id", userId)
-            .maybeSingle(),
-
-          supabase
-            .from("friend_requests")
-            .select("id")
-            .eq("sender_id", myId)
-            .eq("receiver_id", userId)
-            .eq("status", "pending")
-            .maybeSingle()
-        ]);
-
-        if (friendResult.error) throw friendResult.error;
-        if (requestResult.error) throw requestResult.error;
-
-        if (active) {
-          setIsFriend(Boolean(friendResult.data));
-          setRequestSent(Boolean(requestResult.data));
-        }
-      } catch (err) {
-        if (active) setError(err.message || "Could not load profile.");
+        setProfile(result);
+        setIsFriend(friendship);
+      } catch (loadError) {
+        if (active) setError(loadError.message);
       } finally {
         if (active) setLoading(false);
       }
@@ -68,107 +55,93 @@ export default function ProfilePage({ session }) {
     return () => {
       active = false;
     };
-  }, [userId, myId]);
+  }, [userId, currentUserId, viewingSelf]);
 
   async function handleAddFriend() {
-    setBusy(true);
+    setWorking(true);
     setError("");
 
     try {
-      await sendFriendRequest(myId, userId);
+      await sendFriendRequest(currentUserId, userId);
       setRequestSent(true);
-    } catch (err) {
-      setError(err.message || "Could not send friend request.");
+    } catch (requestError) {
+      setError(requestError.message || "Could not send friend request.");
     } finally {
-      setBusy(false);
+      setWorking(false);
     }
   }
 
   if (loading) {
-    return (
-      <div className="workspace-page">
-        <p className="subtle-message">Loading profile...</p>
-      </div>
-    );
+    return <div className="page-loading">Loading profile...</div>;
   }
 
-  if (!profile) {
+  if (error && !profile) {
     return (
-      <div className="workspace-page">
-        <div className="workspace-error">
-          {error || "Profile not found."}
-        </div>
-        <Link to="/app/friends" className="back-link">← Back to friends</Link>
-      </div>
+      <section className="page-error">
+        <p>{error}</p>
+        <Link to="/app/friends">Back to friends</Link>
+      </section>
     );
   }
-
-  const ownProfile = profile.id === myId;
 
   return (
-    <div className="workspace-page">
-      <Link to="/app/friends" className="back-link">
-        ← Friends
-      </Link>
+    <section className="profile-page">
+      <header className="page-heading">
+        <Link
+          to="/app/friends"
+          className="icon-button"
+          aria-label="Back"
+        >
+          <ArrowLeft size={20} />
+        </Link>
+        <h1>Profile</h1>
+      </header>
 
-      {error && <div className="workspace-error">{error}</div>}
-
-      <section className="profile-card">
-        <div className="profile-cover" />
-
-        <div className="profile-main">
-          <div className="profile-avatar">
-            {profile.avatar_url ? (
-              <img src={profile.avatar_url} alt={profile.username} />
-            ) : (
-              (profile.username || "?").charAt(0).toUpperCase()
-            )}
-          </div>
-
-          <h1>{profile.full_name || profile.username}</h1>
-          <p className="profile-username">@{profile.username}</p>
-
-          {profile.bio ? (
-            <p className="profile-bio">{profile.bio}</p>
+      <div className="profile-card">
+        <div className="profile-avatar">
+          {profile?.avatar_url ? (
+            <img src={profile.avatar_url} alt="" />
           ) : (
-            <p className="profile-bio profile-muted">
-              No bio has been added yet.
-            </p>
-          )}
-
-          <div className="profile-status">
-            <span className="status-dot" />
-            {profile.status || "Status unavailable"}
-          </div>
-
-          {!ownProfile && (
-            <div className="profile-actions">
-              {isFriend ? (
-                <Link
-                  to={`/app/chat/${profile.id}`}
-                  className="small-primary link-action"
-                >
-                  Message
-                </Link>
-              ) : requestSent ? (
-                <span className="muted-action">Request sent</span>
-              ) : (
-                <button
-                  className="small-primary"
-                  onClick={handleAddFriend}
-                  disabled={busy}
-                >
-                  {busy ? "Sending..." : "Add friend"}
-                </button>
-              )}
-            </div>
-          )}
-
-          {ownProfile && (
-            <span className="muted-action">This is your profile</span>
+            profile?.username?.[0]?.toUpperCase() || "?"
           )}
         </div>
-      </section>
-    </div>
+
+        <h2>{profile?.username || "User"}</h2>
+        <p className="profile-handle">@{profile?.username || "user"}</p>
+
+        <p className="profile-bio">
+          {profile?.bio || "No introduction added yet."}
+        </p>
+
+        {!viewingSelf && (
+          <div className="profile-actions">
+            {isFriend ? (
+              <Link
+                className="primary-button"
+                to={`/app/chat/${userId}`}
+              >
+                <MessageCircle size={17} />
+                Message
+              </Link>
+            ) : requestSent ? (
+              <button className="secondary-button" disabled>
+                Request sent
+              </button>
+            ) : (
+              <button
+                className="primary-button"
+                onClick={handleAddFriend}
+                disabled={working}
+              >
+                <UserPlus size={17} />
+                {working ? "Sending..." : "Add friend"}
+              </button>
+            )}
+          </div>
+        )}
+
+        {error && <p className="inline-error">{error}</p>}
+      </div>
+    </section>
   );
 }
