@@ -9,9 +9,11 @@ import { initFriends }    from './views/friends.js';
 import { initProfile }    from './views/profile.js';
 import { initViewFriend } from './views/view-friend.js';
 
-// Load global utilities (single instance each, they handle their own presence/realtime)
+// Globals — single instance each
 import '/utils/callHub.js';
+import '/utils/pushClient.js';
 import '/utils/offline-guard.js';
+import '/utils/native-init.js';
 
 const router = new Router({
   '/':        { template: 'tpl-dashboard',   init: initDashboard  },
