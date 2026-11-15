@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>RelayTalk</title>
-  <meta name="theme-color" content="#f8fafc">
+  <meta name="theme-color" content="#f4f7f9">
   <link rel="icon" href="/favicon.ico" type="image/x-icon">
   <link rel="icon" href="/relay.png" type="image/png" sizes="192x192">
   <link rel="apple-touch-icon" href="/relay.png">
@@ -15,7 +15,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   
-  <!-- The New Design System -->
+  <!-- The New Premium Design System -->
   <link rel="stylesheet" href="/shared/styles/base.css">
   <link rel="stylesheet" href="/shared/styles/home.css">
   <link rel="stylesheet" href="/shared/styles/chats.css">
@@ -53,7 +53,7 @@
         <section class="greeting">
           <p class="greeting-small" id="greetingSmall">Hello</p>
           <h1 class="greeting-title" id="welcomeTitle">Friend</h1>
-          <p class="greeting-sub">Welcome back to RelayTalk</p>
+          <p class="greeting-sub">Ready to catch up?</p>
         </section>
 
         <button class="primary-action" onclick="openSearch()">
@@ -126,6 +126,69 @@
     </div>
   </template>
 
+  <!-- ═══════════ VIEW: Friends ═══════════ -->
+  <template id="tpl-friends">
+    <div class="friends-root">
+      <div class="loading-indicator" id="loadingIndicator">
+        <div class="loading-spinner"></div>
+        <div class="loading-text">Loading...</div>
+      </div>
+
+      <header class="app-bar">
+        <div class="app-bar-inner">
+          <div class="app-bar-brand"><span class="brand-name">Your Friends</span></div>
+        </div>
+      </header>
+
+      <div class="search-bar-wrap">
+        <div class="search-bar-inner">
+          <div class="search-wrap">
+            <i class="fas fa-search search-svg"></i>
+            <input type="text" id="searchInput" class="search-input" placeholder="Search friends..." autocomplete="off" oninput="searchFriends()">
+            <button class="clear-search" id="clearSearch" onclick="clearSearch()" style="display: none;"><i class="fas fa-times"></i></button>
+          </div>
+        </div>
+      </div>
+
+      <main class="page">
+        <section class="section">
+          <div class="list" id="friendsList"></div>
+        </section>
+      </main>
+
+      <nav class="bottom-nav">
+        <a href="#" class="nav-item" onclick="goToHome(); return false;"><i class="fas fa-home"></i><span>Home</span></a>
+        <a href="#" class="nav-item" onclick="openNotifications(event); return false;"><i class="fas fa-bell"></i><span>Alerts</span><span class="nav-badge" id="notificationBadge" style="display: none;">0</span></a>
+        <a href="#" class="nav-item active"><i class="fas fa-user-friends"></i><span>Friends</span></a>
+        <a href="#" class="nav-item" onclick="goToProfile(); return false;"><i class="fas fa-user"></i><span>You</span></a>
+      </nav>
+
+      <div class="modal" id="notificationsModal">
+        <div class="modal-panel">
+          <div class="modal-head"><h2 class="modal-title">Notifications</h2><button class="modal-close" onclick="closeModal()"><i class="fas fa-times"></i></button></div>
+          <div class="modal-body">
+            <div class="tabs" role="tablist">
+              <button class="tab active" id="notifTabMain" onclick="switchNotifTab('main')"><i class="fas fa-user-plus tab-icon"></i> Requests<span class="tab-badge" id="mainTabBadge" style="display: none;">0</span></button>
+              <button class="tab" id="notifTabCalls" onclick="switchNotifTab('calls')"><i class="fas fa-comment-dots tab-icon"></i> Calls<span class="tab-badge" id="callsTabBadge" style="display: none;">0</span></button>
+            </div>
+            <div class="tab-content active" id="notifMainContent"><div id="notificationsList"></div></div>
+            <div class="tab-content" id="notifCallsContent"><div id="callHistoryList"></div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal" id="searchModal" style="display:none;">
+        <div class="modal-panel">
+          <div class="modal-head"><h2 class="modal-title">Find people</h2><button class="modal-close" onclick="closeModal()"><i class="fas fa-times"></i></button></div>
+          <div class="modal-body">
+            <div class="search-wrap"><i class="fas fa-search search-svg"></i><input type="text" id="userSearchInput" class="search-input" placeholder="Search by username" autocomplete="off" oninput="searchUsers()"></div>
+            <div id="searchResults" class="search-results"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </template>
+
   <!-- ═══════════ VIEW: Chats ═══════════ -->
   <template id="tpl-chats">
     <div class="chat-view">
@@ -161,12 +224,12 @@
         <div class="message-input-container">
           <button class="attach-btn" onclick="showImagePicker()"><i class="fas fa-paperclip"></i></button>
           <button class="mic-btn" id="micBtn" type="button"><i class="fas fa-microphone"></i></button>
-          <textarea class="message-input" id="messageInput" placeholder="Type a message..." rows="1"></textarea>
+          <textarea class="message-input" id="messageInput" placeholder="Message..." rows="1"></textarea>
           <button class="send-btn" id="sendBtn" onclick="sendMessage()" disabled><i class="fas fa-paper-plane"></i></button>
         </div>
       </div>
 
-      <!-- Voice & Image Overlays (must remain complete for JS to work) -->
+      <!-- Voice & Image Overlays -->
       <div class="voice-rec-overlay" id="voiceRecOverlay" style="display: none;">
         <div class="voice-rec-panel">
           <div class="voice-rec-header"><span class="voice-rec-dot"></span> Recording</div>
@@ -229,72 +292,8 @@
       </div>
 
       <div class="modal-overlay" id="customToast" style="display: none; background: transparent; align-items: flex-end; padding-bottom: 40px; pointer-events: none;">
-        <div class="toast-content" style="background: var(--text); color: white; padding: 12px 24px; border-radius: 30px; box-shadow: var(--shadow-lg);">
+        <div class="toast-content" style="background: var(--ink); color: white; padding: 12px 24px; border-radius: 30px; box-shadow: var(--shadow-lg);">
           <div style="display: flex; align-items: center; gap: 10px;"><span id="toastIcon"></span><p id="toastMessage" style="margin: 0;"></p></div>
-        </div>
-      </div>
-    </div>
-  </template>
-
-  <!-- ═══════════ VIEW: Friends ═══════════ -->
-  <template id="tpl-friends">
-    <div class="friends-root">
-      <div class="loading-indicator" id="loadingIndicator">
-        <div class="loading-spinner"></div>
-        <div class="loading-text">Loading...</div>
-      </div>
-
-      <header class="app-bar">
-        <div class="app-bar-inner">
-          <div class="app-bar-brand"><span class="brand-name">Friends</span></div>
-        </div>
-      </header>
-
-      <div class="search-bar-wrap">
-        <div class="search-bar-inner">
-          <div class="search-wrap">
-            <i class="fas fa-search search-svg"></i>
-            <input type="text" id="searchInput" class="search-input" placeholder="Search friends..." autocomplete="off" oninput="searchFriends()">
-            <button class="clear-search" id="clearSearch" onclick="clearSearch()" style="display: none;"><i class="fas fa-times"></i></button>
-          </div>
-        </div>
-      </div>
-
-      <main class="page">
-        <section class="section">
-          <div class="section-head"><h2 class="section-title">All friends</h2></div>
-          <div class="list" id="friendsList"></div>
-        </section>
-      </main>
-
-      <nav class="bottom-nav">
-        <a href="#" class="nav-item" onclick="goToHome(); return false;"><i class="fas fa-home"></i><span>Home</span></a>
-        <a href="#" class="nav-item" onclick="openNotifications(event); return false;"><i class="fas fa-bell"></i><span>Alerts</span><span class="nav-badge" id="notificationBadge" style="display: none;">0</span></a>
-        <a href="#" class="nav-item active"><i class="fas fa-user-friends"></i><span>Friends</span></a>
-        <a href="#" class="nav-item" onclick="goToProfile(); return false;"><i class="fas fa-user"></i><span>You</span></a>
-      </nav>
-
-      <div class="modal" id="notificationsModal">
-        <div class="modal-panel">
-          <div class="modal-head"><h2 class="modal-title">Notifications</h2><button class="modal-close" onclick="closeModal()"><i class="fas fa-times"></i></button></div>
-          <div class="modal-body">
-            <div class="tabs" role="tablist">
-              <button class="tab active" id="notifTabMain" onclick="switchNotifTab('main')"><i class="fas fa-user-plus tab-icon"></i> Requests<span class="tab-badge" id="mainTabBadge" style="display: none;">0</span></button>
-              <button class="tab" id="notifTabCalls" onclick="switchNotifTab('calls')"><i class="fas fa-comment-dots tab-icon"></i> Calls<span class="tab-badge" id="callsTabBadge" style="display: none;">0</span></button>
-            </div>
-            <div class="tab-content active" id="notifMainContent"><div id="notificationsList"></div></div>
-            <div class="tab-content" id="notifCallsContent"><div id="callHistoryList"></div></div>
-          </div>
-        </div>
-      </div>
-
-      <div class="modal" id="searchModal" style="display:none;">
-        <div class="modal-panel">
-          <div class="modal-head"><h2 class="modal-title">Find people</h2><button class="modal-close" onclick="closeModal()"><i class="fas fa-times"></i></button></div>
-          <div class="modal-body">
-            <div class="search-wrap"><i class="fas fa-search search-svg"></i><input type="text" id="userSearchInput" class="search-input" placeholder="Search by username" autocomplete="off" oninput="searchUsers()"></div>
-            <div id="searchResults" class="search-results"></div>
-          </div>
         </div>
       </div>
     </div>
@@ -381,13 +380,13 @@
         <a href="#" class="nav-item active"><i class="fas fa-user"></i><span>You</span></a>
       </nav>
 
-      <!-- Modals for Profile -->
+      <!-- Profile Modals -->
       <div class="modal-overlay" id="bioEditorModal" style="display:none;">
         <div class="modal-content">
           <div class="modal-header"><h3 class="modal-title">Edit About</h3><button class="modal-close" onclick="closeBioEditor()">×</button></div>
           <div class="modal-body">
             <textarea id="bioInput" class="form-input" maxlength="100" rows="4"></textarea>
-            <div style="text-align:right; font-size:0.8rem; color:var(--text-3); margin-top:4px;"><span id="bioCharCount">0</span> / 100</div>
+            <div style="text-align:right; font-size:0.8rem; color:var(--ink-3); margin-top:4px;"><span id="bioCharCount">0</span> / 100</div>
             <div style="display:flex; gap:10px; margin-top:16px;"><button class="btn-secondary" style="flex:1;" onclick="closeBioEditor()">Cancel</button><button class="btn-primary" style="flex:1;" onclick="saveBio()">Save</button></div>
           </div>
         </div>
@@ -432,7 +431,7 @@
     <div class="view-root">
       <div class="view-fallback" id="fallbackScreen" style="display:none; position:fixed; inset:0; background:var(--surface); z-index:100; padding:40px; text-align:center;">
         <h2 style="font-size:2rem; margin-bottom:10px;">Account not found</h2>
-        <p style="color:var(--text-2); margin-bottom:20px;">This account does not exist.</p>
+        <p style="color:var(--ink-2); margin-bottom:20px;">This account does not exist.</p>
         <button class="btn-primary" onclick="closeView()">Go back</button>
       </div>
 
@@ -463,10 +462,10 @@
           <div class="bio-header"><span class="view-bio-label">Biography</span></div>
           <div class="view-bio-box" id="viewBioBox"><span class="view-bio-empty">No biography yet.</span></div>
         </div>
-        <div id="viewFriendsSince" style="text-align:center; color:var(--text-3); font-size:0.85rem; font-weight:500;"></div>
+        <div id="viewFriendsSince" style="text-align:center; color:var(--ink-3); font-size:0.85rem; font-weight:500;"></div>
       </main>
 
-      <div class="view-toast" id="viewToast" style="display:none; position:fixed; bottom:40px; left:50%; transform:translateX(-50%); background:var(--text); color:#fff; padding:12px 24px; border-radius:30px; box-shadow:var(--shadow-lg);">
+      <div class="view-toast" id="viewToast" style="display:none; position:fixed; bottom:40px; left:50%; transform:translateX(-50%); background:var(--ink); color:#fff; padding:12px 24px; border-radius:30px; box-shadow:var(--shadow-lg);">
         <span id="viewToastIcon">✅</span> <span id="viewToastText">Message</span>
       </div>
     </div>
