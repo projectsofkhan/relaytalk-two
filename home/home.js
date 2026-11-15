@@ -1,7 +1,7 @@
 // home/home.js — app SPA entry.
 
 import { Router, bindNavLinks } from '/shared/router.js';
-import { getSession } from '/shared/supabase.js';
+import { getSession, getSupabase } from '/shared/supabase.js';
 
 import { initDashboard }  from './views/dashboard.js';
 import { initChats }      from './views/chats.js';
@@ -27,5 +27,7 @@ bindNavLinks(router);
     window.location.replace('/#/login');
     return;
   }
+  // Make the Supabase client globally available to ported page logic.
+  window.supabase = getSupabase();
   router.start();
 })();
