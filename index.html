@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 
   <title>RelayTalk — Fast, private messaging</title>
-  <meta name="description" content="RelayTalk — Fast, private, simple messaging for real conversations.">
+  <meta name="description" content="A quiet place to talk to the people you know. Chat, call, and share — without the clutter.">
   <meta name="theme-color" content="#ffffff">
 
   <link rel="canonical" href="https://relaytalk.vercel.app/">
@@ -13,7 +13,7 @@
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="RelayTalk">
   <meta property="og:title" content="RelayTalk — Fast, private messaging">
-  <meta property="og:description" content="Fast, private, simple messaging — made for real conversations.">
+  <meta property="og:description" content="A quiet place to talk to the people you know.">
   <meta property="og:url" content="https://relaytalk.vercel.app/">
   <meta property="og:image" content="https://relaytalk.vercel.app/relayad.png?v=2">
   <meta property="og:image:width" content="1200">
@@ -22,7 +22,7 @@
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:site" content="@RelayTalk">
   <meta name="twitter:title" content="RelayTalk — Fast, private messaging">
-  <meta name="twitter:description" content="Fast, private, simple messaging — made for real conversations.">
+  <meta name="twitter:description" content="A quiet place to talk to the people you know.">
   <meta name="twitter:image" content="https://relaytalk.vercel.app/relayad.png?v=2">
 
   <link rel="icon" href="/favicon.ico" type="image/x-icon">
@@ -42,25 +42,223 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-  <!-- ═══════════ VIEW: Welcome ═══════════ -->
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <!-- VIEW: Welcome (landing)                                   -->
+  <!-- ═══════════════════════════════════════════════════════════ -->
   <template id="tpl-welcome">
-    <section class="auth-view welcome-view">
-      <div class="welcome-container">
-        <img src="/relay.png" alt="" class="welcome-logo">
-        <h1 class="welcome-title">RelayTalk</h1>
-        <p class="welcome-tagline">Fast, private, simple messaging.</p>
+    <section class="welcome-view">
 
-        <div class="welcome-actions">
-          <button class="btn-primary btn-block" data-nav="/signup">Get started</button>
-          <button class="btn-secondary btn-block" data-nav="/login">Sign in</button>
+      <header class="landing-topbar">
+        <div class="landing-topbar-inner">
+          <a href="/" class="landing-brand" data-nav="/">
+            <img src="/relay.png" alt="" class="landing-brand-logo">
+            <span>RelayTalk</span>
+          </a>
+          <nav class="landing-nav" aria-label="Sections">
+            <button type="button" data-scroll="features">Features</button>
+            <button type="button" data-scroll="how">How it works</button>
+            <button type="button" data-scroll="faq">FAQ</button>
+          </nav>
+          <div class="landing-topbar-actions">
+            <button class="btn-ghost" data-nav="/login">Sign in</button>
+            <button class="btn-primary btn-sm" data-nav="/signup">Get started</button>
+          </div>
         </div>
+      </header>
 
-        <a href="/about/" class="welcome-learn">Learn more →</a>
-      </div>
+      <main>
+
+        <!-- ─────────── HERO ─────────── -->
+        <section class="landing-hero">
+          <p class="landing-eyebrow">Now available</p>
+          <h1 class="landing-hero-title">
+            A quiet place to talk<br>
+            to the people you know.
+          </h1>
+          <p class="landing-hero-sub">
+            Search for a friend by username. Send a message. Make a call.
+            No ads, no clutter, no noise.
+          </p>
+          <div class="landing-hero-actions">
+            <button class="btn-primary" data-nav="/signup">Create account</button>
+            <button class="btn-secondary" data-nav="/login">Sign in</button>
+          </div>
+        </section>
+
+        <!-- ─────────── FEATURES ─────────── -->
+        <section id="features" class="landing-section" data-reveal>
+          <header class="landing-section-head">
+            <p class="landing-eyebrow">Features</p>
+            <h2>Everything you need.<br>Nothing you don't.</h2>
+          </header>
+
+          <div class="landing-feature-grid">
+            <div class="feature-item">
+              <svg class="feature-icon" viewBox="0 0 24 24" aria-hidden="true">
+                <circle cx="11" cy="11" r="7"/>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+              </svg>
+              <div>
+                <h3>Find friends</h3>
+                <p>Search by username. Send a request. They appear in your list.</p>
+              </div>
+            </div>
+
+            <div class="feature-item">
+              <svg class="feature-icon" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/>
+              </svg>
+              <div>
+                <h3>Real-time chat</h3>
+                <p>Messages arrive instantly. No refresh, no delay, no polling.</p>
+              </div>
+            </div>
+
+            <div class="feature-item">
+              <svg class="feature-icon" viewBox="0 0 24 24" aria-hidden="true">
+                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                <circle cx="8.5" cy="8.5" r="1.5"/>
+                <polyline points="21 15 16 10 5 21"/>
+              </svg>
+              <div>
+                <h3>Image messages</h3>
+                <p>Share photos inside a chat. Just like text.</p>
+              </div>
+            </div>
+
+            <div class="feature-item">
+              <svg class="feature-icon" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+              </svg>
+              <div>
+                <h3>Voice &amp; video calls</h3>
+                <p>One tap to call any friend — online or offline.</p>
+              </div>
+            </div>
+
+            <div class="feature-item">
+              <svg class="feature-icon" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+                <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+              </svg>
+              <div>
+                <h3>Push notifications</h3>
+                <p>Get notified when a message arrives, even with the app closed.</p>
+              </div>
+            </div>
+
+            <div class="feature-item">
+              <svg class="feature-icon" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+              </svg>
+              <div>
+                <h3>Privacy controls</h3>
+                <p>Choose what shows up in lock-screen notifications.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ─────────── HOW IT WORKS ─────────── -->
+        <section id="how" class="landing-section landing-section-alt" data-reveal>
+          <header class="landing-section-head">
+            <p class="landing-eyebrow">How it works</p>
+            <h2>Three steps to your first message.</h2>
+          </header>
+
+          <div class="landing-steps">
+            <div class="landing-step">
+              <span class="landing-step-num">01</span>
+              <h3>Create an account</h3>
+              <p>Pick a username, set a password. No email required.</p>
+            </div>
+            <div class="landing-step">
+              <span class="landing-step-num">02</span>
+              <h3>Find your people</h3>
+              <p>Search by username. Send a friend request. They accept — done.</p>
+            </div>
+            <div class="landing-step">
+              <span class="landing-step-num">03</span>
+              <h3>Start talking</h3>
+              <p>Open a chat. Send a message. Or call. That's it.</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- ─────────── FAQ ─────────── -->
+        <section id="faq" class="landing-section" data-reveal>
+          <header class="landing-section-head">
+            <p class="landing-eyebrow">FAQ</p>
+            <h2>Answers, briefly.</h2>
+          </header>
+
+          <div class="landing-faq">
+            <details class="landing-faq-item">
+              <summary>Do I need an email to sign up?</summary>
+              <div class="landing-faq-body">No. A username and a password is all we ask for. No phone number, no email.</div>
+            </details>
+
+            <details class="landing-faq-item">
+              <summary>How do I find a friend?</summary>
+              <div class="landing-faq-body">Open the app, tap "Find friends", and search by their username. Send a request — once they accept, they appear in your list.</div>
+            </details>
+
+            <details class="landing-faq-item">
+              <summary>Can I edit or delete a message after sending it?</summary>
+              <div class="landing-faq-body">Yes. Long-press your own message. Tap the pencil to edit, or the trash to delete. Edited messages show a small "(edited)" label.</div>
+            </details>
+
+            <details class="landing-faq-item">
+              <summary>Can I make voice or video calls?</summary>
+              <div class="landing-faq-body">Yes. Tap the phone icon in any chat, or the call button next to a friend. You can call whether they're online or offline.</div>
+            </details>
+
+            <details class="landing-faq-item">
+              <summary>Are there ads?</summary>
+              <div class="landing-faq-body">No. RelayTalk is free to use, and we don't show ads or sell your data.</div>
+            </details>
+
+            <details class="landing-faq-item">
+              <summary>What happens if I forget my password?</summary>
+              <div class="landing-faq-body">Passwords can't be recovered — we don't store them in a way that allows that. Write your password down somewhere safe.</div>
+            </details>
+
+            <details class="landing-faq-item">
+              <summary>Can I install it on my phone?</summary>
+              <div class="landing-faq-body">Yes. On iPhone: open RelayTalk in Safari, tap Share, then "Add to Home Screen". On Android: open it in Chrome and choose "Install app" from the menu.</div>
+            </details>
+          </div>
+        </section>
+
+        <!-- ─────────── FINAL CTA ─────────── -->
+        <section class="landing-cta" data-reveal>
+          <h2>Ready to talk?</h2>
+          <p>Free to use. Two taps to get started.</p>
+          <div class="landing-cta-actions">
+            <button class="btn-primary" data-nav="/signup">Create account</button>
+            <button class="btn-secondary" data-nav="/login">Sign in</button>
+          </div>
+        </section>
+
+      </main>
+
+      <footer class="landing-footer">
+        <div class="landing-footer-inner">
+          <span class="landing-footer-copy">© 2026 RelayTalk</span>
+          <nav class="landing-footer-nav" aria-label="Footer">
+            <a href="/about/">About</a>
+            <button type="button" data-scroll="features">Features</button>
+            <button type="button" data-scroll="faq">FAQ</button>
+          </nav>
+        </div>
+      </footer>
+
     </section>
   </template>
 
-  <!-- ═══════════ VIEW: Login ═══════════ -->
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <!-- VIEW: Login                                               -->
+  <!-- ═══════════════════════════════════════════════════════════ -->
   <template id="tpl-login">
     <section class="auth-view login-view">
       <header class="auth-topbar">
@@ -120,7 +318,9 @@
     </section>
   </template>
 
-  <!-- ═══════════ VIEW: Signup ═══════════ -->
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <!-- VIEW: Signup                                              -->
+  <!-- ═══════════════════════════════════════════════════════════ -->
   <template id="tpl-signup">
     <section class="auth-view signup-view">
       <header class="auth-topbar">
@@ -279,5 +479,60 @@
   </template>
 
   <script type="module" src="/auth.js"></script>
+
+  <!-- ─── Landing-page interactions (welcome view only) ─── -->
+  <script>
+    (function () {
+      var boundFlag = 'data-landing-bound';
+
+      function bindLanding(root) {
+        if (!root || root.hasAttribute(boundFlag)) return;
+        root.setAttribute(boundFlag, '1');
+
+        // Smooth-scroll for [data-scroll] buttons
+        root.querySelectorAll('[data-scroll]').forEach(function (btn) {
+          btn.addEventListener('click', function (e) {
+            e.preventDefault();
+            var id = btn.getAttribute('data-scroll');
+            var target = root.querySelector('#' + id);
+            if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          });
+        });
+
+        // Reveal-on-scroll for [data-reveal] sections
+        var revealEls = root.querySelectorAll('[data-reveal]');
+        if (!revealEls.length) return;
+
+        var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        if (reduceMotion || !('IntersectionObserver' in window)) {
+          revealEls.forEach(function (el) { el.classList.add('in-view'); });
+          return;
+        }
+
+        var observer = new IntersectionObserver(function (entries) {
+          entries.forEach(function (entry) {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('in-view');
+              observer.unobserve(entry.target);
+            }
+          });
+        }, { threshold: 0.08, rootMargin: '0px 0px -8% 0px' });
+
+        revealEls.forEach(function (el) { observer.observe(el); });
+      }
+
+      var outlet = document.getElementById('view-outlet');
+      if (!outlet) return;
+
+      new MutationObserver(function () {
+        var welcome = outlet.querySelector('.welcome-view');
+        if (welcome) bindLanding(welcome);
+      }).observe(outlet, { childList: true });
+
+      // In case welcome is already rendered before this script runs
+      var existing = outlet.querySelector('.welcome-view');
+      if (existing) bindLanding(existing);
+    })();
+  </script>
 </body>
 </html>
