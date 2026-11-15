@@ -1,27 +1,18 @@
-
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import { supabase } from "./supabase";
+import { ArrowLeft, Send, LoaderCircle } from "lucide-react";
 import {
+  areFriends,
   getConversation,
   getProfile,
   markConversationRead,
   sendTextMessage,
-  subscribeToConversation
+  subscribeToConversation,
 } from "./data";
 
-function formatTime(value) {
-  if (!value) return "";
-
-  return new Date(value).toLocaleTimeString([], {
-    hour: "2-digit",
-    minute: "2-digit"
-  });
-}
-
 export default function ChatPage({ session }) {
-  const { friendId } = useParams();
-  const userId = session.user.id;
+  const { userId: friendId } = useParams();
+  const currentUserId = session?.user?.id;
 
   const [friend, setFriend] = useState(null);
   const [messages, setMessages] = useState([]);
@@ -31,102 +22,117 @@ export default function ChatPage({ session }) {
   const [error, setError] = useState("");
 
   const bottomRef = useRef(null);
-  const inputRef = useRef(null);
 
-  const scrollToBottom = useCallback(() => {
-    requestAnimationFrame(() => {
-      bottomRef.current?.scrollIntoView({
-        behavior: "smooth",
-        block: "end"
-      });
-    });
-  }, []);
+  const loadMessages = useCallback(async () => {
+    if (!currentUserId || !friendId) return;
+
+    const conversation = await getConversation(currentUserId, friendId);
+    setMessages(conversation);
+
+    try {
+      await markConversationRead(friendId);
+    } catch (readError) {
+      console.warn("Unable to mark messages as read:", readError);
+    }
+  }, [currentUserId, friendId]);
 
   useEffect(() => {
     let active = true;
     let unsubscribe = null;
 
-    async function initialize() {
+    async function initialise() {
       setLoading(true);
       setError("");
 
       try {
-        const [profile, conversation] = await Promise.all([
-          getProfile(friendId),
-          getConversation(userId, friendId)
-        ]);
-
-        if (!profile) {
-          throw new Error("This user could not be found.");
+        if (!currentUserId || !friendId) {
+          throw new Error("This conversation is unavailable.");
         }
 
-        if (profile.id === userId) {
-          throw new Error("You cannot chat with yourself.");
+        const friendshipExists = await areFriends(
+          currentUserId,
+          friendId
+        );
+
+        if (!friendshipExists) {
+          throw new Error("You can only chat with an accepted friend.");
         }
+
+        const profile = await getProfile(friendId);
+        if (!profile) throw new Error("This user could not be found.");
+
+        const conversation = await getConversation(
+          currentUserId,
+          friendId
+        );
 
         if (!active) return;
 
         setFriend(profile);
         setMessages(conversation);
 
-        await markConversationRead(friendId);
+        try {
+          await markConversationRead(friendId);
+        } catch (readError) {
+          console.warn("Unable to mark messages as read:", readError);
+        }
 
         unsubscribe = subscribeToConversation(
-          userId,
+          currentUserId,
           friendId,
-          (message) => {
+          (payload) => {
             if (!active) return;
 
-            setMessages((current) => {
-              if (current.some((item) => item.id === message.id)) {
-                return current;
+            if (payload.eventType === "DELETE") {
+              setMessages((previous) =>
+                previous.filter((item) => item.id !== payload.old?.id)
+              );
+              return;
+            }
+
+            const incoming = payload.new;
+            if (!incoming) return;
+
+            setMessages((previous) => {
+              const exists = previous.some(
+                (item) => item.id === incoming.id
+              );
+
+              if (exists) {
+                return previous.map((item) =>
+                  item.id === incoming.id ? incoming : item
+                );
               }
 
-              return [...current, message].sort(
+              return [...previous, incoming].sort(
                 (a, b) =>
                   new Date(a.created_at) - new Date(b.created_at)
               );
             });
 
-            if (message.receiver_id === userId) {
-              markConversationRead(friendId);
+            if (incoming.receiver_id === currentUserId) {
+              markConversationRead(friendId).catch(console.warn);
             }
-          },
-          (updated) => {
-            if (!active) return;
-
-            setMessages((current) =>
-              current.map((item) =>
-                item.id === updated.id ? { ...item, ...updated } : item
-              )
-            );
-          },
-          (deleted) => {
-            if (!active || !deleted?.id) return;
-
-            setMessages((current) =>
-              current.filter((item) => item.id !== deleted.id)
-            );
           }
         );
-      } catch (err) {
-        if (active) setError(err.message || "Could not open this chat.");
+      } catch (loadError) {
+        if (active) setError(loadError.message);
       } finally {
         if (active) setLoading(false);
       }
     }
 
-    initialize();
+    initialise();
 
     return () => {
       active = false;
       if (unsubscribe) unsubscribe();
     };
-  }, [friendId, userId]);
+  }, [currentUserId, friendId]);
 
   useEffect(() => {
-    scrollToBottom();
-  }, [messages, scrollToBottom]);
+    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
 
   async function handleSend(event) {
     event.preventDefault();
@@ -138,133 +144,140 @@ export default function ChatPage({ session }) {
     setError("");
 
     try {
-      const message = await sendTextMessage(
-        userId,
+      const sentMessage = await sendTextMessage(
+        currentUserId,
         friendId,
         messageText
       );
 
-      setMessages((current) => {
-        if (current.some((item) => item.id === message.id)) {
-          return current;
+      setMessages((previous) => {
+        if (previous.some((item) => item.id === sentMessage.id)) {
+          return previous;
         }
 
-        return [...current, message];
+        return [...previous, sentMessage];
       });
 
       setText("");
-      inputRef.current?.focus();
-    } catch (err) {
-      setError(err.message || "Message could not be sent.");
+    } catch (sendError) {
+      setError(sendError.message || "Message could not be sent.");
     } finally {
       setSending(false);
     }
   }
 
+  if (loading) {
+    return (
+      <div className="page-loading">
+        <LoaderCircle className="spin" size={25} />
+        <span>Opening conversation...</span>
+      </div>
+    );
+  }
+
+  if (error && !friend) {
+    return (
+      <section className="page-error">
+        <p>{error}</p>
+        <Link to="/app/friends">Back to friends</Link>
+      </section>
+    );
+  }
+
   return (
-    <div className="workspace-page chat-page">
-      <div className="chat-page-heading">
-        <Link to="/app/friends" className="back-link">
-          ← Friends
+    <section className="chat-page">
+      <header className="chat-header">
+        <Link
+          to="/app/friends"
+          className="icon-button"
+          aria-label="Back to friends"
+        >
+          <ArrowLeft size={20} />
         </Link>
 
-        {friend && (
-          <Link
-            to={`/app/profile/${friend.id}`}
-            className="chat-person"
-          >
-            <div className="user-avatar">
-              {friend.avatar_url ? (
-                <img src={friend.avatar_url} alt={friend.username} />
-              ) : (
-                (friend.username || "?").charAt(0).toUpperCase()
-              )}
-            </div>
-            <div>
-              <strong>{friend.full_name || friend.username}</strong>
-              <span>@{friend.username}</span>
-            </div>
-          </Link>
+        <div className="chat-person">
+          <div className="avatar">
+            {friend?.avatar_url ? (
+              <img src={friend.avatar_url} alt="" />
+            ) : (
+              friend?.username?.[0]?.toUpperCase() || "?"
+            )}
+          </div>
+
+          <div>
+            <strong>{friend?.username || "User"}</strong>
+            <span>{friend?.status === "online" ? "Online" : "RelayTalk"}</span>
+          </div>
+        </div>
+      </header>
+
+      <div className="messages-list">
+        {messages.length === 0 ? (
+          <div className="chat-empty">
+            <strong>Start a conversation</strong>
+            <p>Send your first message to {friend?.username}.</p>
+          </div>
+        ) : (
+          messages.map((message) => {
+            const mine = message.sender_id === currentUserId;
+            const deleted =
+              message.deleted === true ||
+              message.deleted_at ||
+              message.content === "__DELETED__";
+
+            return (
+              <article
+                key={message.id}
+                className={`message-row ${mine ? "mine" : "theirs"}`}
+              >
+                <div className="message-bubble">
+                  {deleted ? (
+                    <em>This message was deleted.</em>
+                  ) : message.message_type === "audio" && message.audio_url ? (
+                    <audio controls src={message.audio_url} />
+                  ) : (
+                    message.content
+                  )}
+                  <time>
+                    {message.created_at
+                      ? new Date(message.created_at).toLocaleTimeString([], {
+                          hour: "2-digit",
+                          minute: "2-digit",
+                        })
+                      : ""}
+                    {mine && message.read ? " · Read" : ""}
+                  </time>
+                </div>
+              </article>
+            );
+          })
         )}
+        <div ref={bottomRef} />
       </div>
 
-      {error && <div className="workspace-error">{error}</div>}
+      {error && <p className="inline-error">{error}</p>}
 
-      <section className="chat-panel">
-        <div className="chat-messages">
-          {loading ? (
-            <div className="empty-panel">
-              <p>Loading conversation...</p>
-            </div>
-          ) : messages.length === 0 ? (
-            <div className="empty-panel chat-empty">
-              <span>✉</span>
-              <strong>Say hello</strong>
-              <p>This is the beginning of your conversation.</p>
-            </div>
+      <form className="message-composer" onSubmit={handleSend}>
+        <input
+          value={text}
+          onChange={(event) => setText(event.target.value)}
+          placeholder="Write a message..."
+          aria-label="Message"
+          maxLength={5000}
+        />
+
+        <button
+          type="submit"
+          disabled={!text.trim() || sending}
+          aria-label="Send message"
+        >
+          {sending ? (
+            <LoaderCircle className="spin" size={19} />
           ) : (
-            messages.map((message) => {
-              const mine = message.sender_id === userId;
-              const deleted =
-                message.deleted === true ||
-                Boolean(message.deleted_at) ||
-                message.content === "__DELETED__";
-
-              return (
-                <div
-                  className={`message-line ${mine ? "message-mine" : "message-theirs"}`}
-                  key={message.id}
-                >
-                  <div className="message-bubble">
-                    {deleted ? (
-                      <em>This message was deleted.</em>
-                    ) : message.message_type === "text" ? (
-                      message.content
-                    ) : (
-                      <em>
-                        {message.message_type === "audio"
-                          ? "Voice message"
-                          : message.message_type === "call"
-                            ? "Call event"
-                            : "Unsupported message type"}
-                      </em>
-                    )}
-                    <span className="message-time">
-                      {formatTime(message.created_at)}
-                      {mine && (
-                        <span className="read-mark">
-                          {message.read ? " · Read" : " · Sent"}
-                        </span>
-                      )}
-                    </span>
-                  </div>
-                </div>
-              );
-            })
+            <Send size={19} />
           )}
-
-          <div ref={bottomRef} />
-        </div>
-
-        <form className="chat-composer" onSubmit={handleSend}>
-          <input
-            ref={inputRef}
-            value={text}
-            onChange={(event) => setText(event.target.value)}
-            placeholder="Write a message..."
-            maxLength={10000}
-            disabled={loading || !friend || sending}
-            aria-label="Message"
-          />
-          <button
-            className="send-button"
-            type="submit"
-            disabled={!text.trim() || sending || loading || !friend}
-          >
-            {sending ? "..." : "Send"}
-          </button>
-        </form>
-      </section>
-    </div>
+        </button>
+      </form>
+    </section>
   );
 }
