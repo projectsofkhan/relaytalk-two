@@ -4,16 +4,16 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 
-  <title>RelayTalk — A cleaner way to stay close</title>
-  <meta name="description" content="One-to-one messaging for the people who matter. No ads, no algorithms, no noise.">
-  <meta name="theme-color" content="#4f46e5">
+  <title>RelayTalk — Messaging, without the noise</title>
+  <meta name="description" content="One-to-one chat for the people who matter. No ads, no algorithms, no distractions.">
+  <meta name="theme-color" content="#1d4ed8">
 
   <link rel="canonical" href="https://relaytalk.vercel.app/">
 
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="RelayTalk">
-  <meta property="og:title" content="RelayTalk — A cleaner way to stay close">
-  <meta property="og:description" content="One-to-one messaging for the people who matter. No ads, no noise.">
+  <meta property="og:title" content="RelayTalk — Messaging, without the noise">
+  <meta property="og:description" content="One-to-one chat for the people who matter.">
   <meta property="og:url" content="https://relaytalk.vercel.app/">
   <meta property="og:image" content="https://relaytalk.vercel.app/relayad.png?v=2">
   <meta property="og:image:width" content="1200">
@@ -21,8 +21,8 @@
 
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:site" content="@RelayTalk">
-  <meta name="twitter:title" content="RelayTalk — A cleaner way to stay close">
-  <meta name="twitter:description" content="One-to-one messaging for the people who matter.">
+  <meta name="twitter:title" content="RelayTalk — Messaging, without the noise">
+  <meta name="twitter:description" content="One-to-one chat for the people who matter.">
   <meta name="twitter:image" content="https://relaytalk.vercel.app/relayad.png?v=2">
 
   <link rel="icon" href="/favicon.ico" type="image/x-icon">
@@ -42,9 +42,7 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-  <!-- ═══════════════════════════════════════════════════════════ -->
-  <!-- VIEW: Welcome (landing)                                   -->
-  <!-- ═══════════════════════════════════════════════════════════ -->
+  <!-- ═══════════ VIEW: Welcome ═══════════ -->
   <template id="tpl-welcome">
     <section class="welcome-view">
 
@@ -61,7 +59,7 @@
           </nav>
           <div class="landing-topbar-actions">
             <button class="btn-ghost" data-nav="/login">Sign in</button>
-            <button class="btn-primary btn-sm" data-nav="/signup" data-ripple>Get started</button>
+            <button class="btn-primary btn-sm" data-nav="/signup">Get started</button>
           </div>
         </div>
       </header>
@@ -69,24 +67,21 @@
       <main>
 
         <section class="landing-hero">
-          <p class="landing-eyebrow">Introducing RelayTalk</p>
-          <h1 class="landing-hero-title">
-            A cleaner way<br>to stay close.
-          </h1>
+          <span class="landing-badge">Free · No ads · Private</span>
+          <h1 class="landing-hero-title">Messaging,<br>without the noise.</h1>
           <p class="landing-hero-sub">
-            One-to-one messaging for the people who matter.
-            No ads, no algorithms, no noise.
+            One-to-one chat for the people who matter.
+            No ads, no algorithms, no distractions.
           </p>
           <div class="landing-hero-actions">
-            <button class="btn-primary btn-lg" data-nav="/signup" data-ripple>Get started</button>
-            <button class="btn-secondary btn-lg" data-nav="/login" data-ripple>Sign in</button>
+            <button class="btn-primary btn-lg" data-nav="/signup">Get started</button>
+            <button class="btn-secondary btn-lg" data-nav="/login">Sign in</button>
           </div>
-          <p class="landing-hero-note">Free forever · No ads · No tracking</p>
         </section>
 
         <section id="features" class="landing-section" data-reveal>
           <header class="landing-section-head">
-            <p class="landing-eyebrow">Features</p>
+            <span class="landing-eyebrow">Features</span>
             <h2>Everything you need.<br>Nothing you don't.</h2>
           </header>
 
@@ -112,7 +107,7 @@
               </div>
               <div>
                 <h3>Real-time chat</h3>
-                <p>Messages land instantly — no refresh, no delay.</p>
+                <p>Messages land instantly. No refresh, no delay.</p>
               </div>
             </div>
 
@@ -123,7 +118,7 @@
                 </svg>
               </div>
               <div>
-                <h3>Voice &amp; video calls</h3>
+                <h3>Voice &amp; video</h3>
                 <p>Call anyone in your list. One tap.</p>
               </div>
             </div>
@@ -151,7 +146,7 @@
               </div>
               <div>
                 <h3>Push notifications</h3>
-                <p>Get notified the moment a message arrives.</p>
+                <p>Notified the moment a message arrives.</p>
               </div>
             </div>
 
@@ -171,7 +166,7 @@
 
         <section id="how" class="landing-section landing-section-alt" data-reveal>
           <header class="landing-section-head">
-            <p class="landing-eyebrow">How it works</p>
+            <span class="landing-eyebrow">How it works</span>
             <h2>Three steps. Then you're chatting.</h2>
           </header>
 
@@ -196,7 +191,7 @@
 
         <section id="faq" class="landing-section" data-reveal>
           <header class="landing-section-head">
-            <p class="landing-eyebrow">FAQ</p>
+            <span class="landing-eyebrow">FAQ</span>
             <h2>Questions, answered.</h2>
           </header>
 
@@ -205,32 +200,26 @@
               <summary>Do I need an email to sign up?</summary>
               <div class="landing-faq-body">No. A username and a password is all.</div>
             </details>
-
             <details class="landing-faq-item">
               <summary>How do I find a friend?</summary>
               <div class="landing-faq-body">Search by username in the app. Send a request — once they accept, they're in your list.</div>
             </details>
-
             <details class="landing-faq-item">
               <summary>Can I edit or delete messages?</summary>
               <div class="landing-faq-body">Yes. Long-press any message you sent. Edit or delete it.</div>
             </details>
-
             <details class="landing-faq-item">
               <summary>Can I make voice and video calls?</summary>
               <div class="landing-faq-body">Yes. One tap from any chat.</div>
             </details>
-
             <details class="landing-faq-item">
               <summary>Are there ads?</summary>
               <div class="landing-faq-body">None. Free forever, no ads, no data selling.</div>
             </details>
-
             <details class="landing-faq-item">
               <summary>What if I forget my password?</summary>
               <div class="landing-faq-body">Passwords can't be recovered — we never store them readable. Keep it safe.</div>
             </details>
-
             <details class="landing-faq-item">
               <summary>Can I install it like an app?</summary>
               <div class="landing-faq-body">Yes. On iPhone: Share → Add to Home Screen. On Android: Install app.</div>
@@ -242,8 +231,8 @@
           <h2>Ready when you are.</h2>
           <p>Free forever. Two taps to get started.</p>
           <div class="landing-cta-actions">
-            <button class="btn-primary btn-lg" data-nav="/signup" data-ripple>Get started</button>
-            <button class="btn-secondary btn-lg" data-nav="/login" data-ripple>Sign in</button>
+            <button class="btn-primary btn-lg" data-nav="/signup">Get started</button>
+            <button class="btn-secondary btn-lg" data-nav="/login">Sign in</button>
           </div>
         </section>
 
@@ -263,99 +252,67 @@
     </section>
   </template>
 
-  <!-- ═══════════════════════════════════════════════════════════ -->
-  <!-- VIEW: Login (split panel)                                 -->
-  <!-- ═══════════════════════════════════════════════════════════ -->
+  <!-- ═══════════ VIEW: Login ═══════════ -->
   <template id="tpl-login">
-    <section class="auth-view login-view split-view">
+    <section class="auth-view login-view">
+      <header class="auth-topbar">
+        <button type="button" class="back-btn" data-nav="/" aria-label="Back to home">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+               stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <line x1="19" y1="12" x2="5" y2="12"></line>
+            <polyline points="12 19 5 12 12 5"></polyline>
+          </svg>
+          <span>Back</span>
+        </button>
+      </header>
 
-      <div class="auth-panel-form">
-        <header class="auth-topbar">
-          <button type="button" class="back-btn" data-nav="/" data-ripple aria-label="Back to home">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                 stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <line x1="19" y1="12" x2="5" y2="12"></line>
-              <polyline points="12 19 5 12 12 5"></polyline>
-            </svg>
-            <span>Back</span>
-          </button>
+      <main class="auth-main">
+        <div class="auth-brand">
+          <img src="/relay.png" alt="" class="auth-brand-logo">
+        </div>
+
+        <header class="auth-header">
+          <h1 class="auth-title">Welcome back</h1>
+          <p class="auth-subtitle">Sign in to continue.</p>
         </header>
 
-        <main class="auth-form-wrap auth-form-wrap--narrow">
-          <header class="auth-header">
-            <h1 class="auth-title">Welcome back.</h1>
-            <p class="auth-subtitle">Sign in to continue.</p>
-          </header>
+        <form class="auth-form" id="loginForm">
+          <div class="form-group">
+            <label class="form-label" for="loginUsername">Username</label>
+            <input type="text" id="loginUsername" class="form-input"
+                   placeholder="Enter your username" required
+                   minlength="3" maxlength="20" autocomplete="username">
+            <div class="error-message" id="usernameError"></div>
+          </div>
 
-          <form class="auth-form" id="loginForm">
-            <div class="form-group">
-              <label class="form-label" for="loginUsername">Username</label>
-              <input type="text" id="loginUsername" class="form-input"
-                     placeholder="Enter your username" required
-                     minlength="3" maxlength="20" autocomplete="username">
-              <div class="error-message" id="usernameError"></div>
+          <div class="form-group">
+            <label class="form-label" for="loginPassword">Password</label>
+            <div class="password-input">
+              <input type="password" id="loginPassword" class="form-input"
+                     placeholder="Enter your password" required minlength="6"
+                     autocomplete="current-password">
+              <button type="button" class="password-toggle" id="passwordToggle"
+                      data-action="toggle-password" aria-label="Show password">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                  <circle cx="12" cy="12" r="3"/>
+                </svg>
+              </button>
             </div>
+            <div class="error-message" id="passwordError"></div>
+          </div>
 
-            <div class="form-group">
-              <label class="form-label" for="loginPassword">Password</label>
-              <div class="password-input">
-                <input type="password" id="loginPassword" class="form-input"
-                       placeholder="Enter your password" required minlength="6"
-                       autocomplete="current-password">
-                <button type="button" class="password-toggle" id="passwordToggle"
-                        data-action="toggle-password" aria-label="Show password">
-                  <svg viewBox="0 0 24 24" aria-hidden="true">
-                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
-                    <circle cx="12" cy="12" r="3"/>
-                  </svg>
-                </button>
-              </div>
-              <div class="error-message" id="passwordError"></div>
-            </div>
+          <button type="submit" class="btn-primary btn-block auth-btn" id="loginBtn">
+            Sign in
+          </button>
+        </form>
 
-            <button type="submit" class="btn-primary btn-block auth-btn" id="loginBtn" data-ripple>
-              Sign in
-            </button>
-          </form>
+        <div class="success-message" id="successMessage"></div>
 
-          <div class="success-message" id="successMessage"></div>
-
-          <p class="auth-footer">
-            New to RelayTalk? <a href="#" data-nav="/signup">Create an account</a>
-          </p>
-        </main>
-      </div>
-
-      <aside class="auth-panel-marketing" aria-hidden="true">
-        <div class="marketing-content">
-          <p class="marketing-eyebrow">RelayTalk</p>
-          <h2 class="marketing-title">
-            Where the good<br>conversations live.
-          </h2>
-          <p class="marketing-body">
-            No noise. No algorithms. Just the people you know,
-            in one clean place.
-          </p>
-          <ul class="marketing-bullets">
-            <li>
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-              Instant messaging
-            </li>
-            <li>
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-              Voice &amp; video calls
-            </li>
-            <li>
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-              Zero ads, zero noise
-            </li>
-          </ul>
-        </div>
-        <div class="marketing-brand">
-          <img src="/relay.png" alt="">
-          <span>RelayTalk</span>
-        </div>
-      </aside>
+        <p class="auth-footer">
+          New to RelayTalk? <a href="#" data-nav="/signup">Create an account</a>
+        </p>
+      </main>
 
       <div class="loading-overlay" id="loadingOverlay">
         <div class="login-loader"></div>
@@ -364,118 +321,86 @@
     </section>
   </template>
 
-  <!-- ═══════════════════════════════════════════════════════════ -->
-  <!-- VIEW: Signup (split panel)                                -->
-  <!-- ═══════════════════════════════════════════════════════════ -->
+  <!-- ═══════════ VIEW: Signup ═══════════ -->
   <template id="tpl-signup">
-    <section class="auth-view signup-view split-view">
+    <section class="auth-view signup-view">
+      <header class="auth-topbar">
+        <button type="button" class="back-btn" data-nav="/" aria-label="Back to home">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+               stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <line x1="19" y1="12" x2="5" y2="12"></line>
+            <polyline points="12 19 5 12 12 5"></polyline>
+          </svg>
+          <span>Back</span>
+        </button>
+      </header>
 
-      <div class="auth-panel-form">
-        <header class="auth-topbar">
-          <button type="button" class="back-btn" data-nav="/" data-ripple aria-label="Back to home">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                 stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <line x1="19" y1="12" x2="5" y2="12"></line>
-              <polyline points="12 19 5 12 12 5"></polyline>
-            </svg>
-            <span>Back</span>
-          </button>
+      <main class="auth-main">
+        <div class="auth-brand">
+          <img src="/relay.png" alt="" class="auth-brand-logo">
+        </div>
+
+        <header class="auth-header">
+          <h1 class="auth-title">Create your account</h1>
+          <p class="auth-subtitle">Free forever. No email needed.</p>
         </header>
 
-        <main class="auth-form-wrap">
-          <header class="auth-header">
-            <h1 class="auth-title">Create your account.</h1>
-            <p class="auth-subtitle">Free forever. Takes about a minute.</p>
-          </header>
+        <form class="auth-form" id="signupForm" novalidate>
+          <div class="form-group">
+            <label class="form-label" for="username">Username</label>
+            <input type="text" id="username" class="form-input"
+                   placeholder="Choose a username" required
+                   minlength="3" maxlength="20" autocomplete="username">
+            <div class="error-message" id="usernameError"></div>
+          </div>
 
-          <form class="auth-form" id="signupForm" novalidate>
-            <div class="form-group">
-              <label class="form-label" for="username">Username</label>
-              <input type="text" id="username" class="form-input"
-                     placeholder="Choose a username" required
-                     minlength="3" maxlength="20" autocomplete="username">
-              <div class="error-message" id="usernameError"></div>
+          <div class="form-group">
+            <label class="form-label" for="password">Password</label>
+            <div class="password-input">
+              <input type="password" id="password" class="form-input"
+                     placeholder="At least 6 characters" required minlength="6"
+                     autocomplete="new-password">
+              <button type="button" class="password-toggle"
+                      data-action="toggle-password" aria-label="Show password">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                  <circle cx="12" cy="12" r="3"/>
+                </svg>
+              </button>
             </div>
+            <div class="error-message" id="passwordError"></div>
+          </div>
 
-            <div class="form-group">
-              <label class="form-label" for="password">Password</label>
-              <div class="password-input">
-                <input type="password" id="password" class="form-input"
-                       placeholder="At least 6 characters" required minlength="6"
-                       autocomplete="new-password">
-                <button type="button" class="password-toggle"
-                        data-action="toggle-password" aria-label="Show password">
-                  <svg viewBox="0 0 24 24" aria-hidden="true">
-                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
-                    <circle cx="12" cy="12" r="3"/>
-                  </svg>
-                </button>
-              </div>
-              <div class="error-message" id="passwordError"></div>
+          <div class="form-group">
+            <label class="form-label" for="confirmPassword">Confirm password</label>
+            <input type="password" id="confirmPassword" class="form-input"
+                   placeholder="Re-enter your password" required autocomplete="new-password">
+            <div class="error-message" id="confirmError"></div>
+          </div>
+
+          <div class="terms-group">
+            <label class="checkbox-label">
+              <input type="checkbox" id="terms" required>
+              <span>I agree to the Terms &amp; Privacy Policy</span>
+            </label>
+            <div class="terms-actions">
+              <button type="button" class="link-btn" data-action="show-terms">Read Terms</button>
+              <button type="button" class="link-btn" data-action="show-privacy">Read Privacy</button>
             </div>
+            <div class="error-message" id="termsError"></div>
+          </div>
 
-            <div class="form-group">
-              <label class="form-label" for="confirmPassword">Confirm password</label>
-              <input type="password" id="confirmPassword" class="form-input"
-                     placeholder="Re-enter your password" required autocomplete="new-password">
-              <div class="error-message" id="confirmError"></div>
-            </div>
+          <button type="submit" class="btn-primary btn-block auth-btn" id="submitBtn">
+            Create account
+          </button>
+        </form>
 
-            <div class="terms-group">
-              <label class="checkbox-label">
-                <input type="checkbox" id="terms" required>
-                <span>I agree to the Terms &amp; Privacy Policy</span>
-              </label>
-              <div class="terms-actions">
-                <button type="button" class="link-btn" data-action="show-terms">Read Terms</button>
-                <button type="button" class="link-btn" data-action="show-privacy">Read Privacy</button>
-              </div>
-              <div class="error-message" id="termsError"></div>
-            </div>
+        <div class="success-container" id="successContainer" style="display:none;"></div>
 
-            <button type="submit" class="btn-primary btn-block auth-btn" id="submitBtn" data-ripple>
-              Create account
-            </button>
-          </form>
-
-          <div class="success-container" id="successContainer" style="display:none;"></div>
-
-          <p class="auth-footer">
-            Already have an account? <a href="#" data-nav="/login">Sign in</a>
-          </p>
-        </main>
-      </div>
-
-      <aside class="auth-panel-marketing" aria-hidden="true">
-        <div class="marketing-content">
-          <p class="marketing-eyebrow">Why RelayTalk</p>
-          <h2 class="marketing-title">
-            Chat that respects<br>your time.
-          </h2>
-          <p class="marketing-body">
-            No email. No phone number. No spam.
-            Just a username, a password, and the people you care about.
-          </p>
-          <ul class="marketing-bullets">
-            <li>
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-              No email required
-            </li>
-            <li>
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-              Private by default
-            </li>
-            <li>
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-              Free forever
-            </li>
-          </ul>
-        </div>
-        <div class="marketing-brand">
-          <img src="/relay.png" alt="">
-          <span>RelayTalk</span>
-        </div>
-      </aside>
+        <p class="auth-footer">
+          Already have an account? <a href="#" data-nav="/login">Sign in</a>
+        </p>
+      </main>
 
       <!-- Terms Modal -->
       <div class="modal-overlay" id="termsModal">
@@ -565,41 +490,8 @@
 
   <script type="module" src="/auth.js"></script>
 
-  <!-- ─── Motion utilities (ripple, scroll reveal, nav smooth-scroll) ─── -->
   <script>
     (function () {
-      /* ── Ripple effect on any [data-ripple] element ── */
-      var RIPPLE_DURATION = 700;
-
-      document.addEventListener('pointerdown', function (e) {
-        var el = e.target.closest('[data-ripple]');
-        if (!el || el.disabled) return;
-
-        var rect = el.getBoundingClientRect();
-        var size = Math.max(rect.width, rect.height) * 2.2;
-        var x = e.clientX - rect.left - size / 2;
-        var y = e.clientY - rect.top - size / 2;
-
-        // Ensure the element can contain the ripple
-        if (getComputedStyle(el).position === 'static') {
-          el.style.position = 'relative';
-        }
-        el.style.overflow = 'hidden';
-
-        var ripple = document.createElement('span');
-        ripple.className = 'ripple-ink';
-        ripple.style.left = x + 'px';
-        ripple.style.top = y + 'px';
-        ripple.style.width = size + 'px';
-        ripple.style.height = size + 'px';
-        el.appendChild(ripple);
-
-        setTimeout(function () {
-          if (ripple.parentNode) ripple.parentNode.removeChild(ripple);
-        }, RIPPLE_DURATION);
-      });
-
-      /* ── Scroll reveal + smooth-scroll on landing ── */
       var boundFlag = 'data-landing-bound';
 
       function bindLanding(root) {
