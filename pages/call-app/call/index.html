@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#0B84F3">
+  <title>Call · RelayTalk</title>
+
+  <meta http-equiv="Content-Security-Policy" content="
+    default-src 'self' https://kponqaktavkrchebmiwr.supabase.co https://api.supabase.com https://*.github.io https://fonts.googleapis.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://8x8.vc https://*.8x8.vc wss://kponqaktavkrchebmiwr.supabase.co;
+    script-src 'self' 'unsafe-inline' 'unsafe-eval' https://kponqaktavkrchebmiwr.supabase.co https://cdn.jsdelivr.net https://fonts.googleapis.com https://cdnjs.cloudflare.com https://8x8.vc https://*.8x8.vc;
+    style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com https://cdnjs.cloudflare.com;
+    img-src 'self' data: blob: https://*.8x8.vc https:;
+    font-src 'self' data: https://fonts.gstatic.com https://cdnjs.cloudflare.com;
+    connect-src 'self' https://kponqaktavkrchebmiwr.supabase.co wss://kponqaktavkrchebmiwr.supabase.co https://api.supabase.com https://*.github.io https://*.8x8.vc wss://*.8x8.vc;
+    worker-src 'self' blob:;
+    media-src 'self' blob:;
+    object-src 'none';
+    base-uri 'self';
+    form-action 'self';
+    frame-src 'self' https://8x8.vc https://*.8x8.vc;
+  ">
+
+  <link rel="preconnect" href="https://8x8.vc" crossorigin>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://8x8.vc/external_api.js" async></script>
+  <link rel="stylesheet" href="call.css">
+</head>
+<body>
+  <div class="call-loading" id="loadingScreen">
+    <div class="loading-spinner"></div>
+    <div id="loadingText">Starting call…</div>
+  </div>
+
+  <div id="dailyContainer"></div>
+
+  <div class="error-screen" id="errorScreen" style="display: none;">
+    <i class="fas fa-exclamation-circle"></i>
+    <h3>Call Failed</h3>
+    <p id="errorMessage">Could not start the call</p>
+    <button class="back-home-btn" onclick="window.goBack()">
+      <i class="fas fa-arrow-left"></i> Go Back
+    </button>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script type="module" src="call.js"></script>
+</body>
+</html>
