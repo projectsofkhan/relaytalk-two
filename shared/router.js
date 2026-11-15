@@ -12,7 +12,7 @@ export class Router {
     this.cleanup = null;
     this.onBeforeNavigate = options.onBeforeNavigate || null;
     this.onAfterNavigate = options.onAfterNavigate || null;
-    this.transitionDuration = options.transitionDuration ?? 180;
+    this.transitionDuration = options.transitionDuration ?? 280;
     this._swapping = false;
 
     if (!this.mountEl) {
@@ -59,10 +59,11 @@ export class Router {
 
       const dur = this.transitionDuration;
 
-      // ── Fade out existing content ──
+      // ── Fade out existing content (ease-in: lingers, then vanishes) ──
       const hasContent = this.mountEl.childElementCount > 0;
       if (hasContent && dur > 0) {
-        this.mountEl.style.transition = `opacity ${dur}ms cubic-bezier(0.4, 0, 0.2, 1)`;
+        this.mountEl.style.transition =
+          `opacity ${dur}ms cubic-bezier(0.4, 0, 1, 1)`;
         this.mountEl.style.opacity = '0';
         await new Promise(r => setTimeout(r, dur));
       }
@@ -75,7 +76,7 @@ export class Router {
       this.currentPath = path;
       window.scrollTo({ top: 0, behavior: 'instant' });
 
-      // ── Fade in new content ──
+      // ── Fade in new content (ease-out: arrives fast, settles gently) ──
       if (dur > 0) {
         this.mountEl.style.transition = 'none';
         this.mountEl.style.opacity = '0';
@@ -83,7 +84,7 @@ export class Router {
         void this.mountEl.offsetHeight;
         requestAnimationFrame(() => {
           this.mountEl.style.transition =
-            `opacity ${Math.round(dur * 1.4)}ms cubic-bezier(0.4, 0, 0.2, 1)`;
+            `opacity ${Math.round(dur * 1.5)}ms cubic-bezier(0, 0, 0.2, 1)`;
           this.mountEl.style.opacity = '1';
         });
       } else {
