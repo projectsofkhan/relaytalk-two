@@ -163,24 +163,137 @@
     <section class="app-view">
       <h1>Chats</h1>
       <p>Awaiting /pages/chats/* port.</p>
-      <button class="btn-secondary" onclick="location.hash='/'" data-nav="/">← Dashboard</button>
+      <button class="btn-secondary" data-nav="/">← Dashboard</button>
     </section>
   </template>
 
-  <!-- ═══════════ VIEW: Friends (stub) ═══════════ -->
+  <!-- ═══════════ VIEW: Friends ═══════════ -->
   <template id="tpl-friends">
-    <section class="app-view">
-      <h1>Friends</h1>
-      <p>Awaiting /pages/home/friends/* port.</p>
-      <button class="btn-secondary" data-nav="/">← Dashboard</button>
-    </section>
+    <div class="friends-root">
+
+      <div class="toast-container" id="toastContainer"></div>
+
+      <div class="loading-indicator" id="loadingIndicator">
+        <div class="loading-text">
+          <span class="loading-label">Loading</span><span class="loading-dots"><span>.</span><span>.</span><span>.</span></span>
+        </div>
+      </div>
+
+      <header class="app-bar">
+        <div class="app-bar-inner">
+          <div class="app-bar-brand">
+            <img src="/relay.png" alt="RelayTalk" class="brand-logo-img">
+            <span class="brand-name">Friends</span>
+          </div>
+          <div class="app-bar-actions"></div>
+        </div>
+      </header>
+
+      <div class="search-bar-wrap">
+        <div class="search-bar-inner">
+          <div class="search-wrap">
+            <i class="fas fa-search search-svg"></i>
+            <input type="text"
+                   id="searchInput"
+                   class="search-input"
+                   placeholder="Search friends..."
+                   autocomplete="off"
+                   oninput="searchFriends()">
+            <button class="clear-search" id="clearSearch" onclick="clearSearch()" style="display: none;" aria-label="Clear">
+              <i class="fas fa-times"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <main class="page">
+        <section class="section">
+          <div class="section-head">
+            <h2 class="section-title">All friends</h2>
+          </div>
+          <div class="list" id="friendsList"></div>
+        </section>
+      </main>
+
+      <nav class="bottom-nav">
+        <a href="#" class="nav-item" onclick="goToHome(); return false;">
+          <i class="fas fa-home"></i>
+          <span>Home</span>
+        </a>
+        <a href="#" class="nav-item" onclick="openNotifications(event); return false;">
+          <i class="fas fa-bell"></i>
+          <span>Alerts</span>
+          <span class="nav-badge" id="notificationBadge" style="display: none;">0</span>
+        </a>
+        <a href="#" class="nav-item active">
+          <i class="fas fa-user-friends"></i>
+          <span>Friends</span>
+        </a>
+        <a href="#" class="nav-item" onclick="goToProfile(); return false;">
+          <i class="fas fa-user"></i>
+          <span>You</span>
+        </a>
+      </nav>
+
+      <div class="modal" id="notificationsModal">
+        <div class="modal-panel">
+          <div class="modal-head">
+            <h2 class="modal-title">Notifications</h2>
+            <button class="modal-close" onclick="closeModal()" aria-label="Close">
+              <i class="fas fa-times"></i>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="tabs" role="tablist">
+              <button class="tab active" id="notifTabMain" onclick="switchNotifTab('main')">
+                <i class="fas fa-user-plus tab-icon"></i>
+                Requests
+                <span class="tab-badge" id="mainTabBadge" style="display: none;">0</span>
+              </button>
+              <button class="tab" id="notifTabCalls" onclick="switchNotifTab('calls')">
+                <i class="fas fa-comment-dots tab-icon"></i>
+                Calls
+                <span class="tab-badge" id="callsTabBadge" style="display: none;">0</span>
+              </button>
+            </div>
+
+            <div class="tab-content active" id="notifMainContent">
+              <div id="notificationsList"></div>
+            </div>
+
+            <div class="tab-content" id="notifCallsContent">
+              <div id="callHistoryList"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal" id="searchModal" style="display:none;">
+        <div class="modal-panel">
+          <div class="modal-head">
+            <h2 class="modal-title">Find people</h2>
+            <button class="modal-close" onclick="closeModal()" aria-label="Close">
+              <i class="fas fa-times"></i>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="search-wrap">
+              <i class="fas fa-search search-svg"></i>
+              <input type="text" id="userSearchInput" class="search-input" placeholder="Search by username" autocomplete="off" oninput="searchUsers()">
+            </div>
+            <div id="searchResults" class="search-results"></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
   </template>
 
   <!-- ═══════════ VIEW: Profile (stub) ═══════════ -->
   <template id="tpl-profile">
     <section class="app-view">
       <h1>Profile</h1>
-      <p>Awaiting /pages/home/profile/* port.</p>
+      <p>Awaiting profile.js tail + view.* files.</p>
       <button class="btn-secondary" data-nav="/">← Dashboard</button>
     </section>
   </template>
