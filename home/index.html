@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+
+  <title>RelayTalk</title>
+  <meta name="theme-color" content="#ffffff">
+  <meta name="robots" content="noindex, follow">
+
+  <link rel="icon" href="/favicon.ico" type="image/x-icon">
+  <link rel="icon" href="/relay.png" type="image/png" sizes="192x192">
+  <link rel="apple-touch-icon" href="/relay.png">
+  <link rel="manifest" href="/manifest.json">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <link rel="stylesheet" href="/shared/styles/base.css">
+  <link rel="stylesheet" href="/shared/styles/home.css">
+</head>
+<body>
+  <main id="view-outlet" class="view-outlet" aria-live="polite"></main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <!-- ═══════════ VIEW: Dashboard ═══════════ -->
+  <template id="tpl-dashboard">
+    <section class="app-view dashboard-view">
+      <h1>Dashboard</h1>
+      <p>Stub — awaiting /pages/home/index.html</p>
+      <nav>
+        <button class="btn-secondary" data-nav="/chats">Chats</button>
+        <button class="btn-secondary" data-nav="/friends">Friends</button>
+        <button class="btn-secondary" data-nav="/profile">Profile</button>
+      </nav>
+    </section>
+  </template>
+
+  <!-- ═══════════ VIEW: Chats ═══════════ -->
+  <template id="tpl-chats">
+    <section class="app-view chats-view">
+      <h1>Chats</h1>
+      <p>Stub — awaiting /pages/chats/index.html</p>
+      <button class="btn-secondary" data-nav="/">← Dashboard</button>
+    </section>
+  </template>
+
+  <!-- ═══════════ VIEW: Friends ═══════════ -->
+  <template id="tpl-friends">
+    <section class="app-view friends-view">
+      <h1>Friends</h1>
+      <p>Stub — awaiting /pages/home/friends/index.html</p>
+      <button class="btn-secondary" data-nav="/">← Dashboard</button>
+    </section>
+  </template>
+
+  <!-- ═══════════ VIEW: Profile ═══════════ -->
+  <template id="tpl-profile">
+    <section class="app-view profile-view">
+      <h1>Profile</h1>
+      <p>Stub — awaiting /pages/home/profile/index.html</p>
+      <button class="btn-secondary" data-nav="/">← Dashboard</button>
+    </section>
+  </template>
+
+  <!-- ═══════════ VIEW: View Friend ═══════════ -->
+  <template id="tpl-view-friend">
+    <section class="app-view view-friend-view">
+      <h1>Friend Profile</h1>
+      <p>Stub — awaiting /pages/home/profile/view.html</p>
+      <button class="btn-secondary" data-nav="/friends">← Friends</button>
+    </section>
+  </template>
+
+  <script type="module" src="/home/home.js"></script>
+</body>
+</html>
