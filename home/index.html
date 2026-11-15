@@ -5,17 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>RelayTalk</title>
   <meta name="theme-color" content="#ffffff">
-  <meta name="robots" content="noindex, follow">
   <link rel="icon" href="/favicon.ico" type="image/x-icon">
   <link rel="icon" href="/relay.png" type="image/png" sizes="192x192">
   <link rel="apple-touch-icon" href="/relay.png">
   <link rel="manifest" href="/manifest.json">
-  
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  
   <link rel="stylesheet" href="/shared/styles/base.css">
   <link rel="stylesheet" href="/shared/styles/home.css">
   <link rel="stylesheet" href="/shared/styles/chats.css">
@@ -23,51 +20,231 @@
 </head>
 <body>
   <main id="view-outlet" class="view-outlet" aria-live="polite"></main>
-
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <!-- ═══════════ VIEW: Dashboard ═══════════ -->
   <template id="tpl-dashboard">
     <div class="dashboard-root">
+      <div class="loading-indicator hidden" id="loadingIndicator">
+        <div class="loading-spinner"></div>
+        <div class="loading-text">Loading...</div>
+      </div>
       <header class="app-bar">
         <div class="app-bar-inner">
           <div class="app-bar-brand">
             <img src="/relay.png" alt="RelayTalk" class="brand-logo-img">
             <span class="brand-name">RelayTalk</span>
           </div>
+          <div class="app-bar-actions">
+            <button class="icon-btn" onclick="openSearch()" aria-label="Search"><i class="fas fa-search"></i></button>
+            <button class="icon-btn" onclick="openNotifications()" aria-label="Notifications">
+              <i class="fas fa-bell"></i>
+              <span class="app-bar-badge" id="notificationBadge" style="display: none;">0</span>
+            </button>
+          </div>
         </div>
       </header>
       <main class="page">
-        <h1 style="padding: 20px;">Dashboard Loaded!</h1>
+        <section class="greeting">
+          <p class="greeting-small" id="greetingSmall">Hello</p>
+          <h1 class="greeting-title" id="welcomeTitle">Friend</h1>
+          <p class="greeting-sub">Welcome back to RelayTalk</p>
+        </section>
+        <button class="primary-action" onclick="openSearch()">
+          <span class="primary-action-icon"><i class="fas fa-user-plus"></i></span>
+          <span class="primary-action-text">
+            <span class="primary-action-title">Find friends</span>
+            <span class="primary-action-desc">Search by username</span>
+          </span>
+          <span class="primary-action-chevron"><i class="fas fa-chevron-right"></i></span>
+        </button>
+        <section class="section">
+          <div class="section-head">
+            <h2 class="section-title">Friends</h2>
+            <button class="text-btn" onclick="viewFriendsPage()">View all</button>
+          </div>
+          <div class="list" id="friendsList"></div>
+        </section>
       </main>
+      <nav class="bottom-nav">
+        <a href="#" class="nav-item active" onclick="goToHome(); return false;"><i class="fas fa-home"></i><span>Home</span></a>
+        <a href="#" class="nav-item" onclick="openNotifications(); return false;"><i class="fas fa-bell"></i><span>Alerts</span></a>
+        <a href="#" class="nav-item" onclick="viewFriendsPage(); return false;"><i class="fas fa-user-friends"></i><span>Friends</span></a>
+        <a href="#" class="nav-item" onclick="goToProfile(); return false;"><i class="fas fa-user"></i><span>You</span></a>
+      </nav>
+      <!-- Modals (Search & Notifications) -->
+      <div class="modal" id="searchModal">
+        <div class="modal-panel">
+          <div class="modal-head">
+            <h2 class="modal-title">Find people</h2>
+            <button class="modal-close" onclick="closeModal()"><i class="fas fa-times"></i></button>
+          </div>
+          <div class="modal-body">
+            <div class="search-wrap"><i class="fas fa-search search-svg"></i><input type="text" id="searchInput" class="search-input" placeholder="Search by username"></div>
+            <div id="searchResults" class="search-results"></div>
+          </div>
+        </div>
+      </div>
+      <div class="modal" id="notificationsModal">
+        <div class="modal-panel">
+          <div class="modal-head">
+            <h2 class="modal-title">Notifications</h2>
+            <button class="modal-close" onclick="closeModal()"><i class="fas fa-times"></i></button>
+          </div>
+          <div class="modal-body">
+            <div id="notificationsList"></div>
+          </div>
+        </div>
+      </div>
     </div>
   </template>
 
   <!-- ═══════════ VIEW: Chats ═══════════ -->
   <template id="tpl-chats">
     <div class="chat-view">
-       <h1 style="padding: 20px;">Chats Loaded!</h1>
+      <header class="chat-header">
+        <button class="back-btn" onclick="goBack()"><i class="fas fa-arrow-left"></i></button>
+        <div class="chat-user-info" id="chatHeaderProfile">
+          <div class="chat-user-avatar" id="chatUserAvatar">U</div>
+          <div class="chat-user-details">
+            <h3 id="chatUserName">User</h3>
+            <div class="chat-user-status"><span id="statusDot" class="status-dot offline"></span><span id="statusText">Offline</span></div>
+          </div>
+        </div>
+        <div class="chat-actions">
+          <button class="guide-btn" onclick="openGuide()"><i class="fas fa-circle-question"></i></button>
+          <button class="call-btn" onclick="callCurrentFriend()"><i class="fas fa-phone"></i></button>
+        </div>
+      </header>
+      <main class="main-content">
+        <div class="messages-container" id="messagesContainer">
+          <div class="empty-chat">
+            <svg class="empty-chat-icon" viewBox="0 0 24 24"><path d="M20,2H4A2,2 0 0,0 2,4V22L6,18H20A2,2 0 0,0 22,16V4A2,2 0 0,0 20,2Z"/></svg>
+            <h3>Start the conversation</h3>
+            <p>Say hello to your friend!</p>
+          </div>
+        </div>
+      </main>
+      <div class="message-input-wrapper">
+        <div class="message-input-container">
+          <button class="attach-btn" onclick="showImagePicker()"><i class="fas fa-paperclip"></i></button>
+          <button class="mic-btn" id="micBtn"><i class="fas fa-microphone"></i></button>
+          <textarea class="message-input" id="messageInput" placeholder="Type a message..." rows="1"></textarea>
+          <button class="send-btn" id="sendBtn" onclick="sendMessage()" disabled><i class="fas fa-paper-plane"></i></button>
+        </div>
+      </div>
+      <!-- Modals (UserInfo, Guide, Alerts, etc.) remain the same structurally -->
     </div>
   </template>
 
   <!-- ═══════════ VIEW: Friends ═══════════ -->
   <template id="tpl-friends">
     <div class="friends-root">
-       <h1 style="padding: 20px;">Friends Loaded!</h1>
+      <header class="app-bar">
+        <div class="app-bar-inner">
+          <div class="app-bar-brand"><span class="brand-name">Friends</span></div>
+        </div>
+      </header>
+      <div class="search-bar-wrap">
+        <div class="search-bar-inner">
+          <div class="search-wrap">
+            <i class="fas fa-search search-svg"></i>
+            <input type="text" id="searchInput" class="search-input" placeholder="Search friends...">
+          </div>
+        </div>
+      </div>
+      <main class="page">
+        <div class="list" id="friendsList"></div>
+      </main>
+      <nav class="bottom-nav">
+        <a href="#" class="nav-item" onclick="goToHome(); return false;"><i class="fas fa-home"></i><span>Home</span></a>
+        <a href="#" class="nav-item" onclick="openNotifications(); return false;"><i class="fas fa-bell"></i><span>Alerts</span></a>
+        <a href="#" class="nav-item active"><i class="fas fa-user-friends"></i><span>Friends</span></a>
+        <a href="#" class="nav-item" onclick="goToProfile(); return false;"><i class="fas fa-user"></i><span>You</span></a>
+      </nav>
     </div>
   </template>
 
   <!-- ═══════════ VIEW: Profile ═══════════ -->
   <template id="tpl-profile">
     <div class="profile-root">
-       <h1 style="padding: 20px;">Profile Loaded!</h1>
+      <header class="app-bar">
+        <div class="app-bar-inner">
+          <div class="app-bar-brand"><span class="brand-name">Profile</span></div>
+          <button class="icon-btn" onclick="openGuide()"><i class="fas fa-circle-question"></i></button>
+        </div>
+      </header>
+      <main class="profile-main">
+        <section class="profile-card">
+          <div class="avatar-section">
+            <div class="profile-avatar">
+              <img id="avatarImage" src="" style="display: none;">
+              <div id="avatarInitial" class="avatar-initial">?</div>
+            </div>
+            <button class="change-photo-btn" onclick="openImagePicker()"><i class="fas fa-camera"></i></button>
+          </div>
+          <h2 class="user-name" id="displayName">User</h2>
+          <div class="user-username" id="displayUsername">@username</div>
+          <div class="bio-section">
+            <div class="bio-header">
+              <span class="bio-label">About</span>
+              <button class="bio-edit-btn" onclick="openBioEditor()"><i class="fas fa-pen"></i></button>
+            </div>
+            <div class="bio-box" id="bioBox"></div>
+          </div>
+          <div class="profile-stats">
+            <div class="stat-item"><div class="stat-value" id="friendsCount">0</div><div class="stat-label">Friends</div></div>
+            <div class="stat-item"><div class="stat-value" id="memberSince">—</div><div class="stat-label">Since</div></div>
+          </div>
+        </section>
+        <section class="actions-card">
+          <button class="action-row action-row-danger" onclick="logoutFromDevice()">
+            <span class="action-row-icon"><i class="fas fa-right-from-bracket"></i></span>
+            <span class="action-row-text">Log Out</span>
+          </button>
+        </section>
+      </main>
+      <nav class="bottom-nav">
+        <a href="#" class="nav-item" onclick="goToHome(); return false;"><i class="fas fa-home"></i><span>Home</span></a>
+        <a href="#" class="nav-item active"><i class="fas fa-user"></i><span>You</span></a>
+      </nav>
     </div>
   </template>
 
   <!-- ═══════════ VIEW: View Friend ═══════════ -->
   <template id="tpl-view-friend">
     <div class="view-root">
-       <h1 style="padding: 20px;">Friend Profile Loaded!</h1>
+      <header class="app-bar">
+        <div class="app-bar-inner">
+          <button class="back-btn" onclick="closeView()"><i class="fas fa-arrow-left"></i></button>
+          <div class="app-bar-brand"><span class="brand-name">Profile</span></div>
+        </div>
+      </header>
+      <main class="view-main">
+        <div class="avatar-section" style="margin: 0 auto 20px;">
+          <div class="view-avatar">
+            <span class="view-avatar-initial" id="viewAvatarInitial">?</span>
+            <img id="viewAvatarImg" src="" style="display:none;">
+          </div>
+        </div>
+        <h1 class="view-name" id="viewName">User</h1>
+        <div class="view-username" id="viewUsername">@username</div>
+        <div style="display:flex; justify-content:center;">
+          <div class="view-status-pill">
+            <span class="view-status-dot" id="viewStatusDot"></span>
+            <span id="viewStatusText">Offline</span>
+          </div>
+        </div>
+        <div class="view-actions">
+          <button class="view-action-btn view-action-message" onclick="openChat()"><i class="fas fa-comment-dots"></i><span>Message</span></button>
+          <button class="view-action-btn view-action-call" onclick="startCallFromView()"><i class="fas fa-phone"></i><span>Call</span></button>
+        </div>
+        <div class="view-bio-section">
+          <div class="bio-header"><span class="view-bio-label">Biography</span></div>
+          <div class="view-bio-box" id="viewBioBox"></div>
+        </div>
+        <div id="viewFriendsSince" style="text-align:center; color:var(--text-2); font-size:0.9rem;"></div>
+      </main>
     </div>
   </template>
 
