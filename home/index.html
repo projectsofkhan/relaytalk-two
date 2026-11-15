@@ -4,15 +4,18 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>RelayTalk</title>
-  <meta name="theme-color" content="#ffffff">
+  <meta name="theme-color" content="#f8fafc">
   <link rel="icon" href="/favicon.ico" type="image/x-icon">
   <link rel="icon" href="/relay.png" type="image/png" sizes="192x192">
   <link rel="apple-touch-icon" href="/relay.png">
   <link rel="manifest" href="/manifest.json">
+  
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- The New Design System -->
   <link rel="stylesheet" href="/shared/styles/base.css">
   <link rel="stylesheet" href="/shared/styles/home.css">
   <link rel="stylesheet" href="/shared/styles/chats.css">
@@ -25,10 +28,11 @@
   <!-- ═══════════ VIEW: Dashboard ═══════════ -->
   <template id="tpl-dashboard">
     <div class="dashboard-root">
-      <div class="loading-indicator hidden" id="loadingIndicator">
+      <div class="loading-indicator" id="loadingIndicator">
         <div class="loading-spinner"></div>
         <div class="loading-text">Loading...</div>
       </div>
+
       <header class="app-bar">
         <div class="app-bar-inner">
           <div class="app-bar-brand">
@@ -44,12 +48,14 @@
           </div>
         </div>
       </header>
+
       <main class="page">
         <section class="greeting">
           <p class="greeting-small" id="greetingSmall">Hello</p>
           <h1 class="greeting-title" id="welcomeTitle">Friend</h1>
           <p class="greeting-sub">Welcome back to RelayTalk</p>
         </section>
+
         <button class="primary-action" onclick="openSearch()">
           <span class="primary-action-icon"><i class="fas fa-user-plus"></i></span>
           <span class="primary-action-text">
@@ -58,6 +64,7 @@
           </span>
           <span class="primary-action-chevron"><i class="fas fa-chevron-right"></i></span>
         </button>
+
         <section class="section">
           <div class="section-head">
             <h2 class="section-title">Friends</h2>
@@ -66,13 +73,18 @@
           <div class="list" id="friendsList"></div>
         </section>
       </main>
+
       <nav class="bottom-nav">
         <a href="#" class="nav-item active" onclick="goToHome(); return false;"><i class="fas fa-home"></i><span>Home</span></a>
-        <a href="#" class="nav-item" onclick="openNotifications(); return false;"><i class="fas fa-bell"></i><span>Alerts</span></a>
+        <a href="#" class="nav-item" onclick="openNotifications(); return false;">
+          <i class="fas fa-bell"></i><span>Alerts</span>
+          <span class="nav-badge" id="navNotificationBadge" style="display: none;">0</span>
+        </a>
         <a href="#" class="nav-item" onclick="viewFriendsPage(); return false;"><i class="fas fa-user-friends"></i><span>Friends</span></a>
         <a href="#" class="nav-item" onclick="goToProfile(); return false;"><i class="fas fa-user"></i><span>You</span></a>
       </nav>
-      <!-- Modals (Search & Notifications) -->
+
+      <!-- Modals -->
       <div class="modal" id="searchModal">
         <div class="modal-panel">
           <div class="modal-head">
@@ -80,11 +92,15 @@
             <button class="modal-close" onclick="closeModal()"><i class="fas fa-times"></i></button>
           </div>
           <div class="modal-body">
-            <div class="search-wrap"><i class="fas fa-search search-svg"></i><input type="text" id="searchInput" class="search-input" placeholder="Search by username"></div>
+            <div class="search-wrap">
+              <i class="fas fa-search search-svg"></i>
+              <input type="text" id="searchInput" class="search-input" placeholder="Search by username" autocomplete="off">
+            </div>
             <div id="searchResults" class="search-results"></div>
           </div>
         </div>
       </div>
+
       <div class="modal" id="notificationsModal">
         <div class="modal-panel">
           <div class="modal-head">
@@ -92,7 +108,18 @@
             <button class="modal-close" onclick="closeModal()"><i class="fas fa-times"></i></button>
           </div>
           <div class="modal-body">
-            <div id="notificationsList"></div>
+            <div class="tabs" role="tablist">
+              <button class="tab active" id="notifTabMain" onclick="switchNotifTab('main')">
+                <i class="fas fa-user-plus tab-icon"></i> Requests
+                <span class="tab-badge" id="mainTabBadge" style="display: none;">0</span>
+              </button>
+              <button class="tab" id="notifTabCalls" onclick="switchNotifTab('calls')">
+                <i class="fas fa-comment-dots tab-icon"></i> Calls
+                <span class="tab-badge" id="callsTabBadge" style="display: none;">0</span>
+              </button>
+            </div>
+            <div class="tab-content active" id="notifMainContent"><div id="notificationsList"></div></div>
+            <div class="tab-content" id="notifCallsContent"><div id="callHistoryList"></div></div>
           </div>
         </div>
       </div>
@@ -103,19 +130,23 @@
   <template id="tpl-chats">
     <div class="chat-view">
       <header class="chat-header">
-        <button class="back-btn" onclick="goBack()"><i class="fas fa-arrow-left"></i></button>
+        <button class="back-btn" onclick="goBack()" aria-label="Back"><i class="fas fa-arrow-left"></i></button>
         <div class="chat-user-info" id="chatHeaderProfile">
           <div class="chat-user-avatar" id="chatUserAvatar">U</div>
           <div class="chat-user-details">
             <h3 id="chatUserName">User</h3>
-            <div class="chat-user-status"><span id="statusDot" class="status-dot offline"></span><span id="statusText">Offline</span></div>
+            <div class="chat-user-status">
+              <span id="statusDot" class="status-dot offline"></span>
+              <span id="statusText">Offline</span>
+            </div>
           </div>
         </div>
         <div class="chat-actions">
-          <button class="guide-btn" onclick="openGuide()"><i class="fas fa-circle-question"></i></button>
-          <button class="call-btn" onclick="callCurrentFriend()"><i class="fas fa-phone"></i></button>
+          <button class="guide-btn" onclick="openGuide()" aria-label="Guide"><i class="fas fa-circle-question"></i></button>
+          <button class="call-btn" onclick="callCurrentFriend()" aria-label="Call"><i class="fas fa-phone"></i></button>
         </div>
       </header>
+
       <main class="main-content">
         <div class="messages-container" id="messagesContainer">
           <div class="empty-chat">
@@ -125,103 +156,295 @@
           </div>
         </div>
       </main>
+
       <div class="message-input-wrapper">
         <div class="message-input-container">
           <button class="attach-btn" onclick="showImagePicker()"><i class="fas fa-paperclip"></i></button>
-          <button class="mic-btn" id="micBtn"><i class="fas fa-microphone"></i></button>
+          <button class="mic-btn" id="micBtn" type="button"><i class="fas fa-microphone"></i></button>
           <textarea class="message-input" id="messageInput" placeholder="Type a message..." rows="1"></textarea>
           <button class="send-btn" id="sendBtn" onclick="sendMessage()" disabled><i class="fas fa-paper-plane"></i></button>
         </div>
       </div>
-      <!-- Modals (UserInfo, Guide, Alerts, etc.) remain the same structurally -->
+
+      <!-- Voice & Image Overlays (must remain complete for JS to work) -->
+      <div class="voice-rec-overlay" id="voiceRecOverlay" style="display: none;">
+        <div class="voice-rec-panel">
+          <div class="voice-rec-header"><span class="voice-rec-dot"></span> Recording</div>
+          <div class="voice-rec-waveform" id="voiceRecWaveform"></div>
+          <div class="voice-rec-timer" id="voiceRecTimer">0:00</div>
+          <div class="voice-rec-actions">
+            <button class="voice-rec-btn voice-rec-cancel" id="voiceRecCancelBtn"><i class="fas fa-trash"></i></button>
+            <button class="voice-rec-btn voice-rec-stop" id="voiceRecStopBtn"><i class="fas fa-stop"></i></button>
+          </div>
+        </div>
+      </div>
+
+      <div class="voice-preview-overlay" id="voicePreviewOverlay" style="display: none;">
+        <div class="voice-preview-panel">
+          <div class="voice-preview-header"><h3>Send voice message?</h3><button class="voice-preview-close" id="voicePreviewClose"><i class="fas fa-times"></i></button></div>
+          <div class="voice-preview-body">
+            <button class="voice-preview-play" id="voicePreviewPlay"><i class="fas fa-play"></i></button>
+            <div class="voice-preview-waveform" id="voicePreviewWaveform"></div>
+            <div class="voice-preview-duration" id="voicePreviewDuration">0:00</div>
+          </div>
+          <div class="voice-preview-actions">
+            <button class="btn-secondary" id="voicePreviewCancel">Cancel</button>
+            <button class="btn-primary" id="voicePreviewSend">Send</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="image-picker-overlay" id="imagePickerOverlay" style="display: none;">
+        <div class="image-picker-container">
+          <div class="image-picker-header"><h3>Share Images</h3><button class="image-picker-close" onclick="closeImagePicker()">×</button></div>
+          <div class="image-picker-options">
+            <button class="image-picker-option" onclick="openCamera()"><i class="fas fa-camera"></i> Take Photo</button>
+            <button class="image-picker-option" onclick="openGallery()"><i class="fas fa-image"></i> Choose from Gallery</button>
+          </div>
+        </div>
+      </div>
+
+      <input type="file" id="cameraInput" accept="image/*" capture="environment" style="display: none;">
+      <input type="file" id="galleryInput" accept="image/*" multiple style="display: none;">
+
+      <div class="modal-overlay" id="userInfoModal" style="display: none;">
+        <div class="modal-content"><div class="modal-header"><h3 class="modal-title">User Info</h3><button class="modal-close" onclick="closeModal()">×</button></div><div class="modal-body" id="userInfoContent"></div></div>
+      </div>
+
+      <div class="modal-overlay" id="guideModal" style="display: none;">
+        <div class="modal-content guide-modal-content">
+          <div class="modal-header"><h3 class="modal-title">Chat Guide</h3><button class="modal-close" onclick="closeGuide()">×</button></div>
+          <div class="modal-body guide-body"></div>
+        </div>
+      </div>
+
+      <div class="modal-overlay" id="customAlert" style="display: none;">
+        <div class="modal-content">
+          <div class="modal-header"><h3 class="modal-title" id="alertTitle">Alert</h3><button class="modal-close" onclick="document.getElementById('customAlert').style.display='none'">×</button></div>
+          <div class="modal-body">
+            <div style="text-align: center; margin-bottom: 20px;"><div id="alertIcon" style="font-size: 3rem; margin-bottom: 15px;"></div><p id="alertMessage"></p></div>
+            <div style="display: flex; gap: 10px; justify-content: center;"><button id="alertConfirm" class="btn-primary">OK</button><button id="alertCancel" class="btn-secondary" style="display: none;">Cancel</button></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-overlay" id="customToast" style="display: none; background: transparent; align-items: flex-end; padding-bottom: 40px; pointer-events: none;">
+        <div class="toast-content" style="background: var(--text); color: white; padding: 12px 24px; border-radius: 30px; box-shadow: var(--shadow-lg);">
+          <div style="display: flex; align-items: center; gap: 10px;"><span id="toastIcon"></span><p id="toastMessage" style="margin: 0;"></p></div>
+        </div>
+      </div>
     </div>
   </template>
 
   <!-- ═══════════ VIEW: Friends ═══════════ -->
   <template id="tpl-friends">
     <div class="friends-root">
+      <div class="loading-indicator" id="loadingIndicator">
+        <div class="loading-spinner"></div>
+        <div class="loading-text">Loading...</div>
+      </div>
+
       <header class="app-bar">
         <div class="app-bar-inner">
           <div class="app-bar-brand"><span class="brand-name">Friends</span></div>
         </div>
       </header>
+
       <div class="search-bar-wrap">
         <div class="search-bar-inner">
           <div class="search-wrap">
             <i class="fas fa-search search-svg"></i>
-            <input type="text" id="searchInput" class="search-input" placeholder="Search friends...">
+            <input type="text" id="searchInput" class="search-input" placeholder="Search friends..." autocomplete="off" oninput="searchFriends()">
+            <button class="clear-search" id="clearSearch" onclick="clearSearch()" style="display: none;"><i class="fas fa-times"></i></button>
           </div>
         </div>
       </div>
+
       <main class="page">
-        <div class="list" id="friendsList"></div>
+        <section class="section">
+          <div class="section-head"><h2 class="section-title">All friends</h2></div>
+          <div class="list" id="friendsList"></div>
+        </section>
       </main>
+
       <nav class="bottom-nav">
         <a href="#" class="nav-item" onclick="goToHome(); return false;"><i class="fas fa-home"></i><span>Home</span></a>
-        <a href="#" class="nav-item" onclick="openNotifications(); return false;"><i class="fas fa-bell"></i><span>Alerts</span></a>
+        <a href="#" class="nav-item" onclick="openNotifications(event); return false;"><i class="fas fa-bell"></i><span>Alerts</span><span class="nav-badge" id="notificationBadge" style="display: none;">0</span></a>
         <a href="#" class="nav-item active"><i class="fas fa-user-friends"></i><span>Friends</span></a>
         <a href="#" class="nav-item" onclick="goToProfile(); return false;"><i class="fas fa-user"></i><span>You</span></a>
       </nav>
+
+      <div class="modal" id="notificationsModal">
+        <div class="modal-panel">
+          <div class="modal-head"><h2 class="modal-title">Notifications</h2><button class="modal-close" onclick="closeModal()"><i class="fas fa-times"></i></button></div>
+          <div class="modal-body">
+            <div class="tabs" role="tablist">
+              <button class="tab active" id="notifTabMain" onclick="switchNotifTab('main')"><i class="fas fa-user-plus tab-icon"></i> Requests<span class="tab-badge" id="mainTabBadge" style="display: none;">0</span></button>
+              <button class="tab" id="notifTabCalls" onclick="switchNotifTab('calls')"><i class="fas fa-comment-dots tab-icon"></i> Calls<span class="tab-badge" id="callsTabBadge" style="display: none;">0</span></button>
+            </div>
+            <div class="tab-content active" id="notifMainContent"><div id="notificationsList"></div></div>
+            <div class="tab-content" id="notifCallsContent"><div id="callHistoryList"></div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal" id="searchModal" style="display:none;">
+        <div class="modal-panel">
+          <div class="modal-head"><h2 class="modal-title">Find people</h2><button class="modal-close" onclick="closeModal()"><i class="fas fa-times"></i></button></div>
+          <div class="modal-body">
+            <div class="search-wrap"><i class="fas fa-search search-svg"></i><input type="text" id="userSearchInput" class="search-input" placeholder="Search by username" autocomplete="off" oninput="searchUsers()"></div>
+            <div id="searchResults" class="search-results"></div>
+          </div>
+        </div>
+      </div>
     </div>
   </template>
 
   <!-- ═══════════ VIEW: Profile ═══════════ -->
   <template id="tpl-profile">
     <div class="profile-root">
+      <div class="loading-overlay" id="loadingIndicator" style="display:none;">
+        <div class="loading-spinner"></div><div class="loading-text">Loading...</div>
+      </div>
+      <div class="loading-overlay" id="uploadLoading" style="display:none;">
+        <div class="loading-spinner"></div><div class="loading-text">Uploading...</div>
+      </div>
+
       <header class="app-bar">
         <div class="app-bar-inner">
           <div class="app-bar-brand"><span class="brand-name">Profile</span></div>
           <button class="icon-btn" onclick="openGuide()"><i class="fas fa-circle-question"></i></button>
         </div>
       </header>
+
       <main class="profile-main">
         <section class="profile-card">
           <div class="avatar-section">
             <div class="profile-avatar">
-              <img id="avatarImage" src="" style="display: none;">
+              <img id="avatarImage" src="" alt="Profile" style="display: none;">
               <div id="avatarInitial" class="avatar-initial">?</div>
             </div>
             <button class="change-photo-btn" onclick="openImagePicker()"><i class="fas fa-camera"></i></button>
           </div>
+
           <h2 class="user-name" id="displayName">User</h2>
           <div class="user-username" id="displayUsername">@username</div>
+
           <div class="bio-section">
             <div class="bio-header">
-              <span class="bio-label">About</span>
+              <span class="bio-label">About / Biography</span>
               <button class="bio-edit-btn" onclick="openBioEditor()"><i class="fas fa-pen"></i></button>
             </div>
-            <div class="bio-box" id="bioBox"></div>
+            <div class="bio-box" id="bioBox"><span class="bio-empty">Tap the pencil to write something...</span></div>
           </div>
+
           <div class="profile-stats">
             <div class="stat-item"><div class="stat-value" id="friendsCount">0</div><div class="stat-label">Friends</div></div>
-            <div class="stat-item"><div class="stat-value" id="memberSince">—</div><div class="stat-label">Since</div></div>
+            <div class="stat-divider"></div>
+            <div class="stat-item"><div class="stat-value" id="memberSince">—</div><div class="stat-label">Member since</div></div>
           </div>
         </section>
+
+        <section class="settings-card">
+          <div class="settings-header">
+            <div class="settings-icon"><i class="fas fa-bell"></i></div>
+            <div><div class="settings-title">Notifications</div><div class="settings-subtitle">Control how RelayTalk reaches you</div></div>
+          </div>
+          <div class="notify-actions">
+            <button class="notify-btn" id="enableNotificationsBtn" onclick="toggleNotifications()">
+              <span class="notify-btn-icon" id="enableBtnIcon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></span>
+              <span class="notify-btn-label" id="enableBtnLabel">Enable</span>
+            </button>
+            <button class="notify-btn" onclick="resetNotifications()">
+              <span class="notify-btn-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 1 1-3-6.7L21 8"/><path d="M21 3v5h-5"/></svg></span>
+              <span class="notify-btn-label">Reset</span>
+            </button>
+          </div>
+          <button class="details-toggle" id="detailsToggleBtn" onclick="toggleDetails()">
+            <span class="details-toggle-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></span>
+            <span class="details-toggle-text" id="detailsToggleLabel">Show Details</span>
+            <span class="details-toggle-switch" id="detailsToggleSwitch"></span>
+          </button>
+        </section>
+
         <section class="actions-card">
           <button class="action-row action-row-danger" onclick="logoutFromDevice()">
-            <span class="action-row-icon"><i class="fas fa-right-from-bracket"></i></span>
-            <span class="action-row-text">Log Out</span>
+            <span class="action-row-icon"><i class="fas fa-right-from-bracket"></i></span><span class="action-row-text">Log Out</span>
           </button>
         </section>
       </main>
+
       <nav class="bottom-nav">
         <a href="#" class="nav-item" onclick="goToHome(); return false;"><i class="fas fa-home"></i><span>Home</span></a>
+        <a href="#" class="nav-item" onclick="openNotifications(event); return false;"><i class="fas fa-bell"></i><span>Alerts</span><span class="nav-badge" id="notificationBadge" style="display:none;">0</span></a>
+        <a href="#" class="nav-item" onclick="goToFriends(); return false;"><i class="fas fa-user-friends"></i><span>Friends</span></a>
         <a href="#" class="nav-item active"><i class="fas fa-user"></i><span>You</span></a>
       </nav>
+
+      <!-- Modals for Profile -->
+      <div class="modal-overlay" id="bioEditorModal" style="display:none;">
+        <div class="modal-content">
+          <div class="modal-header"><h3 class="modal-title">Edit About</h3><button class="modal-close" onclick="closeBioEditor()">×</button></div>
+          <div class="modal-body">
+            <textarea id="bioInput" class="form-input" maxlength="100" rows="4"></textarea>
+            <div style="text-align:right; font-size:0.8rem; color:var(--text-3); margin-top:4px;"><span id="bioCharCount">0</span> / 100</div>
+            <div style="display:flex; gap:10px; margin-top:16px;"><button class="btn-secondary" style="flex:1;" onclick="closeBioEditor()">Cancel</button><button class="btn-primary" style="flex:1;" onclick="saveBio()">Save</button></div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-overlay" id="detailsInfoModal" style="display:none;">
+        <div class="modal-content"><div class="modal-header"><h3 class="modal-title" id="detailsInfoTitle">Info</h3><button class="modal-close" onclick="closeDetailsInfo()">×</button></div><div class="modal-body" id="detailsInfoBody"></div><div class="modal-body"><button class="btn-primary" style="width:100%;" onclick="confirmDetailsToggle()">Got it</button></div></div>
+      </div>
+      <div class="modal-overlay" id="imagePickerModal" style="display:none;">
+        <div class="modal-content">
+          <div class="modal-header"><h3 class="modal-title">Change Photo</h3><button class="modal-close" onclick="closeModal()">×</button></div>
+          <div class="modal-body">
+            <input type="file" id="cameraInput" accept="image/*" capture="environment" style="display:none;" onchange="handleImageSelect(event)">
+            <input type="file" id="galleryInput" accept="image/*" style="display:none;" onchange="handleImageSelect(event)">
+            <button class="action-row" onclick="uploadFromCamera()"><i class="fas fa-camera"></i> Take Photo</button>
+            <button class="action-row" onclick="uploadFromGallery()"><i class="fas fa-image"></i> Gallery</button>
+            <button class="action-row action-row-danger" onclick="removeAvatar()"><i class="fas fa-trash"></i> Remove Photo</button>
+          </div>
+        </div>
+      </div>
+      <div class="modal-overlay" id="pwaModal" style="display:none;">
+        <div class="modal-content"><div class="modal-header"><h3 class="modal-title">Install PWA</h3><button class="modal-close" onclick="closePwaModal()">×</button></div><div class="modal-body"><p>Add RelayTalk to your home screen via your browser menu.</p></div></div>
+      </div>
+      <div class="modal" id="notificationsModal">
+        <div class="modal-panel">
+          <div class="modal-head"><h2 class="modal-title">Notifications</h2><button class="modal-close" onclick="closeNotifications()"><i class="fas fa-times"></i></button></div>
+          <div class="modal-body">
+            <div class="tabs"><button class="tab active" id="notifTabMain" onclick="switchNotifTab('main')">Requests</button><button class="tab" id="notifTabCalls" onclick="switchNotifTab('calls')">Calls</button></div>
+            <div class="tab-content active" id="notifMainContent"><div id="notificationsList"></div></div>
+            <div class="tab-content" id="notifCallsContent"><div id="callHistoryList"></div></div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-overlay guide-modal" id="guideModal" style="display:none;">
+        <div class="modal-content"><div class="modal-header"><h3 class="modal-title">Guide</h3><button class="modal-close" onclick="closeGuide()">×</button></div><div class="guide-body" id="guideBody"></div></div>
+      </div>
+      <div id="toastContainer" class="toast-container"></div>
     </div>
   </template>
 
   <!-- ═══════════ VIEW: View Friend ═══════════ -->
   <template id="tpl-view-friend">
     <div class="view-root">
+      <div class="view-fallback" id="fallbackScreen" style="display:none; position:fixed; inset:0; background:var(--surface); z-index:100; padding:40px; text-align:center;">
+        <h2 style="font-size:2rem; margin-bottom:10px;">Account not found</h2>
+        <p style="color:var(--text-2); margin-bottom:20px;">This account does not exist.</p>
+        <button class="btn-primary" onclick="closeView()">Go back</button>
+      </div>
+
       <header class="app-bar">
         <div class="app-bar-inner">
-          <button class="back-btn" onclick="closeView()"><i class="fas fa-arrow-left"></i></button>
-          <div class="app-bar-brand"><span class="brand-name">Profile</span></div>
+          <button class="back-btn" onclick="closeView()" style="background:transparent; border:none; font-size:1.2rem; margin-right:10px;"><i class="fas fa-arrow-left"></i></button>
+          <div class="app-bar-brand"><span class="brand-name">Friend's Profile</span></div>
         </div>
       </header>
-      <main class="view-main">
-        <div class="avatar-section" style="margin: 0 auto 20px;">
+
+      <main class="view-main" id="viewMain" style="display:none;">
+        <div class="avatar-section">
           <div class="view-avatar">
             <span class="view-avatar-initial" id="viewAvatarInitial">?</span>
             <img id="viewAvatarImg" src="" style="display:none;">
@@ -229,11 +452,8 @@
         </div>
         <h1 class="view-name" id="viewName">User</h1>
         <div class="view-username" id="viewUsername">@username</div>
-        <div style="display:flex; justify-content:center;">
-          <div class="view-status-pill">
-            <span class="view-status-dot" id="viewStatusDot"></span>
-            <span id="viewStatusText">Offline</span>
-          </div>
+        <div style="display:flex; justify-content:center; margin-bottom:24px;">
+          <div class="view-status-pill"><span class="view-status-dot" id="viewStatusDot"></span><span id="viewStatusText">Offline</span></div>
         </div>
         <div class="view-actions">
           <button class="view-action-btn view-action-message" onclick="openChat()"><i class="fas fa-comment-dots"></i><span>Message</span></button>
@@ -241,10 +461,14 @@
         </div>
         <div class="view-bio-section">
           <div class="bio-header"><span class="view-bio-label">Biography</span></div>
-          <div class="view-bio-box" id="viewBioBox"></div>
+          <div class="view-bio-box" id="viewBioBox"><span class="view-bio-empty">No biography yet.</span></div>
         </div>
-        <div id="viewFriendsSince" style="text-align:center; color:var(--text-2); font-size:0.9rem;"></div>
+        <div id="viewFriendsSince" style="text-align:center; color:var(--text-3); font-size:0.85rem; font-weight:500;"></div>
       </main>
+
+      <div class="view-toast" id="viewToast" style="display:none; position:fixed; bottom:40px; left:50%; transform:translateX(-50%); background:var(--text); color:#fff; padding:12px 24px; border-radius:30px; box-shadow:var(--shadow-lg);">
+        <span id="viewToastIcon">✅</span> <span id="viewToastText">Message</span>
+      </div>
     </div>
   </template>
 
