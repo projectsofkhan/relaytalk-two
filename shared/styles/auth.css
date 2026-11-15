@@ -1,28 +1,33 @@
 /* ============================================================
    RelayTalk — Auth SPA styles
    Welcome (landing) · Login · Signup
+   Warm monochrome, refined motion.
    ============================================================ */
 
 :root {
-  --ink:        #0a0a0a;
-  --ink-hover:  #1f1f1f;
-  --ink-2:      #404040;
-  --ink-3:      #737373;
-  --ink-4:      #a3a3a3;
-  --line:       #e5e5e5;
-  --line-soft:  #f0efed;
-  --surface:    #ffffff;
-  --surface-alt:#fafaf9;
-  --danger:     #dc2626;
-  --success:    #15803d;
-  --ring:       rgba(10, 10, 10, 0.08);
+  /* Warm monochrome palette (stone-toned) */
+  --ink:         #0c0a09;
+  --ink-hover:   #1c1917;
+  --ink-2:       #44403c;
+  --ink-3:       #78716c;
+  --ink-4:       #a8a29e;
 
-  --ease-out:   cubic-bezier(0.22, 1, 0.36, 1);
-  --ease-in-out:cubic-bezier(0.4, 0, 0.2, 1);
+  --line:        #e7e5e4;
+  --line-soft:   #f5f5f4;
+
+  --surface:     #ffffff;
+  --surface-alt: #faf9f7;
+
+  --danger:      #dc2626;
+  --success:     #15803d;
+  --ring:        rgba(12, 10, 9, 0.06);
+
+  --ease-out:    cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* ──────────────────────────────────────────────────────────── */
-/* Shared auth layout                                          */
+/* Auth layout                                                */
 /* ──────────────────────────────────────────────────────────── */
 
 .auth-view {
@@ -30,6 +35,12 @@
   display: flex;
   flex-direction: column;
   background: var(--surface);
+  animation: pageIn 0.32s var(--ease-out);
+}
+
+@keyframes pageIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
 }
 
 .auth-container {
@@ -45,7 +56,7 @@
 .auth-container--narrow { max-width: 420px; }
 
 /* ──────────────────────────────────────────────────────────── */
-/* Topbar (login/signup)                                       */
+/* Topbar                                                     */
 /* ──────────────────────────────────────────────────────────── */
 
 .auth-topbar {
@@ -61,9 +72,11 @@
   width: 36px;
   height: 36px;
   border-radius: 10px;
-  transition: background 0.2s var(--ease-out);
+  transition: background-color 0.2s var(--ease-out),
+              transform 0.15s var(--ease-out);
 }
-.auth-home:hover { background: var(--surface-alt); }
+.auth-home:hover  { background: var(--surface-alt); }
+.auth-home:active { transform: scale(0.94); }
 
 .auth-home-logo {
   width: 26px;
@@ -73,7 +86,7 @@
 }
 
 /* ──────────────────────────────────────────────────────────── */
-/* Form header                                                 */
+/* Header                                                     */
 /* ──────────────────────────────────────────────────────────── */
 
 .auth-header { margin-bottom: 32px; }
@@ -93,7 +106,7 @@
 }
 
 /* ──────────────────────────────────────────────────────────── */
-/* Form fields                                                 */
+/* Form                                                       */
 /* ──────────────────────────────────────────────────────────── */
 
 .auth-form {
@@ -125,11 +138,13 @@
   color: var(--ink);
   font-size: 0.95rem;
   font-family: inherit;
-  transition: border-color 0.2s var(--ease-out), box-shadow 0.2s var(--ease-out);
+  transition: border-color 0.2s var(--ease-out),
+              box-shadow 0.2s var(--ease-out),
+              background-color 0.2s var(--ease-out);
 }
 
 .form-input::placeholder { color: var(--ink-4); }
-.form-input:hover { border-color: #d4d4d4; }
+.form-input:hover  { border-color: #d6d3d1; }
 .form-input:focus {
   outline: none;
   border-color: var(--ink);
@@ -154,9 +169,12 @@
   border-radius: 8px;
   color: var(--ink-4);
   cursor: pointer;
-  transition: color 0.2s var(--ease-out), background 0.2s var(--ease-out);
+  transition: color 0.2s var(--ease-out),
+              background-color 0.2s var(--ease-out),
+              transform 0.15s var(--ease-out);
 }
-.password-toggle:hover { color: var(--ink); background: var(--surface-alt); }
+.password-toggle:hover  { color: var(--ink); background: var(--surface-alt); }
+.password-toggle:active { transform: translateY(-50%) scale(0.92); }
 
 .password-toggle svg {
   width: 18px;
@@ -232,7 +250,8 @@
   text-decoration: underline;
   text-underline-offset: 2px;
   text-decoration-color: var(--line);
-  transition: color 0.2s var(--ease-out), text-decoration-color 0.2s var(--ease-out);
+  transition: color 0.2s var(--ease-out),
+              text-decoration-color 0.2s var(--ease-out);
 }
 .link-btn:hover {
   color: var(--ink);
@@ -240,7 +259,7 @@
 }
 
 /* ──────────────────────────────────────────────────────────── */
-/* Buttons                                                     */
+/* Buttons                                                    */
 /* ──────────────────────────────────────────────────────────── */
 
 .btn-primary,
@@ -253,10 +272,12 @@
   font-weight: 500;
   letter-spacing: -0.005em;
   cursor: pointer;
-  transition: background 0.2s var(--ease-out),
+  will-change: transform;
+  transition: background-color 0.2s var(--ease-out),
               color 0.2s var(--ease-out),
               border-color 0.2s var(--ease-out),
-              transform 0.15s var(--ease-out);
+              transform 0.15s var(--ease-out),
+              box-shadow 0.2s var(--ease-out);
 }
 
 .btn-primary {
@@ -268,8 +289,17 @@
   border-radius: 10px;
   font-size: 0.94rem;
 }
-.btn-primary:hover:not(:disabled) { background: var(--ink-hover); border-color: var(--ink-hover); }
-.btn-primary:active:not(:disabled) { transform: scale(0.99); }
+.btn-primary:hover:not(:disabled) {
+  background: var(--ink-hover);
+  border-color: var(--ink-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(12, 10, 9, 0.08);
+}
+.btn-primary:active:not(:disabled) {
+  transform: translateY(0) scale(0.98);
+  box-shadow: none;
+  transition-duration: 0.08s;
+}
 .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
 
 .btn-secondary {
@@ -281,8 +311,15 @@
   border-radius: 10px;
   font-size: 0.94rem;
 }
-.btn-secondary:hover  { background: var(--surface-alt); border-color: #d4d4d4; }
-.btn-secondary:active { transform: scale(0.99); }
+.btn-secondary:hover {
+  background: var(--surface-alt);
+  border-color: #d6d3d1;
+  transform: translateY(-1px);
+}
+.btn-secondary:active {
+  transform: translateY(0) scale(0.98);
+  transition-duration: 0.08s;
+}
 
 .btn-ghost {
   background: transparent;
@@ -293,14 +330,15 @@
   border-radius: 8px;
   font-size: 0.88rem;
 }
-.btn-ghost:hover { color: var(--ink); background: var(--surface-alt); }
+.btn-ghost:hover  { color: var(--ink); background: var(--surface-alt); }
+.btn-ghost:active { transform: scale(0.96); transition-duration: 0.08s; }
 
 .btn-block { width: 100%; }
 .btn-sm { padding: 8px 14px; min-height: 36px; font-size: 0.88rem; border-radius: 8px; }
 
 .auth-btn { margin-top: 4px; }
 
-/* Footer link */
+/* Footer */
 .auth-footer {
   margin-top: auto;
   padding-top: 28px;
@@ -313,11 +351,12 @@
   font-weight: 500;
   text-decoration: none;
   margin-left: 2px;
+  transition: color 0.2s var(--ease-out);
 }
 .auth-footer a:hover { text-decoration: underline; text-underline-offset: 2px; }
 
 /* ──────────────────────────────────────────────────────────── */
-/* Login success                                               */
+/* Success states                                             */
 /* ──────────────────────────────────────────────────────────── */
 
 .success-message { display: none; margin-bottom: 20px; }
@@ -328,6 +367,12 @@
   background: var(--surface-alt);
   border: 1px solid var(--line-soft);
   border-radius: 12px;
+  animation: fadeSlideUp 0.32s var(--ease-out);
+}
+
+@keyframes fadeSlideUp {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
 .success-icon-svg {
@@ -345,10 +390,7 @@
   margin-bottom: 4px;
 }
 
-.success-block p {
-  color: var(--ink-2);
-  font-size: 0.88rem;
-}
+.success-block p { color: var(--ink-2); font-size: 0.88rem; }
 
 .progress-track {
   width: 100%;
@@ -367,11 +409,10 @@
 }
 @keyframes progress { from { width: 0%; } to { width: 100%; } }
 
-/* Signup success */
 .success-container {
   text-align: center;
   padding: 16px 0;
-  animation: fadeIn 0.3s var(--ease-out);
+  animation: fadeSlideUp 0.32s var(--ease-out);
 }
 
 .success-icon {
@@ -416,16 +457,14 @@
   transition: width 0.1s linear;
 }
 
-@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-
 /* ──────────────────────────────────────────────────────────── */
-/* Modals                                                      */
+/* Modals                                                     */
 /* ──────────────────────────────────────────────────────────── */
 
 .modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(10, 10, 10, 0.4);
+  background: rgba(12, 10, 9, 0.4);
   display: none;
   justify-content: center;
   align-items: center;
@@ -446,10 +485,11 @@
   width: 100%;
   max-height: 82vh;
   overflow-y: auto;
-  transform: scale(0.96);
+  transform: scale(0.96) translateY(4px);
   transition: transform 0.28s var(--ease-out);
+  box-shadow: 0 20px 48px rgba(12, 10, 9, 0.14);
 }
-.modal-overlay.visible .modal-content { transform: scale(1); }
+.modal-overlay.visible .modal-content { transform: scale(1) translateY(0); }
 
 .modal-header {
   display: flex;
@@ -480,9 +520,12 @@
   font-size: 1.25rem;
   line-height: 1;
   cursor: pointer;
-  transition: background 0.2s var(--ease-out), color 0.2s var(--ease-out);
+  transition: background-color 0.2s var(--ease-out),
+              color 0.2s var(--ease-out),
+              transform 0.2s var(--ease-out);
 }
-.modal-close:hover { background: var(--surface-alt); color: var(--ink); }
+.modal-close:hover  { background: var(--surface-alt); color: var(--ink); transform: rotate(90deg); }
+.modal-close:active { transform: rotate(90deg) scale(0.92); }
 
 .modal-body {
   color: var(--ink-2);
@@ -519,7 +562,7 @@
 .security-note p { color: #991b1b; margin: 0; }
 
 /* ──────────────────────────────────────────────────────────── */
-/* Loading overlay                                             */
+/* Loading overlay                                            */
 /* ──────────────────────────────────────────────────────────── */
 
 .loading-overlay {
@@ -534,6 +577,12 @@
   flex-direction: column;
   z-index: 2000;
   gap: 14px;
+  animation: overlayIn 0.2s var(--ease-out);
+}
+
+@keyframes overlayIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
 }
 
 .login-loader {
@@ -569,7 +618,7 @@
   position: sticky;
   top: 0;
   z-index: 50;
-  background: rgba(255, 255, 255, 0.88);
+  background: rgba(255, 255, 255, 0.86);
   backdrop-filter: saturate(180%) blur(16px);
   -webkit-backdrop-filter: saturate(180%) blur(16px);
   border-bottom: 1px solid var(--line-soft);
@@ -594,7 +643,9 @@
   font-size: 0.98rem;
   letter-spacing: -0.01em;
   flex-shrink: 0;
+  transition: opacity 0.2s var(--ease-out);
 }
+.landing-brand:hover { opacity: 0.7; }
 
 .landing-brand-logo {
   width: 26px;
@@ -619,9 +670,11 @@
   color: var(--ink-2);
   border-radius: 8px;
   cursor: pointer;
-  transition: color 0.2s var(--ease-out), background 0.2s var(--ease-out);
+  transition: color 0.2s var(--ease-out),
+              background-color 0.2s var(--ease-out);
 }
-.landing-nav button:hover { color: var(--ink); background: var(--surface-alt); }
+.landing-nav button:hover  { color: var(--ink); background: var(--surface-alt); }
+.landing-nav button:active { transform: scale(0.97); transition-duration: 0.08s; }
 
 .landing-topbar-actions {
   display: flex;
@@ -632,10 +685,31 @@
 
 /* ─────── Hero ─────── */
 .landing-hero {
+  position: relative;
   max-width: 1120px;
   margin: 0 auto;
   padding: 96px 24px 112px;
   text-align: center;
+  isolation: isolate;
+}
+
+/* Subtle warm glow at top */
+.landing-hero::before {
+  content: '';
+  position: absolute;
+  top: -80px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(900px, 120%);
+  height: 500px;
+  background: radial-gradient(
+    ellipse at center,
+    rgba(12, 10, 9, 0.035) 0%,
+    rgba(12, 10, 9, 0.015) 35%,
+    transparent 70%
+  );
+  z-index: -1;
+  pointer-events: none;
 }
 
 .landing-hero .landing-eyebrow {
@@ -658,7 +732,7 @@
   color: var(--ink-2);
   line-height: 1.55;
   max-width: 52ch;
-  margin: 0 auto 36px;
+  margin: 0 auto 32px;
   animation: heroIn 0.8s var(--ease-out) 0.25s both;
 }
 
@@ -675,6 +749,14 @@
   padding: 13px 24px;
   min-height: 50px;
   font-size: 0.96rem;
+}
+
+.landing-hero-note {
+  margin-top: 18px;
+  font-size: 0.78rem;
+  color: var(--ink-3);
+  letter-spacing: 0.01em;
+  animation: heroIn 0.8s var(--ease-out) 0.5s both;
 }
 
 @keyframes heroIn {
@@ -712,9 +794,7 @@
   margin-right: auto;
 }
 
-.landing-section-head {
-  margin-bottom: 56px;
-}
+.landing-section-head { margin-bottom: 56px; }
 
 .landing-section-head h2 {
   font-size: clamp(1.55rem, 3vw, 2.2rem);
@@ -743,11 +823,18 @@
   height: 22px;
   flex-shrink: 0;
   margin-top: 2px;
-  stroke: var(--ink);
+  stroke: var(--ink-2);
   fill: none;
   stroke-width: 1.6;
   stroke-linecap: round;
   stroke-linejoin: round;
+  transition: stroke 0.25s var(--ease-out),
+              transform 0.25s var(--ease-out);
+}
+
+.feature-item:hover .feature-icon {
+  stroke: var(--ink);
+  transform: scale(1.06);
 }
 
 .feature-item h3 {
@@ -797,22 +884,16 @@
 }
 
 /* ─────── FAQ ─────── */
-.landing-faq {
-  max-width: 720px;
-}
+.landing-faq { max-width: 720px; }
 
-.landing-faq-item {
-  border-top: 1px solid var(--line);
-}
-.landing-faq-item:last-child {
-  border-bottom: 1px solid var(--line);
-}
+.landing-faq-item { border-top: 1px solid var(--line); }
+.landing-faq-item:last-child { border-bottom: 1px solid var(--line); }
 
 .landing-faq-item summary {
   padding: 20px 0;
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
   gap: 20px;
   cursor: pointer;
   list-style: none;
@@ -831,7 +912,9 @@
   font-weight: 400;
   color: var(--ink-4);
   line-height: 1;
-  transition: transform 0.3s var(--ease-out), color 0.2s var(--ease-out);
+  margin-top: 2px;
+  transition: transform 0.3s var(--ease-out),
+              color 0.2s var(--ease-out);
   flex-shrink: 0;
 }
 .landing-faq-item[open] summary::after {
@@ -845,6 +928,9 @@
   line-height: 1.65;
   color: var(--ink-2);
   max-width: 65ch;
+}
+
+.landing-faq-item[open] .landing-faq-body {
   animation: faqOpen 0.3s var(--ease-out);
 }
 
@@ -936,7 +1022,8 @@
 [data-reveal] {
   opacity: 0;
   transform: translateY(14px);
-  transition: opacity 0.7s var(--ease-out), transform 0.7s var(--ease-out);
+  transition: opacity 0.7s var(--ease-out),
+              transform 0.7s var(--ease-out);
 }
 [data-reveal].in-view {
   opacity: 1;
