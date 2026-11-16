@@ -23,7 +23,6 @@ function formatLastSeen(ts) {
 export async function initDashboard({ router }) {
   routerRef = router;
   abortController = new AbortController();
-  const sig = abortController.signal;
 
   try {
     const session = await getSession();
@@ -32,13 +31,12 @@ export async function initDashboard({ router }) {
 
     document.getElementById('loadingIndicator').style.display = 'none';
 
-    // Load Profile
+    // Profile
     const { data: profile } = await window.supabase.from('profiles').select('*').eq('id', currentUser.id).maybeSingle();
     currentProfile = profile || { username: currentUser.email?.split('@')[0] || 'User' };
-    
     document.getElementById('welcomeTitle').textContent = `Hello, ${currentProfile.username}`;
 
-    // Load Friends
+    // Friends
     const { data: friends } = await window.supabase.from('friends').select('friend_id').eq('user_id', currentUser.id);
     const list = document.getElementById('friendsList');
     
@@ -65,38 +63,27 @@ export async function initDashboard({ router }) {
         `;
       }).join('');
 
-      // 🔥 FIX: Add event listener instead of inline onclick
+      // FIX CLICK BUG
       list.querySelectorAll('.friend-row').forEach(row => {
         row.addEventListener('click', () => {
-          const id = row.dataset.id;
-          const name = row.dataset.name;
-          sessionStorage.setItem('currentChatFriend', JSON.stringify({ id, username: name }));
-          routerRef.navigate('/chats?friendId=' + encodeURIComponent(id));
+          sessionStorage.setItem('currentChatFriend', JSON.stringify({ id: row.dataset.id, username: row.dataset.name }));
+          routerRef.navigate('/chats?friendId=' + encodeURIComponent(row.dataset.id));
         });
       });
     } else {
       list.innerHTML = `<div style="padding:24px;text-align:center;color:var(--text-secondary);">No friends yet</div>`;
     }
 
-    // --- BUTTON LISTENERS ---
-    document.getElementById('btn-search').onclick = () => {
-      document.getElementById('searchModal').style.display = 'flex';
-      setTimeout(() => document.getElementById('searchModal').classList.add('visible'), 10);
-    };
-    document.getElementById('close-search').onclick = () => {
-      document.getElementById('searchModal').classList.remove('visible');
-      setTimeout(() => document.getElementById('searchModal').style.display = 'none', 200);
-    };
-    document.getElementById('btn-find-friends').onclick = () => document.getElementById('btn-search').click();
+    // Modals
+    const searchModal = document.getElementById('searchModal');
+    const notifModal = document.getElementById('notificationsModal');
 
-    document.getElementById('btn-notifs').onclick = () => {
-      document.getElementById('notificationsModal').style.display = 'flex';
-      setTimeout(() => document.getElementById('notificationsModal').classList.add('visible'), 10);
-    };
-    document.getElementById('close-notifs').onclick = () => {
-      document.getElementById('notificationsModal').classList.remove('visible');
-      setTimeout(() => document.getElementById('notificationsModal').style.display = 'none', 200);
-    };
+    document.getElementById('btn-search').onclick = () => { searchModal.style.display = 'flex'; setTimeout(() => searchModal.classList.add('visible'), 10); };
+    document.getElementById('close-search').onclick = () => { searchModal.classList.remove('visible'); setTimeout(() => searchModal.style.display = 'none', 200); };
+    document.getElementById('btn-find-friends').onclick = () => document.getElementById('btn-search').click();
+    
+    document.getElementById('btn-notifs').onclick = () => { notifModal.style.display = 'flex'; setTimeout(() => notifModal.classList.add('visible'), 10); };
+    document.getElementById('close-notifs').onclick = () => { notifModal.classList.remove('visible'); setTimeout(() => notifModal.style.display = 'none', 200); };
 
     return () => { try { abortController.abort(); } catch(e){} };
   } catch (err) {
