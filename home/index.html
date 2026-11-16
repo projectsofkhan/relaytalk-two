@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>RelayTalk</title>
-  <meta name="theme-color" content="#f8fafc">
+  <meta name="theme-color" content="#ffffff">
   <link rel="icon" href="/favicon.ico" type="image/x-icon">
   <link rel="icon" href="/relay.png" type="image/png" sizes="192x192">
   <link rel="apple-touch-icon" href="/relay.png">
@@ -12,42 +12,37 @@
   
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   
   <style>
     /* ============================================================
-       GLOBAL RESET & THEME
+       RELAYTALK ULTRA-MINIMAL UI
+       No shadows. No gradients. Flat. Perfectly aligned.
        ============================================================ */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
     
     :root {
-      --primary: #0B84F3;
-      --primary-hover: #0972d9;
-      --primary-soft: #e7f3fe;
+      --bg: #ffffff;
       --surface: #ffffff;
-      --bg: #f8fafc; /* Soft grey so white cards pop */
-      --ink: #0f172a;
-      --ink-2: #475569;
-      --ink-3: #94a3b8;
-      --border: #e2e8f0;
-      --border-soft: #f1f5f9;
-      --danger: #ef4444;
-      --success: #10b981;
+      --surface-hover: #f2f2f7;
+      --primary: #007aff; /* iOS Blue */
+      --text: #000000;
+      --text-secondary: #8e8e93;
+      --border: #e5e5ea;
+      --danger: #ff3b30;
       --radius-sm: 8px;
-      --radius-md: 14px;
-      --radius-lg: 20px;
-      --shadow-sm: 0 1px 3px rgba(0,0,0,0.05);
-      --shadow-md: 0 4px 12px rgba(0,0,0,0.05);
-      --ease: cubic-bezier(0.22, 1, 0.36, 1);
+      --radius-md: 12px;
+      --radius-pill: 999px;
+      --font: 'Inter', -apple-system, sans-serif;
     }
 
     body {
       background: var(--bg);
-      color: var(--ink);
-      font-family: 'Google Sans', -apple-system, sans-serif;
-      font-size: 15px;
-      line-height: 1.5;
+      color: var(--text);
+      font-family: var(--font);
+      font-size: 16px;
+      line-height: 1.4;
       min-height: 100vh;
       -webkit-font-smoothing: antialiased;
     }
@@ -57,186 +52,106 @@
     img { display: block; max-width: 100%; }
     
     .view-outlet { display: block; width: 100%; min-height: 100vh; }
-    .loading-indicator { position: fixed; inset: 0; background: var(--bg); display: flex; align-items: center; justify-content: center; z-index: 9999; transition: opacity 0.3s; }
-    .loading-spinner { width: 40px; height: 40px; border: 3px solid var(--primary-soft); border-top-color: var(--primary); border-radius: 50%; animation: spin 0.8s linear infinite; }
+    
+    .loading-indicator { position: fixed; inset: 0; background: var(--bg); display: flex; align-items: center; justify-content: center; z-index: 9999; }
+    .loading-spinner { width: 30px; height: 30px; border: 2px solid var(--border); border-top-color: var(--primary); border-radius: 50%; animation: spin 0.8s linear infinite; }
     @keyframes spin { to { transform: rotate(360deg); } }
 
     /* ============================================================
-       DASHBOARD & FRIENDS
+       GLOBAL LAYOUT
        ============================================================ */
-    .dashboard-root, .friends-root { min-height: 100vh; padding-bottom: 96px; }
+    .app-header { position: sticky; top: 0; z-index: 50; background: rgba(255,255,255,0.95); backdrop-filter: blur(10px); border-bottom: 1px solid var(--border); }
+    .app-header-inner { max-width: 680px; margin: 0 auto; height: 56px; padding: 0 16px; display: flex; align-items: center; justify-content: space-between; }
+    .app-title { font-size: 20px; font-weight: 700; letter-spacing: -0.5px; }
+    .app-actions { display: flex; gap: 16px; }
+    .app-actions button { font-size: 18px; color: var(--primary); }
+
+    .page-container { max-width: 680px; margin: 0 auto; padding: 16px; }
+    .section-title { font-size: 13px; font-weight: 600; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px; margin: 24px 0 8px 16px; }
     
-    .app-bar { position: sticky; top: 0; z-index: 50; background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(8px); border-bottom: 1px solid var(--border); }
-    .app-bar-inner { max-width: 680px; margin: 0 auto; height: 64px; padding: 0 20px; display: flex; align-items: center; justify-content: space-between; }
-    .app-bar-brand { display: flex; align-items: center; gap: 10px; font-size: 1.1rem; font-weight: 600; color: var(--ink); }
-    .brand-logo-img { width: 28px; height: 28px; border-radius: 8px; }
-    .app-bar-actions { display: flex; gap: 8px; }
+    /* FLAT LISTS (No cards, just borders) */
+    .flat-list { display: flex; flex-direction: column; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-md); overflow: hidden; }
     
-    .icon-btn { width: 40px; height: 40px; border-radius: 50%; background: transparent; color: var(--ink-2); display: flex; align-items: center; justify-content: center; font-size: 1.1rem; transition: all 0.2s; }
-    .icon-btn:hover { background: var(--border-soft); color: var(--ink); }
-
-    .page { max-width: 680px; margin: 0 auto; padding: 24px 20px; display: flex; flex-direction: column; gap: 32px; }
-    .greeting { display: flex; flex-direction: column; gap: 4px; padding: 0 4px; }
-    .greeting-small { font-size: 0.9rem; color: var(--ink-3); font-weight: 500; }
-    .greeting-title { font-size: 1.6rem; font-weight: 600; letter-spacing: -0.03em; color: var(--ink); line-height: 1.2; }
-    .greeting-sub { font-size: 0.95rem; color: var(--ink-2); }
-
-    .primary-action { display: flex; align-items: center; gap: 16px; padding: 16px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-md); box-shadow: var(--shadow-sm); transition: all 0.2s; text-align: left; width: 100%; }
-    .primary-action:hover { border-color: var(--primary); transform: translateY(-2px); box-shadow: var(--shadow-md); }
-    .primary-action-icon { width: 44px; height: 44px; border-radius: 12px; background: var(--primary-soft); color: var(--primary); display: flex; align-items: center; justify-content: center; font-size: 1.1rem; }
-    .primary-action-text { flex: 1; display: flex; flex-direction: column; gap: 2px; }
-    .primary-action-title { font-size: 1rem; font-weight: 600; color: var(--ink); }
-    .primary-action-desc { font-size: 0.85rem; color: var(--ink-2); }
-    .primary-action-chevron { color: var(--ink-3); font-size: 0.9rem; }
-
-    .section-head { display: flex; justify-content: space-between; align-items: center; padding: 0 4px; margin-bottom: 12px; }
-    .section-title { font-size: 1rem; font-weight: 600; color: var(--ink); }
-    .text-btn { color: var(--primary); font-size: 0.85rem; font-weight: 500; padding: 4px 8px; border-radius: var(--radius-sm); transition: background 0.2s; }
-    .text-btn:hover { background: var(--primary-soft); }
-
-    .list { display: flex; flex-direction: column; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-md); overflow: hidden; }
+    .list-item { display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-bottom: 1px solid var(--border); transition: background 0.1s; cursor: pointer; }
+    .list-item:last-child { border-bottom: none; }
+    .list-item:active { background: var(--surface-hover); }
     
-    .friend-item { display: flex; align-items: center; gap: 14px; padding: 14px 16px; background: var(--surface); border-bottom: 1px solid var(--border-soft); transition: background 0.2s; cursor: pointer; }
-    .friend-item:last-child { border-bottom: none; }
-    .friend-item:hover { background: var(--bg); }
+    .avatar { width: 44px; height: 44px; border-radius: 50%; background: var(--surface-hover); color: var(--text-secondary); display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 16px; flex-shrink: 0; overflow: hidden; position: relative; }
+    .avatar img { width: 100%; height: 100%; object-fit: cover; }
+    .status-dot { position: absolute; bottom: 0; right: 0; width: 12px; height: 12px; border-radius: 50%; border: 2px solid var(--surface); background: var(--text-secondary); }
+    .status-dot.online { background: #34c759; }
     
-    .friend-avatar { position: relative; width: 44px; height: 44px; border-radius: 50%; background: var(--border-soft); color: var(--primary); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 1rem; font-weight: 600; flex-shrink: 0; }
-    .friend-avatar img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; }
-    .friend-status-dot, .status-indicator-clean { position: absolute; bottom: 0; right: 0; width: 12px; height: 12px; border-radius: 50%; border: 2px solid var(--surface); }
-    .friend-status-dot.online, .status-indicator-clean.online { background: var(--success); }
-    .friend-status-dot.offline, .status-indicator-clean.offline { background: var(--ink-3); }
+    .item-content { flex: 1; min-width: 0; }
+    .item-title { font-weight: 600; font-size: 16px; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .item-subtitle { font-size: 14px; color: var(--text-secondary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 2px; }
+    .item-action { color: var(--primary); font-size: 15px; font-weight: 500; }
+
+    /* BUTTONS */
+    .btn { display: inline-flex; align-items: center; justify-content: center; padding: 12px 20px; border-radius: var(--radius-md); font-size: 16px; font-weight: 600; width: 100%; transition: opacity 0.2s; }
+    .btn:active { opacity: 0.7; }
+    .btn-primary { background: var(--primary); color: #fff; }
+    .btn-danger { background: #ff3b30; color: #fff; }
     
-    .friend-info { flex: 1; min-width: 0; }
-    .friend-name { font-size: 0.95rem; font-weight: 600; color: var(--ink); margin-bottom: 2px; }
-    .friend-status { font-size: 0.8rem; color: var(--ink-2); }
-    .friend-status.online { color: var(--success); }
-    .friend-unread-badge { background: var(--primary); color: #fff; font-size: 0.7rem; font-weight: 600; padding: 2px 8px; border-radius: 999px; min-width: 20px; text-align: center; }
+    /* INPUTS */
+    .input-group { display: flex; align-items: center; background: var(--surface-hover); border-radius: var(--radius-md); padding: 0 12px; margin-bottom: 16px; }
+    .input-group i { color: var(--text-secondary); font-size: 16px; }
+    .input-field { flex: 1; border: none; background: transparent; padding: 14px 12px; font-size: 16px; color: var(--text); outline: none; }
 
-    .search-bar-wrap { position: sticky; top: 64px; z-index: 40; background: var(--surface); padding: 12px 20px; border-bottom: 1px solid var(--border); }
-    .search-bar-inner { max-width: 680px; margin: 0 auto; }
-    .search-wrap { position: relative; }
-    .search-svg { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--ink-3); font-size: 0.9rem; }
-    .search-input { width: 100%; padding: 10px 16px 10px 40px; background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius-md); font-size: 0.95rem; color: var(--ink); transition: all 0.2s; }
-    .search-input:focus { background: var(--surface); border-color: var(--primary); outline: none; }
-
-    .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: var(--surface); border-top: 1px solid var(--border); display: flex; justify-content: space-around; padding: 8px 0; padding-bottom: max(8px, env(safe-area-inset-bottom)); z-index: 100; max-width: 680px; margin: 0 auto; }
-    .nav-item { display: flex; flex-direction: column; align-items: center; gap: 4px; color: var(--ink-3); font-size: 0.7rem; font-weight: 500; padding: 6px 12px; transition: color 0.2s; text-decoration: none; }
-    .nav-item i { font-size: 1.2rem; }
-    .nav-item.active { color: var(--primary); }
+    /* BOTTOM NAV (Simple text, not giant icons) */
+    .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(255,255,255,0.95); backdrop-filter: blur(10px); border-top: 1px solid var(--border); display: flex; justify-content: space-around; padding: 8px 0; padding-bottom: max(8px, env(safe-area-inset-bottom)); z-index: 100; max-width: 680px; margin: 0 auto; }
+    .nav-btn { display: flex; flex-direction: column; align-items: center; gap: 2px; color: var(--text-secondary); font-size: 11px; font-weight: 500; padding: 4px 16px; }
+    .nav-btn i { font-size: 22px; margin-bottom: 2px; }
+    .nav-btn.active { color: var(--primary); }
 
     /* ============================================================
-       CHATS
+       CHAT VIEW (iMessage Style)
        ============================================================ */
-    .chat-view { position: fixed; inset: 0; background: var(--surface); display: flex; flex-direction: column; }
-    .chat-header { display: flex; align-items: center; gap: 12px; padding: 12px 16px; padding-top: max(12px, env(safe-area-inset-top)); background: var(--surface); border-bottom: 1px solid var(--border); z-index: 50; }
-    .back-btn { width: 36px; height: 36px; border-radius: 50%; color: var(--ink-2); display: flex; align-items: center; justify-content: center; font-size: 1.1rem; }
-    .chat-user-info { display: flex; align-items: center; gap: 12px; flex: 1; cursor: pointer; }
-    .chat-user-avatar { width: 40px; height: 40px; border-radius: 50%; background: var(--border-soft); border: 1px solid var(--border); color: var(--primary); display: flex; align-items: center; justify-content: center; font-size: 1rem; font-weight: 600; overflow: hidden; }
-    .chat-user-avatar img { width: 100%; height: 100%; object-fit: cover; }
-    .chat-user-details h3 { font-size: 0.95rem; font-weight: 600; margin-bottom: 1px; }
-    .chat-user-status { display: flex; align-items: center; gap: 6px; font-size: 0.75rem; color: var(--ink-2); }
-    .status-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--ink-3); }
-    .status-dot.online { background: var(--success); }
-    .chat-actions { display: flex; gap: 4px; }
-    .guide-btn, .call-btn { width: 36px; height: 36px; border-radius: 50%; color: var(--ink-2); display: flex; align-items: center; justify-content: center; font-size: 1rem; }
-    .call-btn { color: var(--primary); }
+    .chat-layout { position: fixed; inset: 0; display: flex; flex-direction: column; background: var(--bg); }
+    .chat-top { display: flex; align-items: center; padding: 10px 16px; border-bottom: 1px solid var(--border); background: rgba(255,255,255,0.95); backdrop-filter: blur(10px); z-index: 10; }
+    .chat-top .back { font-size: 20px; color: var(--primary); margin-right: 12px; cursor: pointer; }
+    .chat-top .avatar { width: 36px; height: 36px; margin-right: 10px; }
+    .chat-top-info { flex: 1; }
+    .chat-top-name { font-size: 16px; font-weight: 600; }
+    .chat-top-status { font-size: 13px; color: var(--text-secondary); }
+    .chat-top-actions { display: flex; gap: 16px; color: var(--primary); font-size: 18px; }
     
-    .main-content { flex: 1; overflow: hidden; position: relative; background: var(--bg); }
-    .messages-container { height: 100%; overflow-y: auto; padding: 20px 16px 80px; display: flex; flex-direction: column; gap: 8px; }
+    .chat-messages { flex: 1; overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 8px; padding-bottom: 90px; }
     
-    .message-wrap { display: flex; flex-direction: column; max-width: 80%; margin-bottom: 4px; }
-    .message-wrap.sent { align-self: flex-end; align-items: flex-end; }
-    .message-wrap.received { align-self: flex-start; align-items: flex-start; }
-    .message { padding: 10px 14px; border-radius: 16px; font-size: 0.95rem; line-height: 1.45; position: relative; }
-    .message.sent { background: var(--primary); color: #ffffff; border-bottom-right-radius: 4px; }
-    .message.received { background: var(--surface); color: var(--ink); border: 1px solid var(--border); border-bottom-left-radius: 4px; }
-    .message-time { font-size: 0.65rem; opacity: 0.7; margin-top: 4px; text-align: right; }
+    .msg-row { display: flex; flex-direction: column; max-width: 75%; }
+    .msg-row.sent { align-self: flex-end; align-items: flex-end; }
+    .msg-row.received { align-self: flex-start; align-items: flex-start; }
+    
+    .msg-bubble { padding: 10px 16px; font-size: 16px; line-height: 1.4; border-radius: 20px; word-break: break-word; }
+    .sent .msg-bubble { background: var(--primary); color: #fff; border-bottom-right-radius: 4px; }
+    .received .msg-bubble { background: var(--surface-hover); color: var(--text); border-bottom-left-radius: 4px; }
+    .msg-time { font-size: 11px; color: var(--text-secondary); margin-top: 4px; }
 
-    .message-input-wrapper { position: absolute; bottom: 0; left: 0; right: 0; background: var(--surface); border-top: 1px solid var(--border); padding: 12px 16px; padding-bottom: max(12px, env(safe-area-inset-bottom)); z-index: 10; }
-    .message-input-container { display: flex; align-items: flex-end; gap: 8px; }
-    .attach-btn, .mic-btn { width: 40px; height: 40px; border-radius: 50%; color: var(--ink-3); display: flex; align-items: center; justify-content: center; font-size: 1.1rem; flex-shrink: 0; }
-    .message-input { flex: 1; background: var(--bg); border: 1px solid var(--border-soft); border-radius: 20px; padding: 10px 16px; min-height: 40px; max-height: 100px; resize: none; font-size: 0.95rem; color: var(--ink); outline: none; }
-    .message-input:focus { border-color: var(--primary); background: var(--surface); }
-    .send-btn { width: 40px; height: 40px; border-radius: 50%; background: var(--primary); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 1rem; flex-shrink: 0; }
-    .send-btn:disabled { opacity: 0.5; background: var(--ink-3); }
+    .chat-input-area { position: fixed; bottom: 0; left: 0; right: 0; background: var(--bg); border-top: 1px solid var(--border); padding: 10px 16px; padding-bottom: max(10px, env(safe-area-inset-bottom)); display: flex; align-items: flex-end; gap: 8px; max-width: 680px; margin: 0 auto; }
+    .chat-input { flex: 1; background: var(--surface-hover); border: 1px solid transparent; border-radius: 20px; padding: 10px 16px; font-size: 16px; color: var(--text); outline: none; min-height: 40px; max-height: 100px; resize: none; }
+    .chat-input:focus { border-color: var(--border); background: var(--surface); }
+    .chat-btn { font-size: 22px; color: var(--primary); padding: 8px; cursor: pointer; }
+    .chat-btn:disabled { color: var(--text-secondary); opacity: 0.5; }
 
     /* ============================================================
        PROFILE & VIEW FRIEND
        ============================================================ */
-    .profile-root, .view-root { min-height: 100vh; padding-bottom: 96px; background: var(--bg); }
-    .profile-main { max-width: 520px; margin: 0 auto; padding: 24px 20px; }
+    .profile-header { display: flex; flex-direction: column; align-items: center; padding: 32px 16px; border-bottom: 1px solid var(--border); }
+    .profile-header .avatar { width: 88px; height: 88px; font-size: 32px; margin-bottom: 16px; }
+    .profile-name { font-size: 24px; font-weight: 700; letter-spacing: -0.5px; }
+    .profile-username { font-size: 15px; color: var(--text-secondary); margin-top: 4px; margin-bottom: 16px; }
     
-    /* FIXED VIEW FRIEND FLEXBOX */
-    .view-main { max-width: 520px; margin: 0 auto; padding: 32px 20px; display: flex; flex-direction: column; align-items: center; }
-
-    .profile-card { background: var(--surface); border-radius: var(--radius-lg); padding: 24px; border: 1px solid var(--border); text-align: center; position: relative; margin-bottom: 24px; box-shadow: var(--shadow-sm); }
-    .avatar-section { position: relative; width: 96px; height: 96px; margin: 0 auto 16px; }
-    .profile-avatar, .view-avatar { width: 96px; height: 96px; border-radius: 50%; background: var(--border-soft); display: flex; align-items: center; justify-content: center; border: 1px solid var(--border); overflow: hidden; }
-    .profile-avatar img, .view-avatar img { width: 100%; height: 100%; object-fit: cover; }
-    .avatar-initial, .view-avatar-initial { font-size: 2.2rem; font-weight: 600; color: var(--primary); }
+    .bio-text { text-align: center; font-size: 15px; color: var(--text); padding: 16px; max-width: 400px; margin: 0 auto; line-height: 1.5; }
     
-    .change-photo-btn { position: absolute; bottom: 0; right: 0; width: 32px; height: 32px; border-radius: 50%; background: var(--surface); color: var(--ink-2); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; box-shadow: var(--shadow-sm); cursor: pointer; }
-    .user-name, .view-name { font-size: 1.4rem; font-weight: 600; letter-spacing: -0.02em; margin-bottom: 4px; text-align: center; }
-    .user-username, .view-username { font-size: 0.95rem; color: var(--ink-2); margin-bottom: 20px; text-align: center; }
-
-    .bio-section, .view-bio-section { width: 100%; margin-bottom: 24px; text-align: left; }
-    .bio-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
-    .bio-label, .view-bio-label { font-size: 0.75rem; font-weight: 600; color: var(--ink-3); text-transform: uppercase; letter-spacing: 0.5px; }
-    .bio-edit-btn { color: var(--ink-3); font-size: 0.9rem; padding: 4px; }
-    .bio-box, .view-bio-box { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 16px; font-size: 0.95rem; color: var(--ink); line-height: 1.5; text-align: center; }
-    .bio-empty, .view-bio-empty { color: var(--ink-3); font-style: italic; font-size: 0.9rem; }
-
-    .profile-stats { display: flex; justify-content: center; gap: 32px; margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--border-soft); }
-    .stat-item { display: flex; flex-direction: column; align-items: center; gap: 2px; }
-    .stat-value { font-size: 1.2rem; font-weight: 600; color: var(--ink); }
-    .stat-label { font-size: 0.75rem; color: var(--ink-3); font-weight: 500; text-transform: uppercase; }
-
-    .settings-card, .actions-card { background: var(--surface); border-radius: var(--radius-md); border: 1px solid var(--border); margin-bottom: 24px; overflow: hidden; width: 100%; box-shadow: var(--shadow-sm); }
-    .settings-header { padding: 16px; border-bottom: 1px solid var(--border-soft); display: flex; gap: 12px; align-items: center; }
-    .settings-icon { width: 36px; height: 36px; border-radius: var(--radius-sm); background: var(--primary-soft); color: var(--primary); display: flex; align-items: center; justify-content: center; font-size: 1rem; }
-    .settings-title { font-size: 0.95rem; font-weight: 600; }
-    .settings-subtitle { font-size: 0.8rem; color: var(--ink-2); margin-top: 2px; }
+    .view-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 16px; }
     
-    .notify-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 16px; }
-    .notify-btn { background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 12px; display: flex; flex-direction: column; align-items: center; gap: 6px; font-weight: 500; font-size: 0.85rem; color: var(--ink-2); }
-    
-    .action-row { display: flex; align-items: center; gap: 12px; width: 100%; padding: 16px; border-bottom: 1px solid var(--border-soft); font-size: 0.95rem; font-weight: 500; color: var(--ink); text-align: left; }
-    .action-row:last-child { border-bottom: none; }
-    .action-row-icon { width: 32px; height: 32px; border-radius: 8px; background: var(--bg); color: var(--ink-2); display: flex; align-items: center; justify-content: center; font-size: 0.9rem; }
-    .action-row-danger { color: var(--danger); }
-    .action-row-danger .action-row-icon { background: #fee2e2; color: var(--danger); }
-
-    .view-status-pill { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); font-size: 0.8rem; font-weight: 500; color: var(--ink-2); margin-bottom: 24px; }
-    .view-status-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--ink-3); }
-    .view-status-dot.online { background: var(--success); }
-
-    /* FIXED: Grid prevents overlapping */
-    .view-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; width: 100%; margin-bottom: 24px; }
-    .view-action-btn { display: flex; align-items: center; justify-content: center; gap: 8px; padding: 14px; border-radius: var(--radius-md); font-size: 0.95rem; font-weight: 600; }
-    .view-action-message { background: var(--surface); color: var(--ink); border: 1px solid var(--border); }
-    .view-action-call { background: var(--primary); color: #fff; }
-
-    /* MODALS & ALERTS */
-    .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.4); display: none; align-items: flex-end; justify-content: center; z-index: 1000; opacity: 0; transition: opacity 0.2s; }
-    .modal.visible { opacity: 1; }
-    .modal-panel { background: var(--surface); width: 100%; max-width: 540px; max-height: 85vh; border-radius: 20px 20px 0 0; display: flex; flex-direction: column; transform: translateY(20px); transition: transform 0.3s var(--ease); }
-    .modal.visible .modal-panel { transform: translateY(0); }
-    .modal-head { padding: 16px 20px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
-    .modal-title { font-size: 1.05rem; font-weight: 600; }
-    .modal-close { width: 32px; height: 32px; background: var(--bg); border-radius: 50%; color: var(--ink-2); display: flex; align-items: center; justify-content: center; }
-    .modal-body { padding: 20px; overflow-y: auto; }
-    .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.4); display: none; justify-content: center; align-items: center; z-index: 1000; padding: 20px; }
-    .modal-content { background: var(--surface); border-radius: 14px; max-width: 400px; width: 100%; max-height: 84vh; overflow-y: auto; padding: 20px; box-shadow: var(--shadow-lg); }
-    .tabs { display: flex; background: var(--bg); border-radius: var(--radius-sm); padding: 4px; margin-bottom: 20px; }
-    .tab { flex: 1; padding: 8px; border-radius: var(--radius-sm); font-size: 0.85rem; font-weight: 500; color: var(--ink-2); }
-    .tab.active { background: var(--surface); color: var(--ink); box-shadow: var(--shadow-sm); }
-    .empty-state { padding: 40px 20px; text-align: center; display: flex; flex-direction: column; align-items: center; }
-    .empty-icon { width: 56px; height: 56px; background: var(--primary-soft); color: var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; margin-bottom: 16px; }
-    .empty-title { font-size: 1rem; font-weight: 600; margin-bottom: 4px; }
-    .empty-desc { color: var(--ink-2); font-size: 0.85rem; margin-bottom: 16px; max-width: 240px; }
-    
-    .btn-primary { background: var(--primary); color: white; padding: 12px 20px; border-radius: var(--radius-sm); font-weight: 600; }
-    .btn-secondary { background: var(--bg); color: var(--ink); padding: 12px 20px; border-radius: var(--radius-sm); font-weight: 600; border: 1px solid var(--border); }
+    /* MODALS */
+    .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.4); display: none; align-items: flex-end; justify-content: center; z-index: 1000; opacity: 0; transition: opacity 0.2s; }
+    .modal-overlay.visible { opacity: 1; }
+    .modal-panel { background: var(--bg); width: 100%; max-width: 540px; max-height: 85vh; border-radius: 20px 20px 0 0; padding: 24px; padding-bottom: max(24px, env(safe-area-inset-bottom)); transform: translateY(20px); transition: transform 0.3s; }
+    .modal-overlay.visible .modal-panel { transform: translateY(0); }
+    .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+    .modal-title { font-size: 18px; font-weight: 700; }
+    .modal-close { font-size: 24px; color: var(--text-secondary); cursor: pointer; }
   </style>
 </head>
 <body>
@@ -248,72 +163,51 @@
     <div class="dashboard-root">
       <div class="loading-indicator" id="loadingIndicator"><div class="loading-spinner"></div></div>
 
-      <header class="app-bar">
-        <div class="app-bar-inner">
-          <div class="app-bar-brand">
-            <img src="/relay.png" alt="RelayTalk" class="brand-logo-img">
-            <span class="brand-name">RelayTalk</span>
-          </div>
-          <div class="app-bar-actions">
-            <button class="icon-btn" onclick="openSearch()"><i class="fas fa-search"></i></button>
-            <button class="icon-btn" onclick="openNotifications()">
-              <i class="fas fa-bell"></i>
-              <span class="app-bar-badge" id="notificationBadge" style="display: none;">0</span>
-            </button>
+      <header class="app-header">
+        <div class="app-header-inner">
+          <div class="app-title">RelayTalk</div>
+          <div class="app-actions">
+            <button id="btn-search"><i class="fas fa-search"></i></button>
+            <button id="btn-notifs"><i class="fas fa-bell"></i></button>
           </div>
         </div>
       </header>
 
-      <main class="page">
-        <section class="greeting">
-          <p class="greeting-small" id="greetingSmall">Hello</p>
-          <h1 class="greeting-title" id="welcomeTitle">Friend</h1>
-          <p class="greeting-sub">Welcome back to RelayTalk</p>
-        </section>
+      <main class="page-container">
+        <div style="margin-top: 16px;">
+          <h1 style="font-size: 28px; font-weight: 700; letter-spacing: -1px;" id="welcomeTitle">Hello</h1>
+          <p style="color: var(--text-secondary); font-size: 15px;">Welcome back to RelayTalk</p>
+        </div>
 
-        <button class="primary-action" onclick="openSearch()">
-          <span class="primary-action-icon"><i class="fas fa-user-plus"></i></span>
-          <span class="primary-action-text">
-            <span class="primary-action-title">Find friends</span>
-            <span class="primary-action-desc">Search by username</span>
-          </span>
-          <span class="primary-action-chevron"><i class="fas fa-chevron-right"></i></span>
+        <button class="btn btn-primary" style="margin-top: 24px;" id="btn-find-friends">
+          Find Friends
         </button>
 
-        <section class="section">
-          <div class="section-head">
-            <h2 class="section-title">Friends</h2>
-            <button class="text-btn" onclick="viewFriendsPage()">View all</button>
-          </div>
-          <div class="list" id="friendsList"></div>
-        </section>
+        <div class="section-title">Friends</div>
+        <div class="flat-list" id="friendsList">
+          <!-- JS renders list here -->
+        </div>
       </main>
 
       <nav class="bottom-nav">
-        <a href="#" class="nav-item active" onclick="goToHome(); return false;"><i class="fas fa-home"></i><span>Home</span></a>
-        <a href="#" class="nav-item" onclick="openNotifications(); return false;"><i class="fas fa-bell"></i><span>Alerts</span></a>
-        <a href="#" class="nav-item" onclick="viewFriendsPage(); return false;"><i class="fas fa-user-friends"></i><span>Friends</span></a>
-        <a href="#" class="nav-item" onclick="goToProfile(); return false;"><i class="fas fa-user"></i><span>You</span></a>
+        <a href="#" class="nav-btn active" data-nav="/"><i class="fas fa-comment"></i>Chats</a>
+        <a href="#" class="nav-btn" data-nav="/friends"><i class="fas fa-user-friends"></i>Friends</a>
+        <a href="#" class="nav-btn" data-nav="/profile"><i class="fas fa-user"></i>Profile</a>
       </nav>
 
-      <div class="modal" id="searchModal">
+      <!-- Modals -->
+      <div class="modal-overlay" id="searchModal">
         <div class="modal-panel">
-          <div class="modal-head"><h2 class="modal-title">Find people</h2><button class="modal-close" onclick="closeModal()"><i class="fas fa-times"></i></button></div>
-          <div class="modal-body">
-            <div class="search-wrap"><i class="fas fa-search search-svg"></i><input type="text" id="searchInput" class="search-input" placeholder="Search by username"></div>
-            <div id="searchResults" class="search-results"></div>
-          </div>
+          <div class="modal-header"><div class="modal-title">Find People</div><button class="modal-close" id="close-search">×</button></div>
+          <div class="input-group"><i class="fas fa-search"></i><input type="text" id="searchInput" class="input-field" placeholder="Search by username"></div>
+          <div id="searchResults" style="margin-top: 16px;"></div>
         </div>
       </div>
 
-      <div class="modal" id="notificationsModal">
+      <div class="modal-overlay" id="notificationsModal">
         <div class="modal-panel">
-          <div class="modal-head"><h2 class="modal-title">Notifications</h2><button class="modal-close" onclick="closeModal()"><i class="fas fa-times"></i></button></div>
-          <div class="modal-body">
-            <div class="tabs"><button class="tab active" id="notifTabMain" onclick="switchNotifTab('main')">Requests</button><button class="tab" id="notifTabCalls" onclick="switchNotifTab('calls')">Calls</button></div>
-            <div class="tab-content active" id="notifMainContent"><div id="notificationsList"></div></div>
-            <div class="tab-content" id="notifCallsContent"><div id="callHistoryList"></div></div>
-          </div>
+          <div class="modal-header"><div class="modal-title">Notifications</div><button class="modal-close" id="close-notifs">×</button></div>
+          <div id="notificationsList"></div>
         </div>
       </div>
     </div>
@@ -323,79 +217,49 @@
   <template id="tpl-friends">
     <div class="friends-root">
       <div class="loading-indicator" id="loadingIndicator"><div class="loading-spinner"></div></div>
-      <header class="app-bar">
-        <div class="app-bar-inner"><div class="app-bar-brand"><span class="brand-name">Friends</span></div></div>
+      <header class="app-header">
+        <div class="app-header-inner">
+          <div class="app-title">Friends</div>
+        </div>
       </header>
-      <div class="search-bar-wrap">
-        <div class="search-bar-inner">
-          <div class="search-wrap">
-            <i class="fas fa-search search-svg"></i>
-            <input type="text" id="searchInput" class="search-input" placeholder="Search friends..." oninput="searchFriends()">
-            <button class="clear-search" id="clearSearch" onclick="clearSearch()" style="display: none;"><i class="fas fa-times"></i></button>
-          </div>
+      <main class="page-container">
+        <div class="input-group" style="margin-top: 16px;">
+          <i class="fas fa-search"></i>
+          <input type="text" id="searchFriendsInput" class="input-field" placeholder="Search friends...">
         </div>
-      </div>
-      <main class="page"><section class="section"><div class="list" id="friendsList"></div></section></main>
+        <div class="flat-list" id="friendsList"></div>
+      </main>
       <nav class="bottom-nav">
-        <a href="#" class="nav-item" onclick="goToHome(); return false;"><i class="fas fa-home"></i><span>Home</span></a>
-        <a href="#" class="nav-item" onclick="openNotifications(event); return false;"><i class="fas fa-bell"></i><span>Alerts</span></a>
-        <a href="#" class="nav-item active"><i class="fas fa-user-friends"></i><span>Friends</span></a>
-        <a href="#" class="nav-item" onclick="goToProfile(); return false;"><i class="fas fa-user"></i><span>You</span></a>
+        <a href="#" class="nav-btn" data-nav="/"><i class="fas fa-comment"></i>Chats</a>
+        <a href="#" class="nav-btn active" data-nav="/friends"><i class="fas fa-user-friends"></i>Friends</a>
+        <a href="#" class="nav-btn" data-nav="/profile"><i class="fas fa-user"></i>Profile</a>
       </nav>
-      
-      <div class="modal" id="notificationsModal">
-        <div class="modal-panel">
-          <div class="modal-head"><h2 class="modal-title">Notifications</h2><button class="modal-close" onclick="closeModal()"><i class="fas fa-times"></i></button></div>
-          <div class="modal-body">
-            <div class="tabs"><button class="tab active" id="notifTabMain" onclick="switchNotifTab('main')">Requests</button><button class="tab" id="notifTabCalls" onclick="switchNotifTab('calls')">Calls</button></div>
-            <div class="tab-content active" id="notifMainContent"><div id="notificationsList"></div></div>
-            <div class="tab-content" id="notifCallsContent"><div id="callHistoryList"></div></div>
-          </div>
-        </div>
-      </div>
     </div>
   </template>
 
   <!-- ═══════════ VIEW: Chats ═══════════ -->
   <template id="tpl-chats">
-    <div class="chat-view">
-      <header class="chat-header">
-        <button class="back-btn" onclick="goBack()"><i class="fas fa-arrow-left"></i></button>
-        <div class="chat-user-info" id="chatHeaderProfile">
-          <div class="chat-user-avatar" id="chatUserAvatar">U</div>
-          <div class="chat-user-details">
-            <h3 id="chatUserName">User</h3>
-            <div class="chat-user-status"><span id="statusDot" class="status-dot offline"></span><span id="statusText">Offline</span></div>
-          </div>
+    <div class="chat-layout">
+      <header class="chat-top">
+        <div class="back" id="btn-back"><i class="fas fa-chevron-left"></i></div>
+        <div class="avatar" id="chatUserAvatar">U</div>
+        <div class="chat-top-info">
+          <div class="chat-top-name" id="chatUserName">User</div>
+          <div class="chat-top-status" id="statusText">Offline</div>
         </div>
-        <div class="chat-actions">
-          <button class="guide-btn" onclick="openGuide()"><i class="fas fa-circle-question"></i></button>
-          <button class="call-btn" onclick="callCurrentFriend()"><i class="fas fa-phone"></i></button>
+        <div class="chat-top-actions">
+          <i class="fas fa-phone" id="btn-call"></i>
         </div>
       </header>
-      <main class="main-content">
-        <div class="messages-container" id="messagesContainer">
-          <div class="empty-chat">
-            <svg class="empty-chat-icon" viewBox="0 0 24 24" style="width:48px;height:48px;fill:#94a3b8;margin-bottom:12px;"><path d="M20,2H4A2,2 0 0,0 2,4V22L6,18H20A2,2 0 0,0 22,16V4A2,2 0 0,0 20,2Z"/></svg>
-            <h3>Start the conversation</h3>
-            <p>Say hello to your friend!</p>
-          </div>
-        </div>
+
+      <main class="chat-messages" id="messagesContainer">
+        <!-- Messages render here -->
       </main>
-      <div class="message-input-wrapper">
-        <div class="message-input-container">
-          <button class="attach-btn" onclick="showImagePicker()"><i class="fas fa-paperclip"></i></button>
-          <button class="mic-btn" id="micBtn" type="button"><i class="fas fa-microphone"></i></button>
-          <textarea class="message-input" id="messageInput" placeholder="Message..." rows="1"></textarea>
-          <button class="send-btn" id="sendBtn" onclick="sendMessage()" disabled><i class="fas fa-paper-plane"></i></button>
-        </div>
-      </div>
-      
-      <div class="modal-overlay" id="guideModal" style="display: none;">
-        <div class="modal-content"><div class="modal-head"><h3 class="modal-title">Chat Guide</h3><button class="modal-close" onclick="closeGuide()">×</button></div><div class="modal-body guide-body" id="guideBody"></div></div>
-      </div>
-      <div class="modal-overlay" id="customAlert" style="display: none;">
-        <div class="modal-content"><div class="modal-head"><h3 class="modal-title" id="alertTitle">Alert</h3><button class="modal-close" onclick="document.getElementById('customAlert').style.display='none'">×</button></div><div class="modal-body"><div style="text-align: center;"><div id="alertIcon" style="font-size: 3rem;"></div><p id="alertMessage"></p></div><div style="display: flex; gap: 10px; margin-top:16px;"><button id="alertConfirm" class="btn-primary" style="flex:1;">OK</button><button id="alertCancel" class="btn-secondary" style="display: none; flex:1;">Cancel</button></div></div></div>
+
+      <div class="chat-input-area">
+        <i class="fas fa-camera chat-btn" id="btn-image" style="font-size: 20px;"></i>
+        <textarea class="chat-input" id="messageInput" placeholder="Message..." rows="1"></textarea>
+        <i class="fas fa-paper-plane chat-btn" id="sendBtn"></i>
       </div>
     </div>
   </template>
@@ -403,108 +267,66 @@
   <!-- ═══════════ VIEW: Profile ═══════════ -->
   <template id="tpl-profile">
     <div class="profile-root">
-      <div class="loading-indicator" id="loadingIndicator" style="display:none;"><div class="loading-spinner"></div></div>
-      <header class="app-bar">
-        <div class="app-bar-inner">
-          <div class="app-bar-brand"><span class="brand-name">Profile</span></div>
-          <button class="icon-btn" onclick="openGuide()"><i class="fas fa-circle-question"></i></button>
+      <div class="loading-indicator" id="loadingIndicator"><div class="loading-spinner"></div></div>
+      <header class="app-header">
+        <div class="app-header-inner">
+          <div class="app-title">Profile</div>
         </div>
       </header>
-      <main class="profile-main">
-        <section class="profile-card">
-          <div class="avatar-section">
-            <div class="profile-avatar">
-              <img id="avatarImage" src="" style="display: none;">
-              <div id="avatarInitial" class="avatar-initial">?</div>
-            </div>
-            <button class="change-photo-btn" onclick="openImagePicker()"><i class="fas fa-camera"></i></button>
+      <main class="page-container" style="padding: 0;">
+        <div class="profile-header">
+          <div class="avatar" id="profileAvatar">
+            <span id="avatarInitial">?</span>
+            <img id="avatarImage" style="display:none;">
           </div>
-          <h2 class="user-name" id="displayName">User</h2>
-          <div class="user-username" id="displayUsername">@username</div>
-          <div class="bio-section">
-            <div class="bio-header"><span class="bio-label">About / Biography</span><button class="bio-edit-btn" onclick="openBioEditor()"><i class="fas fa-pen"></i></button></div>
-            <div class="bio-box" id="bioBox"><span class="bio-empty">Tap the pencil to write something...</span></div>
+          <div class="profile-name" id="displayName">User</div>
+          <div class="profile-username" id="displayUsername">@username</div>
+        </div>
+        
+        <div class="flat-list" style="margin: 16px;">
+          <div class="list-item" id="btn-notifications">
+            <div class="item-content"><div class="item-title">Notifications</div></div>
+            <div class="item-action" id="enableBtnLabel">Enable</div>
           </div>
-          <div class="profile-stats">
-            <div class="stat-item"><div class="stat-value" id="friendsCount">0</div><div class="stat-label">Friends</div></div>
-            <div class="stat-item"><div class="stat-value" id="memberSince">—</div><div class="stat-label">Member since</div></div>
+          <div class="list-item" id="btn-logout">
+            <div class="item-content"><div class="item-title" style="color: var(--danger);">Log Out</div></div>
           </div>
-        </section>
-        <section class="settings-card">
-          <div class="settings-header"><div class="settings-icon"><i class="fas fa-bell"></i></div><div><div class="settings-title">Notifications</div><div class="settings-subtitle">Control how RelayTalk reaches you</div></div></div>
-          <div class="notify-actions">
-            <button class="notify-btn" id="enableNotificationsBtn" onclick="toggleNotifications()"><span id="enableBtnIcon">🔔</span><span id="enableBtnLabel">Enable</span></button>
-            <button class="notify-btn" onclick="resetNotifications()"><span>🔄</span><span>Reset</span></button>
-          </div>
-        </section>
-        <section class="actions-card">
-          <button class="action-row action-row-danger" onclick="logoutFromDevice()"><span class="action-row-icon"><i class="fas fa-right-from-bracket"></i></span><span>Log Out</span></button>
-        </section>
+        </div>
       </main>
       <nav class="bottom-nav">
-        <a href="#" class="nav-item" onclick="goToHome(); return false;"><i class="fas fa-home"></i><span>Home</span></a>
-        <a href="#" class="nav-item" onclick="openNotifications(event); return false;"><i class="fas fa-bell"></i><span>Alerts</span></a>
-        <a href="#" class="nav-item" onclick="goToFriends(); return false;"><i class="fas fa-user-friends"></i><span>Friends</span></a>
-        <a href="#" class="nav-item active"><i class="fas fa-user"></i><span>You</span></a>
+        <a href="#" class="nav-btn" data-nav="/"><i class="fas fa-comment"></i>Chats</a>
+        <a href="#" class="nav-btn" data-nav="/friends"><i class="fas fa-user-friends"></i>Friends</a>
+        <a href="#" class="nav-btn active" data-nav="/profile"><i class="fas fa-user"></i>Profile</a>
       </nav>
-      
-      <div class="modal-overlay" id="bioEditorModal" style="display:none;">
-        <div class="modal-content"><div class="modal-head"><h3 class="modal-title">Edit About</h3><button class="modal-close" onclick="closeBioEditor()">×</button></div><div class="modal-body"><textarea id="bioInput" class="search-input" maxlength="100" rows="4"></textarea><div style="display:flex; gap:10px; margin-top:16px;"><button class="btn-secondary" style="flex:1;" onclick="closeBioEditor()">Cancel</button><button class="btn-primary" style="flex:1;" onclick="saveBio()">Save</button></div></div></div>
-      </div>
-      <div class="modal-overlay" id="imagePickerModal" style="display:none;">
-        <div class="modal-content"><div class="modal-head"><h3 class="modal-title">Change Photo</h3><button class="modal-close" onclick="closeModal()">×</button></div><div class="modal-body">
-          <input type="file" id="cameraInput" accept="image/*" capture="environment" style="display:none;" onchange="handleImageSelect(event)">
-          <input type="file" id="galleryInput" accept="image/*" style="display:none;" onchange="handleImageSelect(event)">
-          <button class="action-row" onclick="uploadFromCamera()">Take Photo</button>
-          <button class="action-row" onclick="uploadFromGallery()">Gallery</button>
-          <button class="action-row action-row-danger" onclick="removeAvatar()">Remove Photo</button>
-        </div></div>
-      </div>
-      <div class="modal-overlay" id="guideModal" style="display:none;">
-        <div class="modal-content"><div class="modal-head"><h3 class="modal-title">Guide</h3><button class="modal-close" onclick="closeGuide()">×</button></div><div class="modal-body guide-body" id="guideBody"></div></div>
-      </div>
     </div>
   </template>
 
   <!-- ═══════════ VIEW: View Friend ═══════════ -->
   <template id="tpl-view-friend">
     <div class="view-root">
-      <div id="fallbackScreen" style="display:none; position:fixed; inset:0; background:var(--bg); z-index:100; padding:40px; text-align:center;">
-        <h2 style="font-size:2rem; margin-bottom:10px;">Account not found</h2>
-        <button class="btn-primary" onclick="closeView()">Go back</button>
-      </div>
-
-      <header class="app-bar">
-        <div class="app-bar-inner">
-          <button class="icon-btn" onclick="closeView()"><i class="fas fa-arrow-left"></i></button>
-          <div class="app-bar-brand"><span class="brand-name">Profile</span></div>
-          <div style="width:40px;"></div> <!-- Spacer for balance -->
+      <header class="app-header">
+        <div class="app-header-inner">
+          <div class="app-title" style="cursor:pointer;" id="btn-back-friend"><i class="fas fa-chevron-left" style="color:var(--primary);"></i> Back</div>
         </div>
       </header>
-
-      <main class="view-main" id="viewMain" style="display:none;">
-        <div class="avatar-section">
-          <div class="view-avatar">
-            <span class="view-avatar-initial" id="viewAvatarInitial">?</span>
-            <img id="viewAvatarImg" src="" style="display:none;">
+      <main class="page-container" id="viewMain" style="display:none; padding:0;">
+        <div class="profile-header">
+          <div class="avatar" id="viewAvatar">
+            <span id="viewAvatarInitial">?</span>
+            <img id="viewAvatarImg" style="display:none;">
           </div>
+          <div class="profile-name" id="viewName">User</div>
+          <div class="profile-username" id="viewUsername">@username</div>
+          <div class="status-dot online" id="viewStatusDot" style="position:relative; display:inline-block; margin-bottom:16px;"></div>
+          <span id="viewStatusText" style="font-size: 14px; color: var(--text-secondary);">Online</span>
         </div>
-        <h1 class="view-name" id="viewName">User</h1>
-        <div class="view-username" id="viewUsername">@username</div>
         
-        <div class="view-status-pill"><span class="view-status-dot" id="viewStatusDot"></span><span id="viewStatusText">Offline</span></div>
+        <div class="bio-text" id="viewBioBox">No biography yet.</div>
         
         <div class="view-actions">
-          <button class="view-action-btn view-action-message" onclick="openChat()"><i class="fas fa-comment-dots"></i><span>Message</span></button>
-          <button class="view-action-btn view-action-call" onclick="startCallFromView()"><i class="fas fa-phone"></i><span>Call</span></button>
+          <button class="btn" style="background:var(--surface-hover); color:var(--text);" id="btn-message"><i class="fas fa-comment" style="margin-right:8px;"></i>Message</button>
+          <button class="btn btn-primary" id="btn-call-view"><i class="fas fa-phone" style="margin-right:8px;"></i>Call</button>
         </div>
-        
-        <div class="view-bio-section">
-          <div class="bio-header"><span class="view-bio-label">Biography</span></div>
-          <div class="view-bio-box" id="viewBioBox"><span class="view-bio-empty">No biography yet.</span></div>
-        </div>
-        
-        <div id="viewFriendsSince" style="text-align:center; color:var(--ink-3); font-size:0.85rem; font-weight:500;"></div>
       </main>
     </div>
   </template>
