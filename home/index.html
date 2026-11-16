@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>RelayTalk</title>
-  <meta name="theme-color" content="#f4f7f9">
+  <meta name="theme-color" content="#ffffff">
   <link rel="icon" href="/favicon.ico" type="image/x-icon">
   <link rel="icon" href="/relay.png" type="image/png" sizes="192x192">
   <link rel="apple-touch-icon" href="/relay.png">
@@ -15,7 +15,6 @@
   <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   
-  <!-- The New Premium Design System -->
   <link rel="stylesheet" href="/shared/styles/base.css">
   <link rel="stylesheet" href="/shared/styles/home.css">
   <link rel="stylesheet" href="/shared/styles/chats.css">
@@ -30,7 +29,6 @@
     <div class="dashboard-root">
       <div class="loading-indicator" id="loadingIndicator">
         <div class="loading-spinner"></div>
-        <div class="loading-text">Loading...</div>
       </div>
 
       <header class="app-bar">
@@ -53,7 +51,7 @@
         <section class="greeting">
           <p class="greeting-small" id="greetingSmall">Hello</p>
           <h1 class="greeting-title" id="welcomeTitle">Friend</h1>
-          <p class="greeting-sub">Ready to catch up?</p>
+          <p class="greeting-sub">Welcome back to RelayTalk</p>
         </section>
 
         <button class="primary-action" onclick="openSearch()">
@@ -109,14 +107,8 @@
           </div>
           <div class="modal-body">
             <div class="tabs" role="tablist">
-              <button class="tab active" id="notifTabMain" onclick="switchNotifTab('main')">
-                <i class="fas fa-user-plus tab-icon"></i> Requests
-                <span class="tab-badge" id="mainTabBadge" style="display: none;">0</span>
-              </button>
-              <button class="tab" id="notifTabCalls" onclick="switchNotifTab('calls')">
-                <i class="fas fa-comment-dots tab-icon"></i> Calls
-                <span class="tab-badge" id="callsTabBadge" style="display: none;">0</span>
-              </button>
+              <button class="tab active" id="notifTabMain" onclick="switchNotifTab('main')"><i class="fas fa-user-plus tab-icon"></i> Requests<span class="tab-badge" id="mainTabBadge" style="display: none;">0</span></button>
+              <button class="tab" id="notifTabCalls" onclick="switchNotifTab('calls')"><i class="fas fa-comment-dots tab-icon"></i> Calls<span class="tab-badge" id="callsTabBadge" style="display: none;">0</span></button>
             </div>
             <div class="tab-content active" id="notifMainContent"><div id="notificationsList"></div></div>
             <div class="tab-content" id="notifCallsContent"><div id="callHistoryList"></div></div>
@@ -131,12 +123,11 @@
     <div class="friends-root">
       <div class="loading-indicator" id="loadingIndicator">
         <div class="loading-spinner"></div>
-        <div class="loading-text">Loading...</div>
       </div>
 
       <header class="app-bar">
         <div class="app-bar-inner">
-          <div class="app-bar-brand"><span class="brand-name">Your Friends</span></div>
+          <div class="app-bar-brand"><span class="brand-name">Friends</span></div>
         </div>
       </header>
 
@@ -303,10 +294,10 @@
   <template id="tpl-profile">
     <div class="profile-root">
       <div class="loading-overlay" id="loadingIndicator" style="display:none;">
-        <div class="loading-spinner"></div><div class="loading-text">Loading...</div>
+        <div class="loading-spinner"></div>
       </div>
       <div class="loading-overlay" id="uploadLoading" style="display:none;">
-        <div class="loading-spinner"></div><div class="loading-text">Uploading...</div>
+        <div class="loading-spinner"></div>
       </div>
 
       <header class="app-bar">
