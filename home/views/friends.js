@@ -30,18 +30,15 @@ export async function initFriends({ router }) {
             <div class="item-content">
               <div class="item-title">${p.username}</div>
             </div>
-            <div class="item-action"><i class="fas fa-comment"></i></div>
+            <div style="color:var(--primary);"><i class="fas fa-comment"></i></div>
           </div>
         `;
       }).join('');
 
-      // 🔥 FIX: Add event listener instead of inline onclick
       list.querySelectorAll('.friend-row').forEach(row => {
         row.addEventListener('click', () => {
-          const id = row.dataset.id;
-          const name = row.dataset.name;
-          sessionStorage.setItem('currentChatFriend', JSON.stringify({ id, username: name }));
-          routerRef.navigate('/chats?friendId=' + encodeURIComponent(id));
+          sessionStorage.setItem('currentChatFriend', JSON.stringify({ id: row.dataset.id, username: row.dataset.name }));
+          routerRef.navigate('/chats?friendId=' + encodeURIComponent(row.dataset.id));
         });
       });
     } else {
