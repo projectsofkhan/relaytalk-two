@@ -82,7 +82,6 @@
         <a href="#" class="nav-item" onclick="goToProfile(); return false;"><i class="fas fa-user"></i><span>You</span></a>
       </nav>
 
-      <!-- Modals -->
       <div class="modal" id="searchModal">
         <div class="modal-panel">
           <div class="modal-head">
@@ -121,9 +120,7 @@
   <!-- ═══════════ VIEW: Friends ═══════════ -->
   <template id="tpl-friends">
     <div class="friends-root">
-      <div class="loading-indicator" id="loadingIndicator">
-        <div class="loading-spinner"></div>
-      </div>
+      <div class="loading-indicator" id="loadingIndicator"><div class="loading-spinner"></div></div>
 
       <header class="app-bar">
         <div class="app-bar-inner">
@@ -220,7 +217,6 @@
         </div>
       </div>
 
-      <!-- Voice & Image Overlays -->
       <div class="voice-rec-overlay" id="voiceRecOverlay" style="display: none;">
         <div class="voice-rec-panel">
           <div class="voice-rec-header"><span class="voice-rec-dot"></span> Recording</div>
@@ -293,12 +289,8 @@
   <!-- ═══════════ VIEW: Profile ═══════════ -->
   <template id="tpl-profile">
     <div class="profile-root">
-      <div class="loading-overlay" id="loadingIndicator" style="display:none;">
-        <div class="loading-spinner"></div>
-      </div>
-      <div class="loading-overlay" id="uploadLoading" style="display:none;">
-        <div class="loading-spinner"></div>
-      </div>
+      <div class="loading-overlay" id="loadingIndicator" style="display:none;"><div class="loading-spinner"></div></div>
+      <div class="loading-overlay" id="uploadLoading" style="display:none;"><div class="loading-spinner"></div></div>
 
       <header class="app-bar">
         <div class="app-bar-inner">
@@ -433,6 +425,7 @@
         </div>
       </header>
 
+      <!-- FIXED: Wrapped in a flex column so it centers perfectly -->
       <main class="view-main" id="viewMain" style="display:none;">
         <div class="avatar-section">
           <div class="view-avatar">
@@ -445,14 +438,17 @@
         <div style="display:flex; justify-content:center; margin-bottom:24px;">
           <div class="view-status-pill"><span class="view-status-dot" id="viewStatusDot"></span><span id="viewStatusText">Offline</span></div>
         </div>
+        
         <div class="view-actions">
           <button class="view-action-btn view-action-message" onclick="openChat()"><i class="fas fa-comment-dots"></i><span>Message</span></button>
           <button class="view-action-btn view-action-call" onclick="startCallFromView()"><i class="fas fa-phone"></i><span>Call</span></button>
         </div>
+        
         <div class="view-bio-section">
           <div class="bio-header"><span class="view-bio-label">Biography</span></div>
           <div class="view-bio-box" id="viewBioBox"><span class="view-bio-empty">No biography yet.</span></div>
         </div>
+        
         <div id="viewFriendsSince" style="text-align:center; color:var(--ink-3); font-size:0.85rem; font-weight:500;"></div>
       </main>
 
