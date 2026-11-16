@@ -1,5 +1,4 @@
 // home/views/chats.js — complete chats view port.
-// Combines chat-core.js + img-handler.js + script.js coordinator.
 
 import { getSession } from '/shared/supabase.js';
 import { VoiceRecorder } from './voice-recorder.js';
@@ -1308,7 +1307,7 @@ async function insertCallEventMessage(call) {
 }
 
 // ═════════════════════════════════════════════════════════════
-// Image handling (from img-handler.js)
+// Image handling
 // ═════════════════════════════════════════════════════════════
 
 function addColorPickerToDOM() {
@@ -2063,12 +2062,12 @@ export async function initChats({ router, params }) {
     setupGlobalDismiss();
     setupVoiceRecorder();
 
-    // Keyboard preservation — prevent button clicks from blurring input
+    // Keyboard preservation
     document.querySelectorAll('.message-input-wrapper button').forEach(btn => {
       btn.addEventListener('mousedown', (e) => e.preventDefault(), { signal: sig });
     });
 
-    // Attach input listener for keydown and auto-resize
+    // Attach input listener
     const input = document.getElementById('messageInput');
     if (input) {
       input.addEventListener('keydown', handleKeyPress, { signal: sig });
@@ -2081,14 +2080,12 @@ export async function initChats({ router, params }) {
     if (cam) cam.addEventListener('change', handleImageSelect, { signal: sig });
     if (gal) gal.addEventListener('change', handleImageSelect, { signal: sig });
 
-    // Add color picker to DOM
     setTimeout(() => {
       addColorPickerToDOM();
       if (input) { autoResize(input); input.focus(); }
       forceScrollToBottom();
     }, 150);
 
-    // Chrome mobile viewport fix
     if (isMobileChrome() || isIOSChrome()) {
       document.body.classList.add('chrome-mobile');
       const updateVh = () => {
@@ -2099,7 +2096,6 @@ export async function initChats({ router, params }) {
       document.body.style.overscrollBehaviorY = 'none';
     }
 
-    // Expose globals for inline handlers in template
     const GLOBALS = {
       goBack,
       sendMessage,
@@ -2207,7 +2203,6 @@ export async function initChats({ router, params }) {
           showToast('Calling service not ready yet', '⚠️', 1500);
         }
       },
-      // Custom toast / alert
       showToast,
       showCustomAlert,
       showConfirmAlert
@@ -2215,25 +2210,20 @@ export async function initChats({ router, params }) {
 
     Object.keys(GLOBALS).forEach(k => { window[k] = GLOBALS[k]; });
 
-    // Save a reference for cleanup
     const globalsAdded = Object.keys(GLOBALS);
 
     return () => {
-      // Abort all event listeners
       try { abortController.abort(); } catch (e) {}
 
-      // Close realtime channels
       [chatChannel, statusChannel, typingChannel, reactionsChannel, callsChannel].forEach(ch => {
         if (ch) { try { window.supabase.removeChannel(ch); } catch (e) {} }
       });
       chatChannel = statusChannel = typingChannel = reactionsChannel = callsChannel = null;
 
-      // Clear timers
       if (typingTimeout) { clearTimeout(typingTimeout); typingTimeout = null; }
       if (friendTypingTimeout) { clearTimeout(friendTypingTimeout); friendTypingTimeout = null; }
       if (longPressTimer) { clearTimeout(longPressTimer); longPressTimer = null; }
 
-      // Stop audio
       [sentAudio, receivedAudio, currentlyPlayingAudio].forEach(a => {
         if (a) { try { a.pause(); a.currentTime = 0; } catch (e) {} }
       });
@@ -2248,17 +2238,14 @@ export async function initChats({ router, params }) {
       }
       if (voicePreviewAudioEl) { try { voicePreviewAudioEl.pause(); } catch (e) {} voicePreviewAudioEl = null; }
 
-      // Close any open modals / overlays
       ['imagePreviewOverlay', 'imageViewerOverlay', 'editModalOverlay', 'emojiPickerOverlay', 'rtFallbackScreen']
         .forEach(id => { const el = document.getElementById(id); if (el) el.remove(); });
 
       document.body.classList.remove('selection-active', 'fallback-active', 'chrome-mobile');
       document.body.style.overflow = '';
 
-      // Remove window globals
       globalsAdded.forEach(k => { try { delete window[k]; } catch (_) { window[k] = undefined; } });
 
-      // Reset state
       currentUser = null;
       chatFriend = null;
       currentMessages = [];
