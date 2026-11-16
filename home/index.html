@@ -17,8 +17,8 @@
   
   <style>
     /* ============================================================
-       RELAYTALK ULTRA-MINIMAL UI
-       No shadows. No gradients. Flat. Perfectly aligned.
+       RELAYTALK — ULTRA-PROFESSIONAL FLAT UI
+       No gradients. No ugly cards. Perfectly aligned.
        ============================================================ */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
     
@@ -26,15 +26,18 @@
       --bg: #ffffff;
       --surface: #ffffff;
       --surface-hover: #f2f2f7;
-      --primary: #007aff; /* iOS Blue */
+      --primary: #007aff;
       --text: #000000;
       --text-secondary: #8e8e93;
+      --text-tertiary: #c7c7cc;
       --border: #e5e5ea;
       --danger: #ff3b30;
+      --success: #34c759;
       --radius-sm: 8px;
       --radius-md: 12px;
       --radius-pill: 999px;
       --font: 'Inter', -apple-system, sans-serif;
+      --ease: cubic-bezier(0.22, 1, 0.36, 1);
     }
 
     body {
@@ -53,69 +56,74 @@
     
     .view-outlet { display: block; width: 100%; min-height: 100vh; }
     
-    .loading-indicator { position: fixed; inset: 0; background: var(--bg); display: flex; align-items: center; justify-content: center; z-index: 9999; }
+    /* PAGE TRANSITIONS */
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    .dashboard-root, .friends-root, .chat-layout, .profile-root, .view-root { animation: fadeIn 0.3s var(--ease) forwards; }
+
+    .loading-indicator { position: fixed; inset: 0; background: var(--bg); display: flex; align-items: center; justify-content: center; z-index: 9999; transition: opacity 0.3s; }
     .loading-spinner { width: 30px; height: 30px; border: 2px solid var(--border); border-top-color: var(--primary); border-radius: 50%; animation: spin 0.8s linear infinite; }
     @keyframes spin { to { transform: rotate(360deg); } }
 
     /* ============================================================
-       GLOBAL LAYOUT
+       GLOBAL LAYOUT & HEADERS
        ============================================================ */
     .app-header { position: sticky; top: 0; z-index: 50; background: rgba(255,255,255,0.95); backdrop-filter: blur(10px); border-bottom: 1px solid var(--border); }
     .app-header-inner { max-width: 680px; margin: 0 auto; height: 56px; padding: 0 16px; display: flex; align-items: center; justify-content: space-between; }
-    .app-title { font-size: 20px; font-weight: 700; letter-spacing: -0.5px; }
-    .app-actions { display: flex; gap: 16px; }
-    .app-actions button { font-size: 18px; color: var(--primary); }
+    .app-title { font-size: 22px; font-weight: 700; letter-spacing: -0.5px; }
+    .app-actions { display: flex; gap: 20px; }
+    .app-actions button { font-size: 20px; color: var(--primary); }
+    .app-actions button:active { opacity: 0.6; }
 
     .page-container { max-width: 680px; margin: 0 auto; padding: 16px; }
     .section-title { font-size: 13px; font-weight: 600; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px; margin: 24px 0 8px 16px; }
     
-    /* FLAT LISTS (No cards, just borders) */
-    .flat-list { display: flex; flex-direction: column; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-md); overflow: hidden; }
+    /* FLAT LISTS (NO CARDS) */
+    .flat-list { display: flex; flex-direction: column; background: var(--surface); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
     
-    .list-item { display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-bottom: 1px solid var(--border); transition: background 0.1s; cursor: pointer; }
+    .list-item { display: flex; align-items: center; gap: 16px; padding: 12px 16px; border-bottom: 1px solid var(--border); transition: background 0.1s; cursor: pointer; background: var(--bg); }
     .list-item:last-child { border-bottom: none; }
     .list-item:active { background: var(--surface-hover); }
     
-    .avatar { width: 44px; height: 44px; border-radius: 50%; background: var(--surface-hover); color: var(--text-secondary); display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 16px; flex-shrink: 0; overflow: hidden; position: relative; }
+    .avatar { width: 48px; height: 48px; border-radius: 50%; background: var(--surface-hover); color: var(--text-secondary); display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 18px; flex-shrink: 0; overflow: hidden; position: relative; }
     .avatar img { width: 100%; height: 100%; object-fit: cover; }
-    .status-dot { position: absolute; bottom: 0; right: 0; width: 12px; height: 12px; border-radius: 50%; border: 2px solid var(--surface); background: var(--text-secondary); }
-    .status-dot.online { background: #34c759; }
+    .status-dot { position: absolute; bottom: 0; right: 0; width: 12px; height: 12px; border-radius: 50%; border: 2px solid var(--bg); background: var(--text-tertiary); }
+    .status-dot.online { background: var(--success); }
     
     .item-content { flex: 1; min-width: 0; }
     .item-title { font-weight: 600; font-size: 16px; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .item-subtitle { font-size: 14px; color: var(--text-secondary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 2px; }
-    .item-action { color: var(--primary); font-size: 15px; font-weight: 500; }
-
+    
     /* BUTTONS */
-    .btn { display: inline-flex; align-items: center; justify-content: center; padding: 12px 20px; border-radius: var(--radius-md); font-size: 16px; font-weight: 600; width: 100%; transition: opacity 0.2s; }
+    .btn { display: inline-flex; align-items: center; justify-content: center; padding: 14px 20px; border-radius: var(--radius-md); font-size: 16px; font-weight: 600; width: 100%; transition: opacity 0.2s; }
     .btn:active { opacity: 0.7; }
     .btn-primary { background: var(--primary); color: #fff; }
-    .btn-danger { background: #ff3b30; color: #fff; }
+    .btn-secondary { background: var(--surface-hover); color: var(--text); }
     
     /* INPUTS */
-    .input-group { display: flex; align-items: center; background: var(--surface-hover); border-radius: var(--radius-md); padding: 0 12px; margin-bottom: 16px; }
+    .input-group { display: flex; align-items: center; background: var(--surface-hover); border-radius: var(--radius-md); padding: 0 16px; margin-bottom: 16px; }
     .input-group i { color: var(--text-secondary); font-size: 16px; }
     .input-field { flex: 1; border: none; background: transparent; padding: 14px 12px; font-size: 16px; color: var(--text); outline: none; }
 
-    /* BOTTOM NAV (Simple text, not giant icons) */
+    /* BOTTOM NAV */
     .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(255,255,255,0.95); backdrop-filter: blur(10px); border-top: 1px solid var(--border); display: flex; justify-content: space-around; padding: 8px 0; padding-bottom: max(8px, env(safe-area-inset-bottom)); z-index: 100; max-width: 680px; margin: 0 auto; }
-    .nav-btn { display: flex; flex-direction: column; align-items: center; gap: 2px; color: var(--text-secondary); font-size: 11px; font-weight: 500; padding: 4px 16px; }
+    .nav-btn { display: flex; flex-direction: column; align-items: center; gap: 2px; color: var(--text-secondary); font-size: 11px; font-weight: 500; padding: 4px 16px; cursor: pointer; transition: color 0.2s; }
     .nav-btn i { font-size: 22px; margin-bottom: 2px; }
     .nav-btn.active { color: var(--primary); }
 
     /* ============================================================
-       CHAT VIEW (iMessage Style)
+       CHATS
        ============================================================ */
     .chat-layout { position: fixed; inset: 0; display: flex; flex-direction: column; background: var(--bg); }
     .chat-top { display: flex; align-items: center; padding: 10px 16px; border-bottom: 1px solid var(--border); background: rgba(255,255,255,0.95); backdrop-filter: blur(10px); z-index: 10; }
     .chat-top .back { font-size: 20px; color: var(--primary); margin-right: 12px; cursor: pointer; }
-    .chat-top .avatar { width: 36px; height: 36px; margin-right: 10px; }
-    .chat-top-info { flex: 1; }
+    .chat-top .avatar { width: 38px; height: 38px; margin-right: 12px; cursor: pointer; }
+    .chat-top-info { flex: 1; cursor: pointer; }
     .chat-top-name { font-size: 16px; font-weight: 600; }
     .chat-top-status { font-size: 13px; color: var(--text-secondary); }
-    .chat-top-actions { display: flex; gap: 16px; color: var(--primary); font-size: 18px; }
+    .chat-top-actions { display: flex; gap: 20px; color: var(--primary); font-size: 20px; }
+    .chat-top-actions i { cursor: pointer; }
     
-    .chat-messages { flex: 1; overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 8px; padding-bottom: 90px; }
+    .chat-messages { flex: 1; overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 8px; padding-bottom: 90px; background: var(--bg); }
     
     .msg-row { display: flex; flex-direction: column; max-width: 75%; }
     .msg-row.sent { align-self: flex-end; align-items: flex-end; }
@@ -126,11 +134,16 @@
     .received .msg-bubble { background: var(--surface-hover); color: var(--text); border-bottom-left-radius: 4px; }
     .msg-time { font-size: 11px; color: var(--text-secondary); margin-top: 4px; }
 
-    .chat-input-area { position: fixed; bottom: 0; left: 0; right: 0; background: var(--bg); border-top: 1px solid var(--border); padding: 10px 16px; padding-bottom: max(10px, env(safe-area-inset-bottom)); display: flex; align-items: flex-end; gap: 8px; max-width: 680px; margin: 0 auto; }
+    .chat-input-area { position: fixed; bottom: 0; left: 0; right: 0; background: var(--bg); border-top: 1px solid var(--border); padding: 10px 16px; padding-bottom: max(10px, env(safe-area-inset-bottom)); display: flex; align-items: flex-end; gap: 10px; max-width: 680px; margin: 0 auto; }
     .chat-input { flex: 1; background: var(--surface-hover); border: 1px solid transparent; border-radius: 20px; padding: 10px 16px; font-size: 16px; color: var(--text); outline: none; min-height: 40px; max-height: 100px; resize: none; }
     .chat-input:focus { border-color: var(--border); background: var(--surface); }
     .chat-btn { font-size: 22px; color: var(--primary); padding: 8px; cursor: pointer; }
     .chat-btn:disabled { color: var(--text-secondary); opacity: 0.5; }
+
+    /* EMPTY CHAT */
+    .empty-chat { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; color: var(--text-secondary); text-align: center; }
+    .empty-chat-icon { width: 56px; height: 56px; fill: var(--text-tertiary); margin-bottom: 16px; }
+    .empty-chat h3 { font-size: 18px; font-weight: 600; color: var(--text); margin-bottom: 4px; }
 
     /* ============================================================
        PROFILE & VIEW FRIEND
@@ -141,17 +154,43 @@
     .profile-username { font-size: 15px; color: var(--text-secondary); margin-top: 4px; margin-bottom: 16px; }
     
     .bio-text { text-align: center; font-size: 15px; color: var(--text); padding: 16px; max-width: 400px; margin: 0 auto; line-height: 1.5; }
-    
     .view-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 16px; }
     
-    /* MODALS */
+    /* ============================================================
+       MODALS & OVERLAYS (FULLY RESTORED)
+       ============================================================ */
     .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.4); display: none; align-items: flex-end; justify-content: center; z-index: 1000; opacity: 0; transition: opacity 0.2s; }
     .modal-overlay.visible { opacity: 1; }
-    .modal-panel { background: var(--bg); width: 100%; max-width: 540px; max-height: 85vh; border-radius: 20px 20px 0 0; padding: 24px; padding-bottom: max(24px, env(safe-area-inset-bottom)); transform: translateY(20px); transition: transform 0.3s; }
+    .modal-panel { background: var(--bg); width: 100%; max-width: 540px; max-height: 85vh; border-radius: 20px 20px 0 0; padding: 24px; padding-bottom: max(24px, env(safe-area-inset-bottom)); transform: translateY(20px); transition: transform 0.3s; overflow-y: auto; }
     .modal-overlay.visible .modal-panel { transform: translateY(0); }
     .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
-    .modal-title { font-size: 18px; font-weight: 700; }
+    .modal-title { font-size: 20px; font-weight: 700; }
     .modal-close { font-size: 24px; color: var(--text-secondary); cursor: pointer; }
+    
+    /* TABS FOR NOTIFICATIONS */
+    .tabs { display: flex; background: var(--surface-hover); border-radius: var(--radius-md); padding: 4px; margin-bottom: 16px; }
+    .tab { flex: 1; padding: 8px; text-align: center; border-radius: var(--radius-sm); font-size: 14px; font-weight: 600; color: var(--text-secondary); cursor: pointer; }
+    .tab.active { background: var(--bg); color: var(--text); box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+
+    /* VOICE & IMAGE OVERLAYS (HIDDEN BY DEFAULT) */
+    .image-picker-overlay, .voice-rec-overlay, .voice-preview-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); display: none; align-items: flex-end; justify-content: center; z-index: 2000; }
+    .image-picker-container, .voice-rec-panel, .voice-preview-panel { background: var(--bg); width: 100%; max-width: 540px; border-radius: 20px 20px 0 0; padding: 24px; padding-bottom: max(24px, env(safe-area-inset-bottom)); }
+    .image-picker-header, .voice-preview-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; font-weight: 600; font-size: 18px; }
+    .image-picker-close, .voice-preview-close { font-size: 24px; cursor: pointer; }
+    .image-picker-option { display: flex; align-items: center; gap: 12px; width: 100%; padding: 16px; font-size: 16px; border-bottom: 1px solid var(--border); cursor: pointer; }
+    .voice-rec-actions, .voice-preview-actions { display: flex; gap: 12px; margin-top: 16px; }
+    .voice-rec-btn, .voice-preview-play { width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 18px; color: #fff; }
+    .voice-rec-cancel { background: var(--danger); }
+    .voice-rec-stop, .voice-preview-play { background: var(--primary); }
+    .voice-rec-waveform, .voice-preview-waveform { height: 40px; background: var(--surface-hover); border-radius: 8px; margin: 16px 0; display: flex; align-items: center; padding: 0 12px; gap: 3px; }
+    .voice-rec-waveform .bar, .voice-preview-waveform .bar { width: 3px; background: var(--primary); border-radius: 2px; }
+    
+    /* CUSTOM TOAST */
+    .toast-container { position: fixed; top: 24px; left: 50%; transform: translateX(-50%); z-index: 9999; pointer-events: none; }
+    .toast { background: #000; color: #fff; padding: 12px 24px; border-radius: var(--radius-pill); display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 500; opacity: 0; transform: translateY(-10px); transition: all 0.3s; }
+    .toast.show { opacity: 1; transform: translateY(0); }
   </style>
 </head>
 <body>
@@ -174,12 +213,12 @@
       </header>
 
       <main class="page-container">
-        <div style="margin-top: 16px;">
+        <div style="margin-top: 16px; margin-bottom: 24px;">
           <h1 style="font-size: 28px; font-weight: 700; letter-spacing: -1px;" id="welcomeTitle">Hello</h1>
           <p style="color: var(--text-secondary); font-size: 15px;">Welcome back to RelayTalk</p>
         </div>
 
-        <button class="btn btn-primary" style="margin-top: 24px;" id="btn-find-friends">
+        <button class="btn btn-primary" id="btn-find-friends">
           Find Friends
         </button>
 
@@ -190,24 +229,30 @@
       </main>
 
       <nav class="bottom-nav">
-        <a href="#" class="nav-btn active" data-nav="/"><i class="fas fa-comment"></i>Chats</a>
-        <a href="#" class="nav-btn" data-nav="/friends"><i class="fas fa-user-friends"></i>Friends</a>
-        <a href="#" class="nav-btn" data-nav="/profile"><i class="fas fa-user"></i>Profile</a>
+        <div class="nav-btn active" data-nav="/"><i class="fas fa-comment"></i>Chats</div>
+        <div class="nav-btn" data-nav="/friends"><i class="fas fa-user-friends"></i>Friends</div>
+        <div class="nav-btn" data-nav="/profile"><i class="fas fa-user"></i>Profile</div>
       </nav>
 
-      <!-- Modals -->
+      <!-- Notifications Modal -->
+      <div class="modal-overlay" id="notificationsModal">
+        <div class="modal-panel">
+          <div class="modal-header"><div class="modal-title">Notifications</div><button class="modal-close" id="close-notifs">×</button></div>
+          <div class="tabs" role="tablist">
+            <button class="tab active" id="notifTabMain" onclick="switchNotifTab('main')">Requests <span id="mainTabBadge" style="color:var(--danger);display:none;">0</span></button>
+            <button class="tab" id="notifTabCalls" onclick="switchNotifTab('calls')">Calls <span id="callsTabBadge" style="color:var(--danger);display:none;">0</span></button>
+          </div>
+          <div class="tab-content active" id="notifMainContent"><div id="notificationsList"></div></div>
+          <div class="tab-content" id="notifCallsContent"><div id="callHistoryList"></div></div>
+        </div>
+      </div>
+
+      <!-- Search Modal -->
       <div class="modal-overlay" id="searchModal">
         <div class="modal-panel">
           <div class="modal-header"><div class="modal-title">Find People</div><button class="modal-close" id="close-search">×</button></div>
           <div class="input-group"><i class="fas fa-search"></i><input type="text" id="searchInput" class="input-field" placeholder="Search by username"></div>
-          <div id="searchResults" style="margin-top: 16px;"></div>
-        </div>
-      </div>
-
-      <div class="modal-overlay" id="notificationsModal">
-        <div class="modal-panel">
-          <div class="modal-header"><div class="modal-title">Notifications</div><button class="modal-close" id="close-notifs">×</button></div>
-          <div id="notificationsList"></div>
+          <div id="searchResults"></div>
         </div>
       </div>
     </div>
@@ -225,14 +270,14 @@
       <main class="page-container">
         <div class="input-group" style="margin-top: 16px;">
           <i class="fas fa-search"></i>
-          <input type="text" id="searchFriendsInput" class="input-field" placeholder="Search friends...">
+          <input type="text" id="searchInput" class="input-field" placeholder="Search friends..." oninput="searchFriends()">
         </div>
         <div class="flat-list" id="friendsList"></div>
       </main>
       <nav class="bottom-nav">
-        <a href="#" class="nav-btn" data-nav="/"><i class="fas fa-comment"></i>Chats</a>
-        <a href="#" class="nav-btn active" data-nav="/friends"><i class="fas fa-user-friends"></i>Friends</a>
-        <a href="#" class="nav-btn" data-nav="/profile"><i class="fas fa-user"></i>Profile</a>
+        <div class="nav-btn" data-nav="/"><i class="fas fa-comment"></i>Chats</div>
+        <div class="nav-btn active" data-nav="/friends"><i class="fas fa-user-friends"></i>Friends</div>
+        <div class="nav-btn" data-nav="/profile"><i class="fas fa-user"></i>Profile</div>
       </nav>
     </div>
   </template>
@@ -259,8 +304,20 @@
       <div class="chat-input-area">
         <i class="fas fa-camera chat-btn" id="btn-image" style="font-size: 20px;"></i>
         <textarea class="chat-input" id="messageInput" placeholder="Message..." rows="1"></textarea>
-        <i class="fas fa-paper-plane chat-btn" id="sendBtn"></i>
+        <i class="fas fa-paper-plane chat-btn" id="sendBtn" disabled></i>
       </div>
+
+      <!-- ALL MODALS RESTORED FOR JS TO WORK -->
+      <div class="modal-overlay" id="userInfoModal"><div class="modal-panel"><div class="modal-header"><div class="modal-title">User Info</div><button class="modal-close" id="close-userinfo">×</button></div><div id="userInfoContent"></div></div></div>
+      <div class="modal-overlay" id="guideModal"><div class="modal-panel"><div class="modal-header"><div class="modal-title">Chat Guide</div><button class="modal-close" id="close-guide">×</button></div><div id="guideBody"></div></div></div>
+      <div class="modal-overlay" id="customAlert"><div class="modal-panel"><div class="modal-header"><div class="modal-title" id="alertTitle">Alert</div><button class="modal-close" id="close-alert">×</button></div><div style="text-align:center;padding:20px;"><div id="alertIcon" style="font-size:40px;margin-bottom:10px;"></div><p id="alertMessage"></p></div><div style="display:flex;gap:10px;"><button class="btn btn-secondary" id="alertCancel" style="display:none;">Cancel</button><button class="btn btn-primary" id="alertConfirm">OK</button></div></div></div>
+      <div class="image-picker-overlay" id="imagePickerOverlay"><div class="image-picker-container"><div class="image-picker-header"><span>Share Image</span><button class="image-picker-close" id="close-imagepicker">×</button></div><button class="image-picker-option" id="opt-camera"><i class="fas fa-camera"></i> Camera</button><button class="image-picker-option" id="opt-gallery"><i class="fas fa-image"></i> Gallery</button></div></div>
+      <input type="file" id="cameraInput" accept="image/*" capture="environment" style="display:none;">
+      <input type="file" id="galleryInput" accept="image/*" multiple style="display:none;">
+      
+      <div class="voice-rec-overlay" id="voiceRecOverlay"><div class="voice-rec-panel"><div style="display:flex;justify-content:space-between;margin-bottom:16px;"><span style="font-weight:600;">Recording...</span><span id="voiceRecTimer">0:00</span></div><div class="voice-rec-waveform" id="voiceRecWaveform"></div><div class="voice-rec-actions"><button class="voice-rec-btn voice-rec-cancel" id="voiceRecCancelBtn"><i class="fas fa-trash"></i></button><button class="voice-rec-btn voice-rec-stop" id="voiceRecStopBtn"><i class="fas fa-stop"></i></button></div></div></div>
+      <div class="voice-preview-overlay" id="voicePreviewOverlay"><div class="voice-preview-panel"><div class="voice-preview-header"><span>Voice Message</span><button class="voice-preview-close" id="voicePreviewClose">×</button></div><div style="display:flex;align-items:center;gap:16px;"><button class="voice-preview-play" id="voicePreviewPlay"><i class="fas fa-play"></i></button><div class="voice-preview-waveform" id="voicePreviewWaveform"></div><span id="voicePreviewDuration">0:00</span></div><div class="voice-preview-actions"><button class="btn btn-secondary" id="voicePreviewCancel">Cancel</button><button class="btn btn-primary" id="voicePreviewSend">Send</button></div></div></div>
+      <div class="toast-container" id="customToast" style="display:none;"><div class="toast-content" style="background:#000;color:#fff;padding:12px 24px;border-radius:30px;"><span id="toastIcon"></span> <span id="toastMessage"></span></div></div>
     </div>
   </template>
 
@@ -283,10 +340,11 @@
           <div class="profile-username" id="displayUsername">@username</div>
         </div>
         
-        <div class="flat-list" style="margin: 16px;">
-          <div class="list-item" id="btn-notifications">
-            <div class="item-content"><div class="item-title">Notifications</div></div>
-            <div class="item-action" id="enableBtnLabel">Enable</div>
+        <div class="bio-text" id="bioBox" style="border-bottom:1px solid var(--border);">No biography yet.</div>
+        
+        <div class="flat-list" style="margin: 16px; border: 1px solid var(--border); border-radius: var(--radius-md);">
+          <div class="list-item" id="btn-enable-notifs">
+            <div class="item-content"><div class="item-title">Notifications</div><div class="item-subtitle" id="enableBtnLabel">Enable</div></div>
           </div>
           <div class="list-item" id="btn-logout">
             <div class="item-content"><div class="item-title" style="color: var(--danger);">Log Out</div></div>
@@ -294,10 +352,18 @@
         </div>
       </main>
       <nav class="bottom-nav">
-        <a href="#" class="nav-btn" data-nav="/"><i class="fas fa-comment"></i>Chats</a>
-        <a href="#" class="nav-btn" data-nav="/friends"><i class="fas fa-user-friends"></i>Friends</a>
-        <a href="#" class="nav-btn active" data-nav="/profile"><i class="fas fa-user"></i>Profile</a>
+        <div class="nav-btn" data-nav="/"><i class="fas fa-comment"></i>Chats</div>
+        <div class="nav-btn" data-nav="/friends"><i class="fas fa-user-friends"></i>Friends</div>
+        <div class="nav-btn active" data-nav="/profile"><i class="fas fa-user"></i>Profile</div>
       </nav>
+      
+      <!-- Restore Profile Modals -->
+      <div class="modal-overlay" id="bioEditorModal"><div class="modal-panel"><div class="modal-header"><div class="modal-title">Edit Bio</div><button class="modal-close" id="close-bio">×</button></div><textarea id="bioInput" class="input-field" style="background:var(--surface-hover);border-radius:8px;" rows="4"></textarea><div style="display:flex;gap:10px;margin-top:16px;"><button class="btn btn-secondary" id="cancel-bio">Cancel</button><button class="btn btn-primary" id="save-bio">Save</button></div></div></div>
+      <div class="modal-overlay" id="imagePickerModal"><div class="modal-panel"><div class="modal-header"><div class="modal-title">Change Photo</div><button class="modal-close" id="close-imgpicker">×</button></div><input type="file" id="profileCameraInput" accept="image/*" capture="environment" style="display:none;"><input type="file" id="profileGalleryInput" accept="image/*" style="display:none;"><div class="image-picker-option" id="opt-profile-camera"><i class="fas fa-camera"></i> Take Photo</div><div class="image-picker-option" id="opt-profile-gallery"><i class="fas fa-image"></i> Gallery</div></div></div>
+      <div class="modal-overlay" id="notificationsModal"><div class="modal-panel"><div class="modal-header"><div class="modal-title">Notifications</div><button class="modal-close" id="close-notifs-profile">×</button></div><div class="tabs"><button class="tab active" id="notifTabMain" onclick="switchNotifTab('main')">Requests</button><button class="tab" id="notifTabCalls" onclick="switchNotifTab('calls')">Calls</button></div><div class="tab-content active" id="notifMainContent"><div id="notificationsList"></div></div><div class="tab-content" id="notifCallsContent"><div id="callHistoryList"></div></div></div></div>
+      <div class="modal-overlay" id="guideModal"><div class="modal-panel"><div class="modal-header"><div class="modal-title">Guide</div><button class="modal-close" id="close-guide-profile">×</button></div><div id="guideBody"></div></div></div>
+      <div class="modal-overlay" id="customAlert"><div class="modal-panel"><div class="modal-header"><div class="modal-title" id="alertTitle">Alert</div><button class="modal-close" id="close-alert-profile">×</button></div><div id="alertMessage" style="padding:16px;"></div></div></div>
+      <div class="toast-container" id="toastContainer"></div>
     </div>
   </template>
 
@@ -317,14 +383,16 @@
           </div>
           <div class="profile-name" id="viewName">User</div>
           <div class="profile-username" id="viewUsername">@username</div>
-          <div class="status-dot online" id="viewStatusDot" style="position:relative; display:inline-block; margin-bottom:16px;"></div>
-          <span id="viewStatusText" style="font-size: 14px; color: var(--text-secondary);">Online</span>
+          <div style="display:flex;align-items:center;gap:6px;margin-bottom:16px;">
+            <div class="status-dot" id="viewStatusDot" style="position:relative;"></div>
+            <span id="viewStatusText" style="font-size: 14px; color: var(--text-secondary);">Offline</span>
+          </div>
         </div>
         
         <div class="bio-text" id="viewBioBox">No biography yet.</div>
         
         <div class="view-actions">
-          <button class="btn" style="background:var(--surface-hover); color:var(--text);" id="btn-message"><i class="fas fa-comment" style="margin-right:8px;"></i>Message</button>
+          <button class="btn btn-secondary" id="btn-message"><i class="fas fa-comment" style="margin-right:8px;"></i>Message</button>
           <button class="btn btn-primary" id="btn-call-view"><i class="fas fa-phone" style="margin-right:8px;"></i>Call</button>
         </div>
       </main>
