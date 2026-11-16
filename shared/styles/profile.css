@@ -1,9 +1,15 @@
 /* ============================================================
-   RelayTalk — Profile & View Friend UI (Minimal & Professional)
+   RelayTalk — Profile & View Friend UI (Fixed Alignments)
    ============================================================ */
 
 .profile-root, .view-root { min-height: 100vh; padding-bottom: 96px; background: var(--surface); }
-.profile-main, .view-main { max-width: 520px; margin: 0 auto; padding: 24px 20px; }
+.profile-main { max-width: 520px; margin: 0 auto; padding: 24px 20px; }
+
+/* FIXED: View Friend Flexbox */
+.view-main { 
+  max-width: 520px; margin: 0 auto; padding: 32px 20px; 
+  display: flex; flex-direction: column; align-items: center; /* Forces perfect vertical stacking */
+}
 
 /* Flat Profile Card */
 .profile-card {
@@ -31,11 +37,11 @@
 }
 .change-photo-btn:hover { background: var(--surface-alt); color: var(--primary); }
 
-.user-name, .view-name { font-size: 1.3rem; font-weight: 600; letter-spacing: -0.02em; margin-bottom: 4px; }
-.user-username, .view-username { font-size: 0.9rem; color: var(--ink-2); margin-bottom: 20px; }
+.user-name, .view-name { font-size: 1.4rem; font-weight: 600; letter-spacing: -0.02em; margin-bottom: 4px; text-align: center; }
+.user-username, .view-username { font-size: 0.95rem; color: var(--ink-2); margin-bottom: 20px; text-align: center; }
 
 /* Bio */
-.bio-section, .view-bio-section { margin-bottom: 24px; text-align: left; }
+.bio-section, .view-bio-section { width: 100%; margin-bottom: 24px; text-align: left; }
 .bio-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
 .bio-label, .view-bio-label { font-size: 0.75rem; font-weight: 600; color: var(--ink-3); text-transform: uppercase; letter-spacing: 0.5px; }
 .bio-edit-btn { background: transparent; color: var(--ink-3); border: none; font-size: 0.9rem; cursor: pointer; padding: 4px; }
@@ -52,10 +58,10 @@
 .stat-value { font-size: 1.2rem; font-weight: 600; color: var(--ink); }
 .stat-label { font-size: 0.75rem; color: var(--ink-3); font-weight: 500; text-transform: uppercase; }
 
-/* Settings & Actions (Grouped List) */
+/* Settings & Actions */
 .settings-card, .actions-card {
   background: var(--surface); border-radius: var(--radius-md); border: 1px solid var(--line);
-  margin-bottom: 24px; overflow: hidden;
+  margin-bottom: 24px; overflow: hidden; width: 100%;
 }
 
 .settings-header { padding: 16px; border-bottom: 1px solid var(--line-soft); display: flex; gap: 12px; align-items: center; }
@@ -80,6 +86,7 @@
 .view-status-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--ink-4); }
 .view-status-dot.online { background: var(--success); }
 
+/* FIXED: View Actions Grid */
 .view-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; width: 100%; margin-bottom: 24px; }
 .view-action-btn { display: flex; align-items: center; justify-content: center; gap: 8px; padding: 12px; border-radius: var(--radius-md); font-size: 0.95rem; font-weight: 600; transition: background 0.2s; }
 .view-action-message { background: var(--surface-alt); color: var(--ink); border: 1px solid var(--line); }
